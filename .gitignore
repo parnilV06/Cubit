@@ -1,0 +1,94 @@
+node_modules
+.env
+# Dependencies
+
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Logs
+
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime
+
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment Variables
+
+.env
+.env.*
+!.env.example
+
+client/.env
+server/.env
+
+# Build Output
+
+dist/
+build/
+
+client/dist/
+server/dist/
+
+# Cache
+
+.cache/
+.parcel-cache/
+
+# Coverage
+
+coverage/
+
+# OS Files
+
+.DS_Store
+Thumbs.db
+
+# IDE
+
+.vscode/
+.idea/
+
+# Temp Files
+
+tmp/
+temp/
+
+# Vite
+
+vite.config.timestamp*
+
+# Prisma
+
+server/prisma/dev.db
+server/prisma/dev.db-journal
+
+# Database
+
+*.sqlite
+
+# Uploads
+
+uploads/
+
+# Generated Files
+
+generated/
+
+# Deployment
+
+.vercel/
+.railway/
+
+# Local Config
+
+*.local
