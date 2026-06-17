@@ -1,23 +1,69 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Oxanium:wght@500;600;700;800&family=Rajdhani:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+:root {
+  /* ==========================================
+     DESIGN TOKENS (Imported from Figma)
+     ========================================== */
+  
+  /* Brand Accent Colors */
+  --brand-primary: #572ff7;      /* VariableID:34:4 - Main brand blue/purple */
+  --brand-sec: #a768d4;       /* VariableID:34:3 - Accent purple */
+  --brand-ter: #bc8be0;     /* VariableID:34:5 - Light lavender */
+  
+  /* Gradients */
+  --gradient-main: linear-gradient(135deg, var(--brand-ter) 0%, var(--brand-sec) 40%, var(--brand-primary) 100%);
+  --gradient-hero: linear-gradient(180deg, var(--brand-ter) 0%, var(--brand-primary) 100%);
+
+  /* UI Backgrounds (Dark-first UI) */
+  --bg-primary: #08080a;         /* VariableID:34:6 - Main layout background */
+  --bg-secondary: #0f0f13;       /* VariableID:34:7 - Sidebar/navigation background */
+  --bg-card: #17171c;        /* VariableID:34:8 - Section/inner background */
+  --bg-card-sec: #1d1d24;            /* VariableID:34:9 - Card background */
+
+  /* Text Colors */
+  --text-primary: #fafafa;       /* VariableID:34:11 - Standard primary text */
+  --text-secondary: #a8a8b5;     /* VariableID:34:12 - Secondary labels/descriptions */
+  --text-muted: #7a7a88;         /* VariableID:34:13 - Timestamps, muted states */
+
+  /* Status Colors */
+  --status-success: #22c55e;     /* VariableID:34:14 */
+  --status-warning: #f59e0b;     /* VariableID:34:15 */
+  --status-error: #ef4444;       /* VariableID:34:16 */
+
+  /* Borders & Strokes */
+  --border-primary: #2b2b35;     /* VariableID:34:10 - Default border color */
+
+  /* Glows & Shadows */
+  --glow-primary: rgba(87, 47, 247, 0.18);   /* VariableID:34:26 - Primary brand glow */
+  --glow-purple: rgba(167, 104, 212, 0.18);  /* VariableID:34:25 - Accent purple glow */
+
+  /* Typography Fonts */
+  --font-heading: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-timer: 'Oxanium', monospace;
+  --font-logo: 'Rajdhani', sans-serif;
+  --font-main: 'Rubik', sans-serif;
+
+  /* ==========================================
+     BACKWARD COMPATIBILITY & OVERRIDES
+     ========================================== */
+  --text: var(--text-primary);
+  --text-h: var(--text-primary);
+  --bg: var(--bg-primary);
+  --border: var(--border-primary);
+  --code-bg: var(--bg-card);
+  --accent: var(--brand-primary);
+  --accent-bg: var(--glow-primary);
+  --accent-border: rgba(87, 47, 247, 0.5);
+  --social-bg: rgba(29, 29, 36, 0.5);
+  --shadow: rgba(0, 0, 0, 0.6) 0 10px 15px -3px, rgba(0, 0, 0, 0.4) 0 4px 6px -2px;
+
+  --sans: var(--font-heading);
+  --heading: var(--font-heading);
+  --mono: var(--font-timer);
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: dark;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -30,36 +76,15 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
 body {
   margin: 0;
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 0;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;

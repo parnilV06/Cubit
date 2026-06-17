@@ -92,3 +92,6 @@ generated/
 # Local Config
 
 *.local
+
+# figma design 
+Cubit-FigmaDesign/
