@@ -1,0 +1,376 @@
+/* ==========================================================================
+   CUBIT AUTH PAGES STYLESHEET  (Login & Sign-up)
+   Two-panel layout: illustration left | form right
+   ========================================================================== */
+
+/* ---------- Page shell ---------- */
+.auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100svh;        /* exactly one viewport — no page scroll */
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  font-family: var(--font-main);
+}
+
+/* ---------- Left panel – illustration ---------- */
+.auth-illustration-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+  background-color: #06060a;
+  padding: 0 24px 48px;
+  box-sizing: border-box;
+}
+
+/* Subtle dark overlay at the very bottom for text legibility */
+.auth-illustration-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 35%;
+  background: linear-gradient(to top, rgba(6,6,10,0.92) 0%, rgba(6,6,10,0.6) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.auth-illustration-img {
+  /* Contained in-flow image — not full bleed */
+  position: relative;
+  z-index: 0;
+  width: auto;
+  max-width: 88%;
+  height: 55vh;
+  object-fit: contain;
+  object-position: center bottom;
+  /* Gentle edge fade only — center fully visible */
+  mask-image: radial-gradient(ellipse 85% 90% at 50% 50%, black 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 90% at 50% 50%, black 50%, transparent 100%);
+  flex-shrink: 0;
+}
+
+.auth-illustration-text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  margin-top: 50px;  /* clear breathing space below the illustration */
+  padding: 0 20px;
+}
+
+.auth-illustration-heading {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--brand-primary);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+}
+
+.auth-illustration-sub {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--brand-sec);
+  margin: 0;
+  letter-spacing: 0.2px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+}
+
+/* ---------- Right panel – form ---------- */
+.auth-form-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 72px;
+  background-color: var(--bg-primary);
+  border-left: 1px solid var(--border-primary);
+  box-sizing: border-box;
+  overflow-y: auto;   /* scroll inside the panel only if viewport is very short */
+}
+
+/* ---------- Logo block ---------- */
+.auth-logo-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.auth-logo-icon {
+  width: 52px;
+  height: 52px;
+}
+
+.auth-logo-wordmark {
+  font-family: var(--font-logo);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--text-primary);
+}
+
+.auth-logo-wordmark .auth-logo-c {
+  color: var(--brand-primary);
+}
+
+/* ---------- Form card ---------- */
+.auth-form-card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.auth-page-title {
+  font-family: var(--font-heading);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 28px 0;
+  text-align: center;
+  letter-spacing: -0.5px;
+}
+
+/* ---------- Google button ---------- */
+.auth-google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 20px;
+  border: 1.5px solid var(--border-primary);
+  border-radius: 10px;
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.auth-google-btn:hover {
+  border-color: rgba(167, 104, 212, 0.5);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Google "G" icon */
+.auth-google-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ---------- Divider ---------- */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-primary);
+}
+
+/* ---------- Input groups ---------- */
+.auth-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.auth-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.2px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 13px 16px;
+  background-color: var(--bg-secondary);
+  border: 1.5px solid var(--border-primary);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.auth-input::placeholder {
+  color: var(--text-muted);
+}
+
+.auth-input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(87, 47, 247, 0.15);
+}
+
+/* ---------- Remember me / Forgot password row ---------- */
+.auth-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.auth-remember-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-primary);
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.2s, border-color 0.2s;
+  position: relative;
+}
+
+.auth-remember-checkbox:checked {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.auth-remember-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1.5px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.auth-remember-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.auth-forgot-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.auth-forgot-link:hover {
+  color: var(--brand-sec);
+}
+
+/* ---------- Submit button ---------- */
+.auth-submit-btn {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--brand-primary);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: var(--font-main);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  margin-bottom: 32px;
+}
+
+.auth-submit-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.auth-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- Bottom redirect link ---------- */
+.auth-redirect {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.auth-redirect a {
+  color: var(--brand-primary);
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.15s;
+}
+
+.auth-redirect a:hover {
+  color: var(--brand-sec);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-illustration-panel {
+    display: none;
+  }
+
+  .auth-form-panel {
+    border-left: none;
+    padding: 48px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-form-panel {
+    padding: 40px 20px;
+  }
+
+  .auth-page-title {
+    font-size: 26px;
+  }
+}
