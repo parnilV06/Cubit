@@ -1,10 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
 import illustration from '../../assets/login-signup-illustration.png'
 import './auth.css'
 
 export default function Signup() {
+  const navigate = useNavigate()
+
+  const handleSignupSubmit = (e) => {
+    e.preventDefault()
+    navigate('/profile')
+  }
   return (
     <div className="auth-page">
 
@@ -32,7 +38,7 @@ export default function Signup() {
           </span>
         </div>
 
-        <div className="auth-form-card">
+        <form className="auth-form-card" onSubmit={handleSignupSubmit}>
           <h1 className="auth-page-title">Create a new Account</h1>
 
           {/* Google OAuth button */}
@@ -95,7 +101,7 @@ export default function Signup() {
             Already have an Account ?
             <Link to="/login" id="signup-to-login-link">Login</Link>
           </p>
-        </div>
+        </form>
       </div>
 
     </div>
