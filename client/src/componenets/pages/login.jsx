@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
 import illustration from '../../assets/login-signup-illustration.png'
 import './auth.css'
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault()
+    navigate('/profile')
+  }
 
   return (
     <div className="auth-page">
@@ -34,7 +40,7 @@ export default function Login() {
           </span>
         </div>
 
-        <div className="auth-form-card">
+        <form className="auth-form-card" onSubmit={handleLoginSubmit}>
           <h1 className="auth-page-title">Login to your Account</h1>
 
           {/* Google OAuth button */}
@@ -103,7 +109,7 @@ export default function Login() {
             Not Registered Yet?
             <Link to="/signup" id="login-to-signup-link">Create an account</Link>
           </p>
-        </div>
+        </form>
       </div>
 
     </div>
