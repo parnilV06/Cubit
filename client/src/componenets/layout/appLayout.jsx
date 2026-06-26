@@ -8,6 +8,7 @@ import './layout.css';
 import TimerDashboard from '../pages/timerDashboard.jsx';
 import StatsDashboard from '../pages/statsDashboard.jsx';
 import Trainer from '../pages/trainer.jsx';
+import Lesson from '../pages/lesson.jsx';
 import Community from '../pages/community.jsx';
 
 const AppLayout = () => {
@@ -35,6 +36,7 @@ const AppLayout = () => {
           <Route index element={<TimerDashboard />} />
           <Route path="stats" element={<StatsDashboard />} />
           <Route path="trainer" element={<Trainer />} />
+          <Route path="trainer/lesson/:id" element={<Lesson />} />
           <Route path="community" element={<Community />} />
         </Routes>
       </main>

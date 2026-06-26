@@ -42,9 +42,9 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
 
       <div className="nav-header">
         <img src={logoIcon} alt="CUBIT Logo" className="nav-logo" />
-        {isExpanded && <h2 className="nav-brand-text">
+        <h2 className={`nav-brand-text nav-transition ${isExpanded ? 'show' : 'hide'}`}>
           <span className="nav-brand-c">C</span> U B I T
-          </h2>}
+        </h2>
       </div>
 
       <div className="nav-links">
@@ -56,7 +56,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
           <div className="nav-icon-container">
              <img src={timerIcon} alt="Timer" />
           </div>
-          {isExpanded && <span className="nav-link-text">Timer</span>}
+          <span className={`nav-link-text nav-transition ${isExpanded ? 'show' : 'hide'}`}>Timer</span>
         </NavLink>
         
         <NavLink 
@@ -66,7 +66,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
           <div className="nav-icon-container">
              <img src={statsIcon} alt="Stats" />
           </div>
-          {isExpanded && <span className="nav-link-text">Stats</span>}
+          <span className={`nav-link-text nav-transition ${isExpanded ? 'show' : 'hide'}`}>Stats</span>
         </NavLink>
         
         <NavLink 
@@ -76,7 +76,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
           <div className="nav-icon-container">
             <img src={trainerIcon} alt="Trainer" />
           </div>
-          {isExpanded && <span className="nav-link-text">Trainer</span>}
+          <span className={`nav-link-text nav-transition ${isExpanded ? 'show' : 'hide'}`}>Trainer</span>
         </NavLink>
         
         <NavLink 
@@ -86,7 +86,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
           <div className="nav-icon-container">
             <img src={communityIcon} alt="Community" />
           </div>
-          {isExpanded && <span className="nav-link-text">Community</span>}
+          <span className={`nav-link-text nav-transition ${isExpanded ? 'show' : 'hide'}`}>Community</span>
         </NavLink>
       </div>
 
@@ -101,7 +101,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
             alt="User Profile" 
             className="avatar-placeholder" 
           />
-          {isExpanded && <span className="user-name">John Doe</span>}
+          <span className={`profile-name nav-transition ${isExpanded ? 'show' : 'hide'}`}>John Doe</span>
           
           {showProfileMenu && (
             <div className="profile-popover">
