@@ -1,0 +1,345 @@
+/* General Application Layout Styles */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  width: 100%;
+  padding: 20px 40px;
+  gap: 2vh;
+  background-color: var(--bg-primary, #08080a);
+  overflow: hidden;
+}
+
+/* -------------------------------------
+   Timer Main Area (Top)
+   ------------------------------------- */
+.timer-main-area {
+  width: 100%;
+  max-width: 850px;
+  flex: 5;
+  min-height: 0;
+  max-height: 650px;
+  background-color: var(--bg-primary, #08080a);
+  border: 2px solid var(--bg-card, #2b2b35);
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 1;
+  padding: 3vh 20px;
+  gap: 2vh;
+}
+
+.scramble-box {
+  width: 100%;
+  max-width: 750px;
+  flex: 1;
+  max-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.scramble-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.scramble-text-container {
+  width: 100%;
+  flex: 1;
+  background-color: var(--bg-secondary, #0f0f13);
+  border: 2px solid var(--bg-card, #2b2b35);
+  border-radius: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  min-height: 50px;
+}
+
+.scramble-text {
+  font-family: 'Rubik', sans-serif;
+  font-size: clamp(16px, 2vh, 24px);
+  letter-spacing: 0.35em;
+  line-height: 1.5;
+  color: white;
+  text-align: center;
+}
+
+.timer-display-box {
+  width: 100%;
+  max-width: 500px;
+  flex: 2;
+  max-height: 250px;
+  min-height: 120px;
+  background-color: var(--bg-secondary, #0f0f13);
+  border: 2px solid var(--bg-card, #2b2b35);
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.timer-digits {
+  font-family: 'Oxanium', monospace;
+  font-weight: 700;
+  font-size: clamp(50px, 8vh, 100px);
+  letter-spacing: 0.1em;
+  color: white;
+  line-height: 1;
+}
+
+.timer-instruction {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  color: white;
+  margin-top: 20px;
+}
+
+.timer-actions {
+  display: flex;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.timer-btn {
+  height: 50px;
+  background-color: var(--bg-card, #17171c);
+  border: 1px solid var(--bg-card, #2b2b35);
+  border-radius: 10px;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  padding: 0 25px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.timer-btn:hover {
+  background-color: var(--bg-card-sec, #1d1d24);
+  border-color: var(--brand-primary, #572ff7);
+}
+
+
+/* -------------------------------------
+   Bottom Features Area
+   ------------------------------------- */
+.features-bottom-area {
+  width: 100%;
+  max-width: 850px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 3;
+  min-height: 0;
+  margin-bottom: 20px;
+}
+
+.features-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  width: 100%;
+  justify-content: center;
+}
+
+.feature-tab {
+  width: 150px;
+  height: 40px;
+  background-color: var(--bg-card, #17171c);
+  border: 1px solid var(--bg-card, #2b2b35);
+  border-radius: 10px;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-tab.active {
+  background-color: var(--brand-primary, #572ff7);
+  border-color: var(--brand-primary, #572ff7);
+  font-weight: 500;
+}
+
+.features-content {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+}
+
+.feature-panel {
+  background-color: var(--bg-card, #17171c);
+  border: 2px solid var(--bg-card, #2b2b35);
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.feature-panel-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: white;
+  text-align: right;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  z-index: 2;
+}
+
+/* Individual Feature Panels */
+.visualizer-panel {
+  width: 100%;
+  max-width: 350px;
+  align-items: center;
+  justify-content: center;
+}
+
+.cube-net-img {
+  width: auto;
+  height: 80%;
+  max-height: 200px;
+  transform: rotate(-90deg);
+  object-fit: contain;
+}
+
+.notes-panel {
+  width: 100%;
+  max-width: 350px;
+}
+
+.notes-textarea {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  margin-top: 25px;
+}
+
+.session-panel {
+  width: 100%;
+  max-width: 350px;
+}
+
+.session-details-content {
+  margin-top: 35px;
+  color: #ccc;
+  font-family: 'Rubik', sans-serif;
+  line-height: 2;
+}
+
+.focus-panel {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  padding: 20px 30px;
+}
+
+.focus-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 24px;
+  color: white;
+  text-align: center;
+}
+
+.focus-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.focus-progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: var(--bg-primary, #08080a);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.focus-progress-fill {
+  height: 100%;
+  background-color: var(--brand-primary, #572ff7);
+  border-radius: 5px;
+}
+
+.focus-time {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  color: white;
+}
+
+.focus-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.track-select {
+  background-color: var(--bg-card, #2b2b35);
+  border: 1px solid var(--bg-card, #2b2b35);
+  border-radius: 10px;
+  padding: 8px 15px;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 12px;
+  outline: none;
+  width: 175px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.icon-btn img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+}
