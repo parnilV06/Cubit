@@ -76,12 +76,17 @@
 .nav-brand-text {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
-  font-size: 24px;
-  letter-spacing: 0.3em;
-  background: linear-gradient(180deg, rgba(167, 104, 212, 1) 0%, rgba(87, 47, 247, 1) 100%);
+  font-size: 32px;
+  letter-spacing: 0.2em;
+  color: var(--text-primary);
+  margin-top: 10px;
+}
+
+.nav-brand-c {
+  background: var(--gradient-hero);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-top: 10px;
+  background-clip: text;
 }
 
 .nav-links {
@@ -131,7 +136,7 @@
 }
 
 .nav-link.active .nav-icon-container img {
-  filter: invert(24%) sepia(91%) saturate(2853%) hue-rotate(253deg) brightness(96%) contrast(97%); /* Approximation of #572FF7 */
+  filter: brightness(0) saturate(100%) invert(26%) sepia(95%) saturate(4591%) hue-rotate(248deg) brightness(91%) contrast(113%);
 }
 
 .nav-link.active .nav-link-text {
@@ -172,6 +177,50 @@
   font-family: 'Rubik', sans-serif;
   font-size: 16px;
   letter-spacing: 0.1em;
+}
+
+.profile-popover {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  width: 200px;
+  background-color: var(--bg-card-sec, #1d1d24);
+  border: 1px solid var(--border-primary, #2b2b35);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
+  z-index: 50;
+}
+
+.popover-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  text-align: left;
+}
+
+.popover-item:hover {
+  background-color: var(--bg-card, #2b2b35);
+}
+
+.popover-item.logout {
+  color: var(--status-error, #ef4444);
+}
+
+.popover-item.logout:hover {
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
 /* Stats Bar Styles */
@@ -306,7 +355,7 @@
 .stats-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -320,8 +369,9 @@
   align-items: center;
   font-family: 'Rubik', sans-serif;
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 0.1em;
+  padding: 2px 0;
 }
 
 .badge {
@@ -333,8 +383,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 60px;
-  height: 26px;
+  min-width: 50px;
+  height: 22px;
 }
 
 .badge.pb { background-color: #22c55e; }
