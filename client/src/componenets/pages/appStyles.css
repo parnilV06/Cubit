@@ -343,3 +343,201 @@
   height: 24px;
   filter: invert(1);
 }
+
+/* -------------------------------------
+   Trainer Dashboard Styles
+   ------------------------------------- */
+.trainer-dashboard {
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 15px;
+  padding: 20px 40px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.trainer-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  max-width: 1300px;
+  flex-shrink: 0;
+}
+
+.trainer-main-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  letter-spacing: 0.1em;
+  text-align: left;
+}
+
+.trainer-subtitle {
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  color: var(--text-secondary, #a8a8b5);
+  margin: 0;
+  text-align: left;
+}
+
+.trainer-section-card {
+  width: 100%;
+  max-width: 1300px;
+  background-color: var(--bg-card-sec, #17171c);
+  border: 1px solid var(--bg-card, #2b2b35);
+  border-radius: 20px;
+  padding: 15px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.trainer-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.trainer-section-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: white;
+  margin: 0;
+  text-align: left;
+}
+
+.trainer-section-subtitle {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #7a7a88);
+  margin: 0;
+  text-align: left;
+}
+
+
+.trainer-scroll-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+}
+
+/* Hide scrollbar for cleaner look */
+.trainer-scroll-container::-webkit-scrollbar {
+  height: 4px;
+}
+.trainer-scroll-container::-webkit-scrollbar-thumb {
+  background-color: var(--brand-primary, #572ff7);
+  border-radius: 4px;
+}
+.trainer-scroll-container::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.trainer-lesson-card {
+  /* 3 cards visible at once minus gap. gap=20px, 2 gaps = 40px. 33.3% minus 13.3px */
+  flex: 0 0 calc(33.333% - 14px);
+  min-width: 200px;
+  background-color: var(--bg-card-sec, #1d1d24);
+  border: 1px solid var(--bg-card, #2b2b35);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.trainer-lesson-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand-primary, #572ff7);
+}
+
+.lesson-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  background-color: var(--bg-secondary, #0f0f13);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.lesson-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45px;
+  height: 45px;
+  background-color: var(--bg-card-sec, #1d1d24);
+  border-right: 1px solid var(--bg-card, #2b2b35);
+  border-bottom: 1px solid var(--bg-card, #2b2b35);
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 0 12px 0;
+  z-index: 2;
+}
+
+.lesson-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.lesson-info {
+  padding: 12px 15px 0 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lesson-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+  margin-bottom: auto;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.lesson-start-btn {
+  width: 100%;
+  background-color: transparent;
+  color: var(--brand-primary, #572ff7);
+  border: none;
+  border-top: 2px solid var(--border-primary, #2b2b35);
+  border-radius: 0;
+  padding: 10px 0;
+  margin-top: 15px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesson-start-btn:hover {
+  border-top-color: var(--brand-primary, #572ff7);
+}
