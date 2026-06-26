@@ -45,33 +45,28 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
         <div className="stats-divider"></div>
 
         <div className="stats-list">
-          <div className="stats-list-item">
-            <span>25 . &nbsp;&nbsp; 11:23</span>
-          </div>
-          <div className="stats-list-item">
-            <span>24 . &nbsp;&nbsp; 12:13</span>
-            <span className="badge dnf">DNF</span>
-          </div>
-          <div className="stats-list-item">
-            <span>23 . &nbsp;&nbsp; 10:22</span>
-          </div>
-          <div className="stats-list-item">
-            <span>22 . &nbsp;&nbsp; 7:98</span>
-          </div>
-          <div className="stats-list-item">
-            <span>21 . &nbsp;&nbsp; 8:87</span>
-            <span className="badge pb">P.B</span>
-          </div>
-          <div className="stats-list-item">
-            <span>20 . &nbsp;&nbsp; 12:09</span>
-            <span className="badge plus2">+2</span>
-          </div>
-          <div className="stats-list-item">
-            <span>19 . &nbsp;&nbsp; 9:89</span>
-          </div>
-          <div className="stats-list-item">
-            <span>18 . &nbsp;&nbsp; 6:98</span>
-          </div>
+          {Array.from({ length: 25 }, (_, index) => {
+            const num = 25 - index;
+            // Dummy data generation to match previous styling
+            let time = '11:23';
+            if (num === 24) time = '12:13';
+            if (num === 23) time = '10:22';
+            if (num === 22) time = '7:98';
+            if (num === 21) time = '8:87';
+            if (num === 20) time = '12:09';
+            if (num === 19) time = '9:89';
+            if (num === 18) time = '6:98';
+            if (num < 18) time = `${Math.floor(Math.random() * 4 + 7)}:${Math.floor(Math.random() * 90 + 10)}`;
+
+            return (
+              <div className="stats-list-item" key={num}>
+                <span>{num} . &nbsp;&nbsp; {time}</span>
+                {num === 24 && <span className="badge dnf">DNF</span>}
+                {num === 21 && <span className="badge pb">P.B</span>}
+                {num === 20 && <span className="badge plus2">+2</span>}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
