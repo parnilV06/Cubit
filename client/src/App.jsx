@@ -1,12 +1,12 @@
-import React from 'react'
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import Landing from './componenets/pages/landing.jsx'
-import Login from './componenets/pages/login.jsx'
-import Signup from './componenets/pages/signup.jsx'
-import Profile from './componenets/pages/profile.jsx'
+import Landing from './components/pages/landing.jsx'
+import Login from './components/pages/login.jsx'
+import Signup from './components/pages/signup.jsx'
+import Profile from './components/pages/profile.jsx'
 
 // App Layout & Pages
-import AppLayout from './componenets/layout/appLayout.jsx'
+import AppLayout from './components/layout/appLayout.jsx'
 
 import './App.css'
 

@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
 import illustration from '../../assets/login-signup-illustration.png'
 import './auth.css'
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword] = useState(false)
   const navigate = useNavigate()
 
   const handleLoginSubmit = (e) => {

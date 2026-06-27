@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { Link, useNavigate } from 'react-router-dom'
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
 import illustration from '../../assets/login-signup-illustration.png'

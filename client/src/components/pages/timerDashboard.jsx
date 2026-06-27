@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './appStyles.css';
 import cube2dNet from '../../assets/cube-2d-net-scramble.png';
 import playPauseIcon from '../../assets/play-pause.svg';

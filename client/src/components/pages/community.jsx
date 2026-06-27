@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './community.css';
-import { Heart, MessageSquare, PlusSquare, Users, Bell, X, Send } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 
 // SVGs and Images
 import friendsIcon from '../../assets/friends.svg';
