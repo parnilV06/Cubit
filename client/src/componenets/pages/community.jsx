@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './community.css';
 import { Heart, MessageSquare, PlusSquare, Users, Bell, X, Send } from 'lucide-react';
 
@@ -77,6 +78,7 @@ export default function Community() {
   const [isAddPostModalOpen, setIsAddPostModalOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
+  const [activeUserPopover, setActiveUserPopover] = useState(null);
 
   const toggleLike = (postId) => {
     const newLiked = new Set(likedPosts);
@@ -187,8 +189,37 @@ export default function Community() {
                   <div className="post-header-info">
                     <div className="post-user-info">
                       <img src={post.avatar} alt={post.name} className="post-avatar" />
-                      <div className="post-meta">
-                        <span className="post-author">{post.name}</span>
+                      <div className="post-meta" style={{ position: 'relative' }}>
+                        <span 
+                          className="post-author" 
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => setActiveUserPopover(activeUserPopover === post.id ? null : post.id)}
+                        >
+                          {post.name}
+                        </span>
+                        
+                        {activeUserPopover === post.id && (
+                          <div style={{
+                            position: 'absolute', top: '20px', left: 0, marginTop: '5px',
+                            backgroundColor: '#17171C', border: '1px solid #2B2B35',
+                            borderRadius: '8px', zIndex: 20, minWidth: '120px', overflow: 'hidden',
+                            display: 'flex', flexDirection: 'column'
+                          }}>
+                            <Link to="/profile" style={{
+                              padding: '10px 15px', color: '#A8A8B5', fontSize: '12px', textDecoration: 'none',
+                              borderBottom: '1px solid #2B2B35'
+                            }} onMouseEnter={(e) => e.target.style.color = '#fff'} onMouseLeave={(e) => e.target.style.color = '#A8A8B5'}>
+                              View Profile
+                            </Link>
+                            <button style={{
+                              padding: '10px 15px', color: '#572FF7', fontSize: '12px', background: 'transparent',
+                              border: 'none', cursor: 'pointer', textAlign: 'left', fontWeight: 'bold'
+                            }} onClick={() => setActiveUserPopover(null)}>
+                              Follow +
+                            </button>
+                          </div>
+                        )}
+
                         <span className="post-time">{post.time}</span>
                       </div>
                     </div>
