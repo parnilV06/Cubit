@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+
+
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
 
 export default function LandingFooter() {

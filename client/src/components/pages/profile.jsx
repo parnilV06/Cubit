@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
 import stopwatchIcon from '../../assets/stopwatch.svg'
@@ -6,7 +6,7 @@ import trainerIcon from '../../assets/trainer.svg'
 import statsIcon from '../../assets/stats.svg'
 import communityIcon from '../../assets/community.svg'
 import userAddIcon from '../../assets/user-add.svg'
-import heroBg from '../../assets/hero-bg-transparent.png'
+
 import './profile.css'
 
 // Simple reusable modal overlay

@@ -7,15 +7,15 @@ Designed to support beginners learning Rubik’s Cube as well as experienced cub
 
 ## Status
 
-🚧 In Development — Phase 2 (Frontend Development)
+🚧 In Development — Phase 3 (Backend + Database Development)
 
 Current Progress:
 
 * [x] Product Planning
 * [x] Brand Identity
 * [x] UI / UX Design
-* [ ] Frontend ( currently working on )
-* [ ] Backend
+* [x] Frontend 
+* [ ] Backend ( currently working on...)
 * [ ] Database
 * [ ] Integration
 * [ ] Deployment
@@ -185,10 +185,10 @@ Phase 1
 Ideation + Design ✅
 
 Phase 2
-Frontend Development 🚧 (Work in Progress...)
+Frontend Development  ✅
 
 Phase 3
-Backend + Database
+Backend + Database 🚧 ( work in progres...)
 
 Phase 4
 Integration

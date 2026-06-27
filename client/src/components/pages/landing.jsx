@@ -1,18 +1,6 @@
-import React from 'react'
+
 import { Link } from 'react-router-dom'
-import {
-  Timer,
-  Layers,
-  BarChart3,
-  Settings2,
-  Globe,
-  BookOpen,
-  ChevronRight,
-  CheckCircle2,
-  Coffee,
-  Sparkles,
-  Heart
-} from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 
 import LandingNav from '../layout/landingNav.jsx'
 import LandingFooter from '../layout/landingFooter.jsx'

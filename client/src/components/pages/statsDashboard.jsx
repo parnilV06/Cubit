@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import '../../components/stats/stats.css';
 import { mockSessions } from '../../mock/statsData';
 import { 
