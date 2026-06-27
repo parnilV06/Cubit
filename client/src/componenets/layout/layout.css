@@ -20,7 +20,7 @@
 .app-nav {
   height: 100%;
   background-color: var(--bg-primary, #08080a);
-  border-left: 3px solid var(--bg-card, #2b2b35);
+  border-left: 3px solid var(--border-primary);
   transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -157,7 +157,7 @@
 .nav-footer {
   margin-top: auto;
   padding: 20px;
-  border-top: 2px solid var(--bg-card, #2b2b35);
+  border-top: 2px solid var(--border-primary);
   display: flex;
   justify-content: center;
 }
@@ -251,7 +251,7 @@
 .app-stats-bar {
   height: 100%;
   background-color: var(--bg-primary, #08080a);
-  border-right: 2px solid var(--bg-card, #2b2b35);
+  border-right: 2px solid var(--border-primary);
   border-radius: 0 25px 25px 0;
   transition: width 0.3s ease;
   position: relative;
@@ -318,7 +318,7 @@
 
 .stats-dropdown {
   background-color: var(--bg-card-sec, #1d1d24);
-  border: 1px solid var(--bg-card, #2b2b35);
+  border: 1px solid var(--border-primary);
   border-radius: 7px;
   padding: 8px 12px;
   font-family: 'Rubik', sans-serif;
@@ -337,7 +337,7 @@
 
 .stats-box {
   background-color: var(--bg-card-sec, #1d1d24);
-  border: 1px solid var(--bg-card, #2b2b35);
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
   padding: 10px;
   display: flex;
