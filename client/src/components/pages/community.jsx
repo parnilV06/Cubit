@@ -32,7 +32,7 @@ const MOCK_POSTS = [
   },
   {
     id: 2,
-    name: "Bruhaa",
+    name: "Bruh",
     avatar: avatar1,
     time: "2 days ago",
     tag: "Discussions",
@@ -60,7 +60,7 @@ const FEED_TAGS = ['All', 'Tips', 'Random', 'Discussions', 'News', 'Solves'];
 
 const MOCK_NOTIFICATIONS = [
   { id: 1, text: "SpeedySolve commented on your post", time: "10m ago" },
-  { id: 2, text: "Bruhaa liked your post", time: "1h ago" },
+  { id: 2, text: "Bruh liked your post", time: "1h ago" },
   { id: 3, text: "New weekly event started!", time: "1d ago" }
 ];
 

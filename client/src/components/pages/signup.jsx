@@ -63,7 +63,7 @@ export default function Signup() {
                 id="signup-username"
                 type="text"
                 className="auth-input"
-                placeholder="Bruhaa"
+                placeholder="Bruh"
                 autoComplete="username"
               />
             </div>
