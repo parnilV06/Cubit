@@ -20,7 +20,8 @@ app.get('/api/health', async(req,res)=>{
 
 
 // mounting routers
-
+const cubitRoutes = require('./routes/cubit.routes');
+app.use('/api', cubitRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
