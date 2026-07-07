@@ -6,8 +6,9 @@ const notImplemented = async (req, res) => {
 };
 
 module.exports = {
-    getLessons: notImplemented,
-    getLesson: notImplemented,
-    completeLesson: notImplemented,
-    getProgress: notImplemented
+    getFriends: notImplemented,
+    sendFriendRequest: notImplemented,
+    acceptRequest: notImplemented,
+    rejectRequest: notImplemented,
+    removeFriend: notImplemented
 };

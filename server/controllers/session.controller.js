@@ -6,8 +6,9 @@ const notImplemented = async (req, res) => {
 };
 
 module.exports = {
-    getLessons: notImplemented,
-    getLesson: notImplemented,
-    completeLesson: notImplemented,
-    getProgress: notImplemented
+    getSessions: notImplemented,
+    createSession: notImplemented,
+    renameSession: notImplemented,
+    archiveSession: notImplemented,
+    deleteSession: notImplemented
 };
