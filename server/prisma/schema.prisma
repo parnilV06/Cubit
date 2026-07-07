@@ -1,0 +1,244 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUMS
+
+enum PuzzleType {
+  THREE_BY_THREE
+  TWO_BY_TWO
+  FOUR_BY_FOUR
+  FIVE_BY_FIVE
+  ONE_HANDED
+  BLIND
+  MEGAMINX
+  PYRAMINX
+  SKEWB
+  SQUARE_ONE
+  CLOCK
+}
+
+enum PenaltyType {
+  NONE
+  PLUS_TWO
+  DNF
+}
+
+enum PostType {
+  DISCUSSION
+  TIP
+  QUESTION
+  PB_SHARE
+  SOLVE_SHARE
+}
+
+enum FriendStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BLOCKED
+}
+
+enum NotificationType {
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
+  POST_LIKE
+  COMMENT
+}
+
+// MODELS
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  username String @unique
+  password String
+
+  displayName   String
+  avatarUrl     String?
+  bio           String?
+  emailVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions       Session[]
+  posts          Post[]
+  comments       Comment[]
+  postLikes      PostLike[]
+  lessonProgress LessonProgress[]
+  notifications  Notification[]
+
+  sentFriendships     Friendship[] @relation("SentFriendships")
+  receivedFriendships Friendship[] @relation("ReceivedFriendships")
+}
+
+model Session {
+  id         String     @id @default(cuid())
+  userId     String
+  name       String?
+  puzzleType PuzzleType @default(THREE_BY_THREE)
+  isArchived Boolean    @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  solves Solve[]
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Solve {
+  id        String @id @default(cuid())
+  sessionId String
+
+  time     Int // Solve time in milliseconds
+  scramble String
+  penalty  PenaltyType @default(NONE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  post    Post?
+
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+model Lesson {
+  id               String @id @default(cuid())
+  slug             String @unique
+  title            String
+  description      String
+  difficulty       Int
+  estimatedMinutes Int
+  order            Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  progress LessonProgress[]
+}
+
+model LessonProgress {
+  id       String  @id @default(cuid())
+  userId   String
+  lessonId String?
+
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson? @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
+}
+
+model Post {
+  id       String @id @default(cuid())
+  authorId String
+
+  type    PostType
+  title   String?
+  content String
+
+  solveId String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  solve    Solve?     @relation(fields: [solveId], references: [id], onDelete: SetNull)
+  comments Comment[]
+  likes    PostLike[]
+
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+model Comment {
+  id       String @id @default(cuid())
+  postId   String
+  authorId String
+
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([authorId])
+}
+
+model PostLike {
+  id     String @id @default(cuid())
+  userId String
+  postId String
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@index([userId])
+  @@index([postId])
+}
+
+model Friendship {
+  id         String @id @default(cuid())
+  senderId   String
+  receiverId String
+
+  status     FriendStatus @default(PENDING)
+  acceptedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sender   User @relation("SentFriendships", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedFriendships", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+
+  type    NotificationType
+  title   String
+  message String
+  isRead  Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([isRead])
+}
