@@ -351,7 +351,7 @@ All endpoints should follow REST conventions.
 Examples:
 
 ```text
-GET    /profile
+GET    /profile/:username
 
 PATCH  /profile
 

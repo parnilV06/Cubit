@@ -166,18 +166,23 @@ Base Route
 GET
 
 ```
-/
+/:username
 ```
 
 Returns
 
-- User
-- Cubing Snapshot
-- Basic Statistics
+- displayName
+- username
+- avatarUrl
+- bio
+- createdAt
+- totalPosts
+- totalFriends
+- totalSessions
 
 Protected
 
-✅
+❌
 
 ---
 
@@ -193,7 +198,6 @@ Fields
 
 - displayName
 - bio
-- avatar
 
 Protected
 
@@ -243,6 +247,14 @@ Protected
 
 ---
 
+GET
+```
+/current
+```
+Returns the user's currently active session.
+If no active session exists, the backend automatically creates a new default session, marks it as active, and returns it.
+---
+
 ## Create Session
 
 POST
@@ -259,6 +271,7 @@ Request
     "puzzleType": "THREE_BY_THREE"
 }
 ```
+Creates a new session, automatically deactivates the previous active session (if one exists), and marks the new session as active.
 
 Protected
 

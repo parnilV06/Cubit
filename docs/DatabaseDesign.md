@@ -172,6 +172,17 @@ Session
 Many Solves
 ```
 
+isActive
+
+Purpose:
+Indicates the user's currently active solving session.
+
+Rules:
+
+- Each user can have at most one active session.
+- Creating a new session automatically deactivates the previous active session.
+- Archived sessions cannot be active.
+
 ---
 
 ## Solve
