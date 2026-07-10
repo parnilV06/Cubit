@@ -1,14 +1,20 @@
-const notImplemented = async (req, res) => {
-    return res.status(501).json({
-        success: false,
-        message: "Not implemented yet"
-    });
+const statsService = require('../services/stats.service');
+
+const getDashboard = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const data = await statsService.getDashboardStats(userId);
+        
+        return res.status(200).json({
+            success: true,
+            message: "Statistics fetched successfully.",
+            data
+        });
+    } catch (error) {
+        next(error);
+    }
 };
 
 module.exports = {
-    getDashboard: notImplemented,
-    getTrend: notImplemented,
-    getDistribution: notImplemented,
-    getProgress: notImplemented,
-    getRecentSessions: notImplemented
+    getDashboard
 };

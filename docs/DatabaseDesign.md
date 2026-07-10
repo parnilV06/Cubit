@@ -345,25 +345,17 @@ Each notification belongs to exactly one user.
 
 Cubit does **not** maintain a dedicated Statistics table.
 
-Instead:
+Instead, statistics are derived dynamically from Solve records. The **Solve** is the single source of truth for all statistical calculations.
 
 ```text
 User
-
 ↓
-
 Sessions
-
 ↓
-
 Solves
-
 ↓
-
 Statistics Service
-
 ↓
-
 API Response
 ```
 
@@ -374,10 +366,10 @@ Examples of calculated values:
 * AO12
 * Mean
 * Time Distribution
-* Session Trends
-* Solve Graphs
+* Solve Trends
+* Progress
 
-This ensures every statistic always reflects the latest data.
+This ensures every statistic always reflects the latest data without risk of staleness or data duplication.
 
 ---
 
