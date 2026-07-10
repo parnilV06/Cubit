@@ -457,38 +457,46 @@ Services should trust the authenticated user provided by the middleware instead 
 
 ---
 
-# Statistics Philosophy
+# Statistics Architecture
 
 Cubit treats statistics as **derived data**, not stored data.
+No statistics are persisted in the database.
 
 The source of truth is always:
 
 ```
 Session
-
 ↓
-
 Solve
-
-↓
-
-Statistics
 ```
 
-Metrics such as:
+## Calculation Flow
 
-* Personal Best
-* AO5
-* AO12
-* Mean
-* Time Distribution
-* Session Trends
+The Statistics module strictly separates database access from mathematical calculation.
 
-are calculated when requested instead of being stored separately.
+```
+Request
+↓
+Controller
+↓
+Statistics Service
+↓
+Calculation Helpers
+↓
+Response
+```
 
-This prevents stale data and keeps the database normalized.
+### 1. Controllers
+Controllers validate the request and call the `Statistics Service`. They do not contain any database or calculation logic.
 
----
+### 2. Service Layer
+The `Statistics Service` executes a single optimized Prisma query to fetch the user's sessions and solves. Prisma queries only exist in the service layer.
+
+### 3. Calculation Helpers
+The service orchestrates multiple specialized calculation modules (e.g., `kpis.js`, `trends.js`).
+Calculation helpers are **pure functions** that do not interact with Prisma or Express. They receive arrays of data, compute metrics like Personal Best, AO5, Mean, and Time Distribution, and return the formatted data.
+
+Because statistics are calculated dynamically, they are never stale and the database remains fully normalized.
 
 # Development Principles
 

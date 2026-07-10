@@ -433,85 +433,71 @@ Every endpoint calculates statistics dynamically.
 GET
 
 ```
-/
+/dashboard
 ```
 
-Returns
+Returns the complete statistical data for the frontend dashboard in a single optimized payload.
 
-- PB
-- Mean
-- AO5
-- AO12
-- Total Solves
-- Average
+### Response Schema
 
-Protected
-
-✅
-
----
-
-## Trend
-
-GET
-
-```
-/trend
-```
-
-Returns chart data.
-
-Parameters
-
-- session
-- puzzle
-- metric
-
-Protected
-
-✅
-
----
-
-## Distribution
-
-GET
-
-```
-/distribution
-```
-
-Returns solve distribution.
-
-Protected
-
-✅
-
----
-
-## Progress
-
-GET
-
-```
-/progress
+```json
+{
+    "success": true,
+    "message": "Statistics fetched successfully.",
+    "data": {
+        "kpis": {
+            "pb": "number | null",
+            "ao5": "number | null",
+            "ao12": "number | null",
+            "mean": "number | null",
+            "totalSolves": "number",
+            "totalSessions": "number"
+        },
+        "solveTrend": [
+            {
+                "sessionId": "string",
+                "sessionName": "string",
+                "pb": "number | null",
+                "mean": "number | null",
+                "ao5": "number | null",
+                "ao12": "number | null"
+            }
+        ],
+        "timeDistribution": [
+            {
+                "range": "string",
+                "count": "number"
+            }
+        ],
+        "bestProgress": [
+            {
+                "sessionId": "string",
+                "sessionName": "string",
+                "bestTime": "number | null"
+            }
+        ],
+        "recentSessions": [
+            {
+                "sessionId": "string",
+                "sessionName": "string",
+                "puzzleType": "string",
+                "solveCount": "number",
+                "best": "number | null",
+                "average": "number | null",
+                "createdAt": "date"
+            }
+        ]
+    }
+}
 ```
 
-Returns PB progression.
+### Data Dictionary
 
-Protected
-
-✅
-
----
-
-## Recent Sessions
-
-GET
-
-```
-/recent
-```
+- **kpis**: High-level key performance indicators calculated across all valid solves.
+- **solveTrend**: Chronological metrics for every session. Contains PB, Mean, AO5, and AO12.
+- **timeDistribution**: Counts of solves grouped into buckets (`<6`, `6-8`, `8-10`, `10-12`, `>12`, `DNF`).
+- **bestProgress**: A timeline of the user's overall cumulative Personal Best improvement.
+- **recentSessions**: Summary of the 5 most recently created sessions.
 
 Protected
 
