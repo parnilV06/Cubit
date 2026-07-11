@@ -745,6 +745,24 @@ Protected
 
 ---
 
+## Get Friend Requests
+
+GET
+
+```
+/requests
+```
+
+Returns:
+- incoming: Pending requests where you are the receiver
+- outgoing: Pending requests where you are the sender
+
+Protected
+
+✅
+
+---
+
 ## Send Friend Request
 
 POST
@@ -764,7 +782,7 @@ Protected
 PATCH
 
 ```
-/accept/:id
+/request/:id/accept
 ```
 
 Protected
@@ -778,7 +796,7 @@ Protected
 PATCH
 
 ```
-/reject/:id
+/request/:id/reject
 ```
 
 Protected
