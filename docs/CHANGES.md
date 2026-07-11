@@ -16,7 +16,6 @@ Placeholder controller files were created in `server/controllers/` to match all 
 - `community.controller.js`: `getPosts`, `createPost`, `getPost`, `deletePost`, `likePost`, `unlikePost`, `addComment`, `deleteComment`
 - `friend.controller.js`: `getFriends`, `sendFriendRequest`, `acceptRequest`, `rejectRequest`, `removeFriend`
 - `notification.controller.js`: `getNotifications`, `markAsRead`, `markAllAsRead`
-- `search.controller.js`: `searchUsers`, `searchPosts`
 
 ## 2. Routes Created
 Router files were created in `server/routes/` for each corresponding controller and method HTTP signatures were mapped accurately.
@@ -30,7 +29,6 @@ Router files were created in `server/routes/` for each corresponding controller 
 - `community.routes.js` (Base: `/api/community`)
 - `friend.routes.js` (Base: `/api/friends`)
 - `notification.routes.js` (Base: `/api/notifications`)
-- `search.routes.js` (Base: `/api/search`)
 
 ## 3. Router Wiring
 - **`server/routes/cubit.routes.js`:** Modified to import all the separate router files mentioned above and mount them onto their correct API blueprint base routes.
