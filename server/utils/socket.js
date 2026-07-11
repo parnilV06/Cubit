@@ -1,0 +1,89 @@
+const { Server } = require('socket.io');
+const jwt = require('jsonwebtoken');
+
+let io;
+
+const initializeSocket = (httpServer) => {
+    const allowedOrigins = [
+        process.env.CLIENT_ORIGIN,
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+    ].filter(Boolean);
+
+    io = new Server(httpServer, {
+        cors: {
+            origin: allowedOrigins,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        }
+    });
+
+    io.use((socket, next) => {
+        let token = socket.handshake.auth?.token;
+
+        if (!token && socket.handshake.headers?.authorization) {
+            token = socket.handshake.headers.authorization.split(' ')[1];
+        }
+
+        if (!token && socket.handshake.query?.token) {
+            token = socket.handshake.query.token;
+        }
+
+        if (!token) {
+            return next(new Error('Authentication error: No token provided'));
+        }
+
+        if (token.startsWith('Bearer ')) {
+            token = token.split(' ')[1];
+        }
+
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            socket.user = decoded; // Should contain userId based on auth schema
+            next();
+        } catch (err) {
+            return next(new Error('Authentication error: Invalid token'));
+        }
+    });
+
+    io.on('connection', (socket) => {
+        const userId = socket.user.id || socket.user.userId;
+        const roomName = `room:${userId}`;
+        socket.join(roomName);
+        console.log("Socket connected:", socket.id);
+        console.log("User:", socket.user);
+        console.log("Joined room:", roomName);
+        socket.on('disconnect', () => {
+            socket.leave(roomName);
+        });
+    });
+
+    return io;
+};
+
+const getIO = () => {
+    if (!io) {
+        throw new Error('Socket.io is not initialized!');
+    }
+    return io;
+};
+
+const emitToUser = (userId, event, payload) => {
+     console.log("================================");
+    console.log("EMIT");
+    console.log("User:", userId);
+    console.log("Room:", `room:${userId}`);
+    console.log("Event:", event);
+    console.log("Payload:", payload);
+    console.log("================================");
+
+    if (io) {
+        io.to(`room:${userId}`).emit(event, payload);
+        
+    }
+};
+
+module.exports = {
+    initializeSocket,
+    getIO,
+    emitToUser
+};

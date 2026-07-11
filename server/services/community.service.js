@@ -1,5 +1,6 @@
 const { prisma } = require('../config/database');
 const uploadImageHelper = require('../utils/cloudinary');
+const notificationService = require('./notification.service');
 
 const buildPostResponse = (post, currentUserId) => {
     // If comments are included in the query (like for a single post), we map them.
@@ -195,6 +196,16 @@ const likePost = async (userId, postId) => {
             postId
         }
     });
+
+    if (post.authorId !== userId) {
+        const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+        await notificationService.notify({
+            recipientId: post.authorId,
+            type: 'POST_LIKE',
+            title: 'New Like',
+            message: `${currentUser.username} liked your post.`
+        });
+    }
 };
 
 const unlikePost = async (userId, postId) => {
@@ -246,6 +257,16 @@ const addComment = async (userId, postId, data) => {
             author: true
         }
     });
+
+    if (post.authorId !== userId) {
+        const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+        await notificationService.notify({
+            recipientId: post.authorId,
+            type: 'COMMENT',
+            title: 'New Comment',
+            message: `${currentUser.username} commented on your post.`
+        });
+    }
 
     return {
         id: comment.id,
