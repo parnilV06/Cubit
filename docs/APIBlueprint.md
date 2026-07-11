@@ -623,6 +623,14 @@ Supports
 - PB Share
 - Solve Share
 
+Accepts `multipart/form-data`:
+
+- `type` (required)
+- `title` (optional)
+- `content` (required)
+- `solveId` (optional)
+- `image` (optional file upload, max 5MB)
+
 Protected
 
 ✅
