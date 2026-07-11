@@ -241,6 +241,14 @@ Lesson
 
 Represents a community post.
 
+Stores:
+
+* Type
+* Title
+* Content
+* Image URL (Optional)
+* Timestamp
+
 A post may be:
 
 * Discussion

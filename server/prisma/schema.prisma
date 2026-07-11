@@ -159,6 +159,7 @@ model Post {
   type    PostType
   title   String?
   content String
+  imageUrl String?
 
   solveId String? @unique
 

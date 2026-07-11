@@ -67,29 +67,20 @@ const updateProfile = async (userId, updateData) => {
     return updatedUser;
 };
 
+const uploadImageHelper = require('../utils/cloudinary');
+
 const uploadAvatar = async (userId, fileBuffer) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new Error('User not found');
 
-    const result = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-            {
-                folder: 'Cubit/avatars',
-                resource_type: 'image',
-                overwrite: true,
-                quality: 'auto',
-                fetch_format: 'auto',
-                width: 512,
-                height: 512,
-                crop: 'fill',
-                gravity: 'face'
-            },
-            (error, result) => {
-                if (error) reject(error);
-                else resolve(result);
-            }
-        );
-        streamifier.createReadStream(fileBuffer).pipe(stream);
+    const result = await uploadImageHelper.uploadImage(fileBuffer, 'Cubit/avatars', {
+        overwrite: true,
+        quality: 'auto',
+        fetch_format: 'auto',
+        width: 512,
+        height: 512,
+        crop: 'fill',
+        gravity: 'face'
     });
 
     const updatedUser = await prisma.user.update({
