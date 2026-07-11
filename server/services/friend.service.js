@@ -1,4 +1,5 @@
 const { prisma } = require('../config/database');
+const notificationService = require('./notification.service');
 
 const getOtherUser = (friendship, currentUserId) => {
     return friendship.senderId === currentUserId ? friendship.receiver : friendship.sender;
@@ -113,6 +114,14 @@ const sendFriendRequest = async (userId, targetUsername) => {
             status: 'PENDING'
         }
     });
+
+    const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+    await notificationService.notify({
+        recipientId: targetUser.id,
+        type: 'FRIEND_REQUEST',
+        title: 'New Friend Request',
+        message: `${currentUser.username} sent you a friend request.`
+    });
 };
 
 const acceptRequest = async (userId, requestId) => {
@@ -138,6 +147,14 @@ const acceptRequest = async (userId, requestId) => {
             status: 'ACCEPTED',
             acceptedAt: new Date()
         }
+    });
+
+    const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+    await notificationService.notify({
+        recipientId: friendship.senderId,
+        type: 'FRIEND_ACCEPTED',
+        title: 'Friend Request Accepted',
+        message: `${currentUser.username} accepted your friend request.`
     });
 };
 

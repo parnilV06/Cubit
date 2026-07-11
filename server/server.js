@@ -23,7 +23,12 @@ app.get('/api/health', async(req,res)=>{
 const cubitRoutes = require('./routes/cubit.routes');
 app.use('/api', cubitRoutes);
 
-app.listen(PORT, async () => {
+const http = require('http');
+const { initializeSocket } = require('./utils/socket');
+const httpServer = http.createServer(app);
+initializeSocket(httpServer);
+
+httpServer.listen(PORT, async () => {
     console.log(`Server running on port ${PORT}`);
     await connectDB();
 });
