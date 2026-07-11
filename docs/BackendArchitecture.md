@@ -324,10 +324,14 @@ No statistics are permanently stored.
 
 Responsible for:
 
-* Lessons
-* Progress
-* Completed lessons
+* Lesson Metadata
+* LessonProgress
 * Learning path
+
+**Content Storage Architecture**:
+* PostgreSQL stores **only** lesson metadata and user progress (`LessonProgress`).
+* Actual lesson content will live as **MDX files** within the repository.
+* Lessons support rich formatting including images, videos, callouts, and embedded React components.
 
 ---
 
@@ -341,6 +345,24 @@ Responsible for:
 * Likes
 * Friend system
 * Leaderboards
+
+---
+
+## Notification
+
+Responsible for real-time and offline notifications.
+
+**Hybrid Architecture**:
+* **REST** remains the source of truth (fetching offline notifications and marking as read).
+* **WebSockets (Socket.IO)** are used exclusively for real-time notification delivery.
+
+**Notification Flow**:
+1. User Action
+2. Business Service
+3. Notification Service
+4. Persist Notification (PostgreSQL)
+5. Emit Socket Event
+6. Connected Client Updates Instantly
 
 ---
 

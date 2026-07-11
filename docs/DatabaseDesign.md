@@ -205,7 +205,8 @@ Statistics are calculated from solves.
 
 ## Lesson
 
-Represents static trainer content.
+Represents static trainer metadata.
+**Note:** PostgreSQL stores only lesson metadata. Actual lesson content lives as MDX files which support rich formatting including images, videos, callouts, and embedded React components.
 
 Examples:
 

@@ -869,37 +869,7 @@ Protected
 
 ✅
 
----
 
-# Search (Future)
-
-Base Route
-
-```
-/api/search
-```
-
----
-
-## Search Users
-
-GET
-
-```
-/users
-```
-
----
-
-## Search Posts
-
-GET
-
-```
-/posts
-```
-
----
 
 # Health
 
