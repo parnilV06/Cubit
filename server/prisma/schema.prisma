@@ -123,9 +123,12 @@ model Lesson {
   slug             String @unique
   title            String
   description      String
-  difficulty       Int
+  difficulty       String
+  category         String   @default("General")
   estimatedMinutes Int
   order            Int
+  thumbnail        String?
+  published        Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
