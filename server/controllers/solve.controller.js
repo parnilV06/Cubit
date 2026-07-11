@@ -1,6 +1,6 @@
 const solveService = require('../services/solve.service');
 
-const getSolves = async (req, res) => {
+const getSolves = async (req, res, next) => {
     try {
         const { sessionId } = req.params;
         
@@ -16,14 +16,11 @@ const getSolves = async (req, res) => {
             data: { solves }
         });
     } catch (error) {
-        if (error.message === "Session not found or unauthorized") {
-            return res.status(404).json({ success: false, message: error.message });
-        }
-        return res.status(500).json({ success: false, message: error.message || "Failed to retrieve solves" });
+        next(error);
     }
 };
 
-const addSolve = async (req, res) => {
+const addSolve = async (req, res, next) => {
     try {
         const { sessionId, time, scramble, penalty } = req.body;
 
@@ -52,17 +49,11 @@ const addSolve = async (req, res) => {
             data: { solve }
         });
     } catch (error) {
-        if (error.message === "Session not found or unauthorized") {
-            return res.status(404).json({ success: false, message: error.message });
-        }
-        if (error.message === "Cannot add solves to an archived session") {
-            return res.status(403).json({ success: false, message: error.message });
-        }
-        return res.status(500).json({ success: false, message: error.message || "Failed to add solve" });
+        next(error);
     }
 };
 
-const updateSolve = async (req, res) => {
+const updateSolve = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { time, scramble, sessionId, penalty } = req.body;
@@ -88,17 +79,11 @@ const updateSolve = async (req, res) => {
             data: { solve }
         });
     } catch (error) {
-        if (error.message === "Solve not found or unauthorized") {
-            return res.status(404).json({ success: false, message: error.message });
-        }
-        if (error.message === "Only penalty can be updated") {
-            return res.status(400).json({ success: false, message: error.message });
-        }
-        return res.status(500).json({ success: false, message: error.message || "Failed to update solve" });
+        next(error);
     }
 };
 
-const deleteSolve = async (req, res) => {
+const deleteSolve = async (req, res, next) => {
     try {
         const { id } = req.params;
         
@@ -118,7 +103,7 @@ const deleteSolve = async (req, res) => {
             data: {}
         });
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message || "Failed to delete solve" });
+        next(error);
     }
 };
 

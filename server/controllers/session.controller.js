@@ -1,6 +1,6 @@
 const sessionService = require('../services/session.service');
 
-const getSessions = async (req, res) => {
+const getSessions = async (req, res, next) => {
     try {
         const sessions = await sessionService.getSessions(req.user.id);
         return res.status(200).json({
@@ -9,14 +9,11 @@ const getSessions = async (req, res) => {
             data: { sessions }
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Failed to retrieve sessions"
-        });
+        next(error);
     }
 };
 
-const getCurrentSession = async (req, res) => {
+const getCurrentSession = async (req, res, next) => {
     try {
         const session = await sessionService.getCurrentSession(req.user.id);
         return res.status(200).json({
@@ -25,14 +22,11 @@ const getCurrentSession = async (req, res) => {
             data: { session }
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Failed to retrieve current session"
-        });
+        next(error);
     }
 };
 
-const createSession = async (req, res) => {
+const createSession = async (req, res, next) => {
     try {
         const session = await sessionService.createSession(req.user.id, req.body);
         return res.status(201).json({
@@ -41,14 +35,11 @@ const createSession = async (req, res) => {
             data: { session }
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Failed to create session"
-        });
+        next(error);
     }
 };
 
-const renameSession = async (req, res) => {
+const renameSession = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name } = req.body;
@@ -74,14 +65,11 @@ const renameSession = async (req, res) => {
             data: { session }
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Failed to rename session"
-        });
+        next(error);
     }
 };
 
-const archiveSession = async (req, res) => {
+const archiveSession = async (req, res, next) => {
     try {
         const { id } = req.params;
         const session = await sessionService.archiveSession(req.user.id, id);
@@ -99,14 +87,11 @@ const archiveSession = async (req, res) => {
             data: { session }
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Failed to archive session"
-        });
+        next(error);
     }
 };
 
-const deleteSession = async (req, res) => {
+const deleteSession = async (req, res, next) => {
     try {
         const { id } = req.params;
         const success = await sessionService.deleteSession(req.user.id, id);
@@ -124,10 +109,7 @@ const deleteSession = async (req, res) => {
             data: {}
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Failed to delete session"
-        });
+        next(error);
     }
 };
 

@@ -8,7 +8,9 @@ const getFriends = async (req, res, next) => {
             message: "Friends fetched successfully",
             data: friends
         });
-    } catch (error) { next(error); }
+    } catch (error) {
+        next(error);
+    }
 };
 
 const getRequests = async (req, res, next) => {
@@ -19,7 +21,9 @@ const getRequests = async (req, res, next) => {
             message: "Friend requests fetched successfully",
             data: requests
         });
-    } catch (error) { next(error); }
+    } catch (error) {
+        next(error);
+    }
 };
 
 const sendFriendRequest = async (req, res, next) => {
@@ -31,10 +35,7 @@ const sendFriendRequest = async (req, res, next) => {
             data: {}
         });
     } catch (error) {
-        if (error.message.includes('not found') || error.message.includes('yourself') || error.message.includes('already') || error.message.includes('duplicate')) {
-            return res.status(400).json({ success: false, message: error.message });
-        }
-        next(error); 
+        next(error);
     }
 };
 
@@ -47,10 +48,7 @@ const acceptRequest = async (req, res, next) => {
             data: {}
         });
     } catch (error) {
-        if (error.message.includes('Unauthorized') || error.message.includes('not found') || error.message.includes('must be PENDING')) {
-            return res.status(error.message.includes('Unauthorized') ? 403 : 400).json({ success: false, message: error.message });
-        }
-        next(error); 
+        next(error);
     }
 };
 
@@ -63,10 +61,7 @@ const rejectRequest = async (req, res, next) => {
             data: {}
         });
     } catch (error) {
-        if (error.message.includes('Unauthorized') || error.message.includes('not found')) {
-            return res.status(error.message.includes('Unauthorized') ? 403 : 400).json({ success: false, message: error.message });
-        }
-        next(error); 
+        next(error);
     }
 };
 
@@ -79,10 +74,7 @@ const removeFriend = async (req, res, next) => {
             data: {}
         });
     } catch (error) {
-        if (error.message.includes('Unauthorized') || error.message.includes('not found')) {
-            return res.status(error.message.includes('Unauthorized') ? 403 : 400).json({ success: false, message: error.message });
-        }
-        next(error); 
+        next(error);
     }
 };
 

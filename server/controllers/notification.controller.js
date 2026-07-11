@@ -1,6 +1,6 @@
 const notificationService = require('../services/notification.service');
 
-const getNotifications = async (req, res) => {
+const getNotifications = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const notifications = await notificationService.getUserNotifications(userId);
@@ -11,15 +11,11 @@ const getNotifications = async (req, res) => {
             data: notifications
         });
     } catch (error) {
-        console.error('Error fetching notifications:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while fetching notifications'
-        });
+        next(error);
     }
 };
 
-const markAsRead = async (req, res) => {
+const markAsRead = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const notificationId = req.params.id;
@@ -32,27 +28,11 @@ const markAsRead = async (req, res) => {
             data: notification
         });
     } catch (error) {
-        console.error('Error marking notification as read:', error);
-        if (error.message === 'Notification not found') {
-            return res.status(404).json({
-                success: false,
-                message: error.message
-            });
-        }
-        if (error.message === 'Unauthorized access to notification') {
-            return res.status(403).json({
-                success: false,
-                message: error.message
-            });
-        }
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while marking the notification as read'
-        });
+        next(error);
     }
 };
 
-const markAllAsRead = async (req, res) => {
+const markAllAsRead = async (req, res, next) => {
     try {
         const userId = req.user.id;
         
@@ -64,11 +44,7 @@ const markAllAsRead = async (req, res) => {
             data: {}
         });
     } catch (error) {
-        console.error('Error marking all notifications as read:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while marking all notifications as read'
-        });
+        next(error);
     }
 };
 

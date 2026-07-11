@@ -1,6 +1,6 @@
 const trainerService = require('../services/trainer.service');
 
-const getLessons = async (req, res) => {
+const getLessons = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const lessons = await trainerService.getLessons(userId);
@@ -11,15 +11,11 @@ const getLessons = async (req, res) => {
             data: lessons
         });
     } catch (error) {
-        console.error('Error fetching lessons:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while fetching lessons'
-        });
+        next(error);
     }
 };
 
-const getLesson = async (req, res) => {
+const getLesson = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const { slug } = req.params;
@@ -32,21 +28,11 @@ const getLesson = async (req, res) => {
             data
         });
     } catch (error) {
-        console.error('Error fetching lesson:', error);
-        if (error.message === 'Lesson metadata not found' || error.message === 'Lesson content not found') {
-            return res.status(404).json({
-                success: false,
-                message: error.message
-            });
-        }
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while fetching the lesson'
-        });
+        next(error);
     }
 };
 
-const completeLesson = async (req, res) => {
+const completeLesson = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const { slug } = req.params;
@@ -59,21 +45,11 @@ const completeLesson = async (req, res) => {
             data: {}
         });
     } catch (error) {
-        console.error('Error completing lesson:', error);
-        if (error.message === 'Lesson not found') {
-            return res.status(404).json({
-                success: false,
-                message: error.message
-            });
-        }
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while completing the lesson'
-        });
+        next(error);
     }
 };
 
-const getProgress = async (req, res) => {
+const getProgress = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const progressData = await trainerService.getProgress(userId);
@@ -84,11 +60,7 @@ const getProgress = async (req, res) => {
             data: progressData
         });
     } catch (error) {
-        console.error('Error fetching progress:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'An error occurred while fetching progress'
-        });
+        next(error);
     }
 };
 

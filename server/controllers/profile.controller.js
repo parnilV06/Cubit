@@ -1,6 +1,6 @@
 const profileService = require('../services/profile.service');
 
-const getProfileByUsername = async (req, res) => {
+const getProfileByUsername = async (req, res, next) => {
     try {
         const { username } = req.params;
         const profile = await profileService.getProfileByUsername(username);
@@ -18,14 +18,11 @@ const getProfileByUsername = async (req, res) => {
             data: profile
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "An error occurred"
-        });
+        next(error);
     }
 };
 
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res, next) => {
     try {
         const userId = req.user.id;
         const { displayName, bio } = req.body;
@@ -38,14 +35,11 @@ const updateProfile = async (req, res) => {
             data: updatedProfile
         });
     } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "An error occurred"
-        });
+        next(error);
     }
 };
 
-const uploadAvatar = async (req, res) => {
+const uploadAvatar = async (req, res, next) => {
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -63,10 +57,7 @@ const uploadAvatar = async (req, res) => {
             data: updatedProfile
         });
     } catch (error) {
-        return res.status(error.message === 'User not found' ? 404 : 500).json({
-            success: false,
-            message: error.message || "An error occurred during avatar upload"
-        });
+        next(error);
     }
 };
 

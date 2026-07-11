@@ -11,7 +11,6 @@ const trainerRoutes = require('./trainer.routes');
 const communityRoutes = require('./community.routes');
 const friendRoutes = require('./friend.routes');
 const notificationRoutes = require('./notification.routes');
-const searchRoutes = require('./search.routes');
 
 router.use('/auth', authRoutes);
 router.use('/profile', profileRoutes);
@@ -22,6 +21,5 @@ router.use('/trainer', trainerRoutes);
 router.use('/community', communityRoutes);
 router.use('/friends', friendRoutes);
 router.use('/notifications', notificationRoutes);
-router.use('/search', searchRoutes);
 
 module.exports = router;
