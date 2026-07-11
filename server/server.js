@@ -21,7 +21,10 @@ app.get('/api/health', async(req,res)=>{
 
 // mounting routers
 const cubitRoutes = require('./routes/cubit.routes');
+const errorHandler = require('./middlewares/error.middleware');
+
 app.use('/api', cubitRoutes);
+app.use(errorHandler);
 
 const http = require('http');
 const { initializeSocket } = require('./utils/socket');
