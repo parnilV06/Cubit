@@ -544,7 +544,7 @@ Public
 POST
 
 ```
-/lessons/:id/complete
+/lessons/:slug/complete
 ```
 
 Protected
