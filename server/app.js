@@ -2,11 +2,29 @@
 const express = require('express');
 const app = express();  
 
-const allowedOrigins = new Set([
-  process.env.CLIENT_ORIGIN,
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-].filter(Boolean));
+const parseAllowedOrigins = () => {
+  const origins = [
+    process.env.CLIENT_ORIGIN,
+    process.env.CLIENT_URL,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+  ];
+  const set = new Set();
+  origins.forEach(item => {
+    if (item) {
+      item.split(',').forEach(o => {
+        const trimmed = o.trim();
+        if (trimmed) {
+          set.add(trimmed);
+          set.add(trimmed.replace(/\/$/, ''));
+        }
+      });
+    }
+  });
+  return set;
+};
+
+const allowedOrigins = parseAllowedOrigins();
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
