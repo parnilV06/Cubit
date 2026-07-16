@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronLeft, User, LogOut } from 'lucide-react';
+import { useStore } from '../../services/store';
 import './layout.css';
 
 // SVGs
@@ -15,6 +16,9 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
+  const user = useStore((state) => state.user);
+  const logout = useStore((state) => state.logout);
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,7 +31,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
   }, []);
 
   const handleLogout = () => {
-    // Basic logout flow simulation
+    logout();
     navigate('/login');
   };
 
@@ -97,11 +101,13 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
           style={{ cursor: 'pointer', position: 'relative' }}
         >
           <img 
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=572ff7" 
+            src={user?.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=572ff7"} 
             alt="User Profile" 
             className="avatar-placeholder" 
           />
-          <span className={`profile-name nav-transition ${isExpanded ? 'show' : 'hide'}`}>John Doe</span>
+          <span className={`profile-name nav-transition ${isExpanded ? 'show' : 'hide'}`}>
+            {user?.displayName || user?.username || 'User'}
+          </span>
           
           {showProfileMenu && (
             <div className="profile-popover">

@@ -213,7 +213,13 @@ POST
 /avatar
 ```
 
-Future implementation.
+Uploads a user avatar image to Cloudinary. Accepts `multipart/form-data`.
+
+Request
+
+- `avatar` (required file upload, max 5MB image file)
+
+Returns the updated profile object containing the new `avatarUrl`.
 
 Protected
 
@@ -523,7 +529,11 @@ GET
 /lessons
 ```
 
-Public
+Returns all lessons with the completion progress for the authenticated user.
+
+Protected
+
+✅
 
 ---
 
@@ -535,7 +545,11 @@ GET
 /lessons/:slug
 ```
 
-Public
+Returns the metadata, MDX file content, and completion status of a specific lesson.
+
+Protected
+
+✅
 
 ---
 

@@ -51,14 +51,8 @@ Every endpoint implemented in Cubit should follow the architecture defined in th
 
 ---
 
-# Project Structure
-
 ```plaintext
 server/
-
-src/
-
-│
 ├── config/
 │   ├── database.js
 │   ├── env.js
@@ -67,39 +61,52 @@ src/
 ├── controllers/
 │   ├── auth.controller.js
 │   ├── profile.controller.js
-│   ├── timer.controller.js
+│   ├── session.controller.js
+│   ├── solve.controller.js
 │   ├── stats.controller.js
 │   ├── trainer.controller.js
-│   └── community.controller.js
+│   ├── community.controller.js
+│   ├── friend.controller.js
+│   └── notification.controller.js
 │
 ├── services/
 │   ├── auth.service.js
 │   ├── profile.service.js
-│   ├── timer.service.js
+│   ├── session.service.js
+│   ├── solve.service.js
 │   ├── stats.service.js
 │   ├── trainer.service.js
-│   └── community.service.js
+│   ├── community.service.js
+│   ├── friend.service.js
+│   └── notification.service.js
 │
 ├── routes/
 │   ├── auth.routes.js
 │   ├── profile.routes.js
-│   ├── timer.routes.js
+│   ├── session.routes.js
+│   ├── solve.routes.js
 │   ├── stats.routes.js
 │   ├── trainer.routes.js
-│   └── community.routes.js
+│   ├── community.routes.js
+│   ├── friend.routes.js
+│   ├── notification.routes.js
+│   └── cubit.routes.js
 │
 ├── middlewares/
 │   ├── auth.middleware.js
-│   ├── validate.middleware.js
 │   ├── error.middleware.js
-│   └── notFound.middleware.js
+│   └── upload.middleware.js
 │
 ├── utils/
-│   ├── response.js
-│   ├── pagination.js
-│   └── statistics.js
+│   ├── cloudinary.js
+│   ├── socket.js
+│   ├── response.js (empty placeholder)
+│   ├── pagination.js (empty placeholder)
+│   └── statistics.js (empty placeholder)
 │
 ├── prisma/
+│   ├── schema.prisma
+│   └── seed.js
 │
 ├── app.js
 └── server.js

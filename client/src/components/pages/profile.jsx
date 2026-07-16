@@ -1,13 +1,15 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
-import stopwatchIcon from '../../assets/stopwatch.svg'
-import trainerIcon from '../../assets/trainer.svg'
-import statsIcon from '../../assets/stats.svg'
-import communityIcon from '../../assets/community.svg'
-import userAddIcon from '../../assets/user-add.svg'
+import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { useStore } from '../../services/store';
+import { profileAPI, friendAPI, statsAPI, trainerAPI } from '../../services/api';
+import logoIcon from '../../assets/cubit-logo-icon-svg.svg';
+import stopwatchIcon from '../../assets/stopwatch.svg';
+import trainerIcon from '../../assets/trainer.svg';
+import statsIcon from '../../assets/stats.svg';
+import communityIcon from '../../assets/community.svg';
+import userAddIcon from '../../assets/user-add.svg';
 
-import './profile.css'
+import './profile.css';
 
 // Simple reusable modal overlay
 const ModalOverlay = ({ onClose, title, children }) => (
@@ -31,24 +33,152 @@ const ModalOverlay = ({ onClose, title, children }) => (
 );
 
 export default function Profile() {
-  const [showEditProfile, setShowEditProfile] = useState(false);
-  const [showFollowModal, setShowFollowModal] = useState(null); // 'followers' or 'following' or null
-  const [showPostsModal, setShowPostsModal] = useState(false);
+  const user = useStore((state) => state.user);
+  const fetchMe = useStore((state) => state.fetchMe);
+
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
   
-  // We can track completed steps to dynamically update the timeline
-  const completedStepsCount = 0; // matching "0 / 4 Completed" from the Figma design
+  // Edit Profile States
+  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [editDisplayName, setEditDisplayName] = useState('');
+  const [editBio, setEditBio] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [savingProfile, setSavingProfile] = useState(false);
 
-  const dummyUsers = [
-    { id: 1, name: 'Alice Smith', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop' },
-    { id: 2, name: 'Bob Jones', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=50&h=50&fit=crop' },
-    { id: 3, name: 'Charlie Brown', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop' }
-  ];
+  // Modals
+  const [showFollowModal, setShowFollowModal] = useState(null); // 'friends' or null
+  const [friendsList, setFriendsList] = useState([]);
+  const [loadingFriends, setLoadingFriends] = useState(false);
 
-  const dummyPosts = [
-    { id: 1, title: 'New 3x3 PB!', likes: 12, comments: 4, date: '2 days ago' },
-    { id: 2, title: 'Learning OLL algs', likes: 8, comments: 1, date: '1 week ago' },
-    { id: 3, title: 'Which lube is best?', likes: 15, comments: 22, date: '2 weeks ago' }
-  ];
+  // Stats Dashboard KPIs
+  const [statsData, setStatsData] = useState(null);
+
+  // Trainer Progress
+  const [trainerProgress, setTrainerProgress] = useState(null);
+
+  // Fetch all necessary data on mount / user change
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        const profileResponse = await profileAPI.getProfile(user.username);
+        setProfileData(profileResponse.data);
+        
+        // Initialize form fields
+        setEditDisplayName(profileResponse.data.displayName || '');
+        setEditBio(profileResponse.data.bio || '');
+
+        // Fetch stats dashboard
+        const statsResponse = await statsAPI.getDashboard();
+        setStatsData(statsResponse.data);
+
+        // Fetch trainer progress
+        const trainerResponse = await trainerAPI.getProgress();
+        setTrainerProgress(trainerResponse.data);
+      } catch (err) {
+        console.error('Failed to load profile details:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchProfileData();
+  }, [user]);
+
+  // Load friends if the modal opens
+  useEffect(() => {
+    if (showFollowModal === 'friends') {
+      const fetchFriends = async () => {
+        try {
+          setLoadingFriends(true);
+          const response = await friendAPI.getFriends();
+          setFriendsList(response.data);
+        } catch (err) {
+          console.error('Failed to load friends list:', err);
+        } finally {
+          setLoadingFriends(false);
+        }
+      };
+      fetchFriends();
+    }
+  }, [showFollowModal]);
+
+  // Handle saving profile changes
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    try {
+      setSavingProfile(true);
+      
+      // Update text fields
+      await profileAPI.updateProfile({ displayName: editDisplayName, bio: editBio });
+
+      // Upload avatar if selected
+      if (avatarFile) {
+        const formData = new FormData();
+        formData.append('avatar', avatarFile);
+        await profileAPI.uploadAvatar(formData);
+      }
+
+      // Refresh data
+      await fetchMe();
+      const updatedProfile = await profileAPI.getProfile(user.username);
+      setProfileData(updatedProfile.data);
+      setShowEditProfile(false);
+      setAvatarFile(null);
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      alert('Error updating profile: ' + (err.message || 'Check logs'));
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const handleRemoveFriend = async (friendId) => {
+    if (window.confirm('Are you sure you want to remove this friend?')) {
+      try {
+        await friendAPI.deleteFriendship(friendId);
+        // Refresh list and profile count
+        const response = await friendAPI.getFriends();
+        setFriendsList(response.data);
+        const profileResponse = await profileAPI.getProfile(user.username);
+        setProfileData(profileResponse.data);
+      } catch (err) {
+        console.error('Failed to delete friendship:', err);
+      }
+    }
+  };
+
+  // Determine Getting Started timeline progress dynamically
+  const isStep1Completed = useMemo(() => {
+    return !!profileData?.avatarUrl && !profileData.avatarUrl.includes('dicebear.com/7.x/avataaars');
+  }, [profileData]);
+
+  const isStep2Completed = useMemo(() => {
+    return !!trainerProgress && trainerProgress.completedLessons > 0;
+  }, [trainerProgress]);
+
+  const isStep3Completed = useMemo(() => {
+    return !!statsData && statsData.kpis.totalSolves > 0;
+  }, [statsData]);
+
+  const isStep4Completed = useMemo(() => {
+    return !!profileData && (profileData.totalFriends > 0 || profileData.totalPosts > 0);
+  }, [profileData]);
+
+  const completedStepsCount = useMemo(() => {
+    return [isStep1Completed, isStep2Completed, isStep3Completed, isStep4Completed].filter(Boolean).length;
+  }, [isStep1Completed, isStep2Completed, isStep3Completed, isStep4Completed]);
+
+  if (loading || !profileData) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0D0D11', color: '#fff' }}>
+        <p>Loading Profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="profile-page">
@@ -64,26 +194,25 @@ export default function Profile() {
           <div className="profile-hero-content">
             <div className="profile-avatar-container">
               <img 
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80" 
-                alt="John Doe avatar" 
+                src={profileData?.avatarUrl || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80"} 
+                alt={`${profileData?.displayName || profileData?.username}'s avatar`} 
                 className="profile-avatar-img"
               />
             </div>
             
             <div className="profile-hero-details">
-              <h2 className="profile-display-name">John Doe</h2>
+              <h2 className="profile-display-name">{profileData?.displayName || profileData?.username}</h2>
+              <p className="profile-bio" style={{ color: '#A8A8B5', fontSize: '0.9rem', marginTop: '4px', maxWidth: '400px' }}>
+                {profileData?.bio || "No bio yet."}
+              </p>
               
-              <div className="profile-hero-stats-row">
-                <div className="profile-hero-stat-badge" onClick={() => setShowFollowModal('followers')} style={{ cursor: 'pointer' }}>
-                  <span className="profile-hero-stat-value">25</span>
-                  <span className="profile-hero-stat-label">Followers</span>
+              <div className="profile-hero-stats-row" style={{ marginTop: '15px' }}>
+                <div className="profile-hero-stat-badge" onClick={() => setShowFollowModal('friends')} style={{ cursor: 'pointer' }}>
+                  <span className="profile-hero-stat-value">{profileData?.totalFriends || 0}</span>
+                  <span className="profile-hero-stat-label">Friends</span>
                 </div>
-                <div className="profile-hero-stat-badge" onClick={() => setShowFollowModal('following')} style={{ cursor: 'pointer' }}>
-                  <span className="profile-hero-stat-value">30</span>
-                  <span className="profile-hero-stat-label">Following</span>
-                </div>
-                <div className="profile-hero-stat-badge" onClick={() => setShowPostsModal(true)} style={{ cursor: 'pointer' }}>
-                  <span className="profile-hero-stat-value">16</span>
+                <div className="profile-hero-stat-badge">
+                  <span className="profile-hero-stat-value">{profileData?.totalPosts || 0}</span>
                   <span className="profile-hero-stat-label">Posts</span>
                 </div>
               </div>
@@ -159,17 +288,17 @@ export default function Profile() {
             
             <div className="profile-timeline-steps">
               {/* Step 1 */}
-              <div className={`profile-timeline-step ${completedStepsCount >= 1 ? 'completed' : 'active'}`}>
+              <div className={`profile-timeline-step ${isStep1Completed ? 'completed' : 'active'}`}>
                 <div className="profile-timeline-number">1</div>
                 <div className="profile-timeline-step-icon-wrapper">
                   <img src={userAddIcon} alt="User Add Icon" className="profile-timeline-step-icon" />
                 </div>
                 <h4 className="profile-timeline-step-title">Upload Profile Pic</h4>
-                <p className="profile-timeline-step-desc">Add A profile picture</p>
+                <p className="profile-timeline-step-desc">Add a profile picture</p>
               </div>
 
               {/* Step 2 */}
-              <div className={`profile-timeline-step ${completedStepsCount >= 2 ? 'completed' : ''}`}>
+              <div className={`profile-timeline-step ${isStep2Completed ? 'completed' : ''}`}>
                 <div className="profile-timeline-number">2</div>
                 <div className="profile-timeline-step-icon-wrapper">
                   <img src={trainerIcon} alt="Trainer Icon" className="profile-timeline-step-icon" />
@@ -179,10 +308,9 @@ export default function Profile() {
               </div>
 
               {/* Step 3 */}
-              <div className={`profile-timeline-step ${completedStepsCount >= 3 ? 'completed' : ''}`}>
+              <div className={`profile-timeline-step ${isStep3Completed ? 'completed' : ''}`}>
                 <div className="profile-timeline-number">3</div>
                 <div className="profile-timeline-step-icon-wrapper">
-                  {/* Inline Cube SVG */}
                   <svg className="profile-timeline-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                     <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
@@ -194,7 +322,7 @@ export default function Profile() {
               </div>
 
               {/* Step 4 */}
-              <div className={`profile-timeline-step ${completedStepsCount >= 4 ? 'completed' : ''}`}>
+              <div className={`profile-timeline-step ${isStep4Completed ? 'completed' : ''}`}>
                 <div className="profile-timeline-number">4</div>
                 <div className="profile-timeline-step-icon-wrapper">
                   <img src={communityIcon} alt="Community Icon" className="profile-timeline-step-icon" />
@@ -220,17 +348,21 @@ export default function Profile() {
         {/* Vertical stats stacking */}
         <div className="profile-sidebar-stats-stack">
           <div className="profile-sidebar-stat-card" id="sidebar-stat-solves">
-            <span className="profile-sidebar-stat-number">125</span>
+            <span className="profile-sidebar-stat-number">{statsData?.kpis?.totalSolves || 0}</span>
             <p className="profile-sidebar-stat-label">Total Solves</p>
           </div>
 
           <div className="profile-sidebar-stat-card" id="sidebar-stat-pb">
-            <span className="profile-sidebar-stat-number">5.04s</span>
+            <span className="profile-sidebar-stat-number">
+              {statsData?.kpis?.pb ? `${(statsData.kpis.pb / 1000).toFixed(2)}s` : '-- : --'}
+            </span>
             <p className="profile-sidebar-stat-label">Personal Best</p>
           </div>
 
           <div className="profile-sidebar-stat-card" id="sidebar-stat-avg">
-            <span className="profile-sidebar-stat-number">7.09s</span>
+            <span className="profile-sidebar-stat-number">
+              {statsData?.kpis?.mean ? `${(statsData.kpis.mean / 1000).toFixed(2)}s` : '-- : --'}
+            </span>
             <p className="profile-sidebar-stat-label">Avg Solve</p>
           </div>
         </div>
@@ -247,78 +379,87 @@ export default function Profile() {
       {/* Edit Profile Modal */}
       {showEditProfile && (
         <ModalOverlay title="Edit Profile" onClose={() => setShowEditProfile(false)}>
-          <form style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Profile Picture URL</label>
-              <input type="text" defaultValue="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80" style={{ background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '10px', borderRadius: '6px' }} />
+              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Upload Profile Picture</label>
+              <input 
+                type="file" 
+                accept="image/*" 
+                onChange={(e) => setAvatarFile(e.target.files[0])}
+                style={{ color: '#fff', fontSize: '14px' }} 
+              />
+              {avatarFile && <span style={{ color: '#34a853', fontSize: '11px' }}>Selected: {avatarFile.name}</span>}
             </div>
+            
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Name</label>
-              <input type="text" defaultValue="John Doe" style={{ background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '10px', borderRadius: '6px' }} />
+              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Display Name</label>
+              <input 
+                type="text" 
+                value={editDisplayName} 
+                onChange={(e) => setEditDisplayName(e.target.value)}
+                style={{ background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '10px', borderRadius: '6px' }} 
+              />
             </div>
+            
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Email Address</label>
-              <input type="email" defaultValue="john@example.com" style={{ background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '10px', borderRadius: '6px' }} />
+              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Bio</label>
+              <textarea 
+                value={editBio} 
+                onChange={(e) => setEditBio(e.target.value)}
+                placeholder="Write something about your speedcubing journey..."
+                style={{ background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '10px', borderRadius: '6px', minHeight: '80px', fontFamily: 'inherit' }} 
+              />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-              <label style={{ color: '#A8A8B5', fontSize: '12px' }}>Default Puzzle</label>
-              <select style={{ background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '10px', borderRadius: '6px' }}>
-                <option>3x3</option>
-                <option>2x2</option>
-                <option>4x4</option>
-              </select>
-            </div>
-            <button type="button" onClick={() => setShowEditProfile(false)} style={{ background: '#572FF7', color: '#fff', border: 'none', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}>Save Changes</button>
+
+            <button 
+              type="submit" 
+              disabled={savingProfile} 
+              style={{ background: '#572FF7', color: '#fff', border: 'none', padding: '12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', marginTop: '10px' }}
+            >
+              {savingProfile ? 'Saving Changes...' : 'Save Changes'}
+            </button>
           </form>
         </ModalOverlay>
       )}
 
-      {/* Followers / Following Modal */}
-      {showFollowModal && (
+      {/* Friends Modal */}
+      {showFollowModal === 'friends' && (
         <ModalOverlay 
-          title={showFollowModal === 'followers' ? 'Followers' : 'Following'} 
+          title="Friends List" 
           onClose={() => setShowFollowModal(null)}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {dummyUsers.map(user => (
-              <div key={user.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', background: '#0D0D11', borderRadius: '8px', border: '1px solid #2B2B35' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <img src={user.avatar} style={{ width: '30px', height: '30px', borderRadius: '50%' }} alt={user.name} />
-                  <Link to="/profile" style={{ color: '#fff', textDecoration: 'none', fontSize: '14px', fontWeight: '500' }}>{user.name}</Link>
+            {loadingFriends ? (
+              <p style={{ color: '#A8A8B5', textAlign: 'center' }}>Loading friends list...</p>
+            ) : friendsList.length === 0 ? (
+              <p style={{ color: '#A8A8B5', textAlign: 'center' }}>No friends yet. Head to Community to find friends!</p>
+            ) : (
+              friendsList.map(friend => (
+                <div key={friend.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px', background: '#0D0D11', borderRadius: '8px', border: '1px solid #2B2B35' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img 
+                      src={friend.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=572ff7"} 
+                      style={{ width: '30px', height: '30px', borderRadius: '50%' }} 
+                      alt={friend.displayName || friend.username} 
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ color: '#fff', fontSize: '14px', fontWeight: '500' }}>{friend.displayName || friend.username}</span>
+                      <span style={{ color: '#A8A8B5', fontSize: '11px' }}>@{friend.username}</span>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => handleRemoveFriend(friend.id)}
+                    style={{ background: 'transparent', border: '1px solid #ff4d4d', color: '#ff4d4d', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px' }}
+                  >
+                    Unfriend
+                  </button>
                 </div>
-                <button style={{ background: 'transparent', border: '1px solid #2B2B35', color: '#A8A8B5', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}>
-                  {showFollowModal === 'followers' ? 'Remove' : 'Unfollow'}
-                </button>
-              </div>
-            ))}
-          </div>
-        </ModalOverlay>
-      )}
-
-      {/* Posts Modal */}
-      {showPostsModal && (
-        <ModalOverlay title="Your Posts" onClose={() => setShowPostsModal(false)}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            {dummyPosts.map(post => (
-              <div key={post.id} style={{ padding: '12px', background: '#0D0D11', borderRadius: '8px', border: '1px solid #2B2B35' }}>
-                <h4 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '14px' }}>{post.title}</h4>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', color: '#A8A8B5', fontSize: '12px' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    {post.likes}
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    {post.comments}
-                  </span>
-                  <span style={{ marginLeft: 'auto' }}>{post.date}</span>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </ModalOverlay>
       )}
 
     </div>
-  )
+  );
 }
