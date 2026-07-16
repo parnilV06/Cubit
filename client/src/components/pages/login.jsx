@@ -1,17 +1,34 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
-import illustration from '../../assets/login-signup-illustration.png'
-import './auth.css'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useStore } from '../../services/store';
+import logoIcon from '../../assets/cubit-logo-icon-svg.svg';
+import illustration from '../../assets/login-signup-illustration.png';
+import './auth.css';
 
 export default function Login() {
-  const [showPassword] = useState(false)
-  const navigate = useNavigate()
+  const [showPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault()
-    navigate('/profile')
-  }
+  const login = useStore((state) => state.login);
+  const loadingUser = useStore((state) => state.loadingUser);
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+    try {
+      await login(email, password);
+      navigate('/app');
+    } catch (err) {
+      setError(err.message || 'Login failed. Please check your credentials.');
+    }
+  };
 
   return (
     <div className="auth-page">
@@ -58,6 +75,15 @@ export default function Login() {
           {/* Divider */}
           <div className="auth-divider">or Sign in with Email</div>
 
+          {error && (
+            <div 
+              className="auth-error-message" 
+              style={{ color: '#ff4d4d', marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}
+            >
+              {error}
+            </div>
+          )}
+
           {/* Fields */}
           <div className="auth-fields">
             <div className="auth-field-group">
@@ -68,6 +94,8 @@ export default function Login() {
                 className="auth-input"
                 placeholder="mail@abc.com"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -79,6 +107,8 @@ export default function Login() {
                 className="auth-input"
                 placeholder="••••••••••••••••"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
@@ -100,8 +130,13 @@ export default function Login() {
           </div>
 
           {/* Submit */}
-          <button type="submit" className="auth-submit-btn" id="login-submit-btn">
-            Login
+          <button 
+            type="submit" 
+            className="auth-submit-btn" 
+            id="login-submit-btn" 
+            disabled={loadingUser}
+          >
+            {loadingUser ? 'Logging in...' : 'Login'}
           </button>
 
           {/* Redirect to signup */}
@@ -113,5 +148,5 @@ export default function Login() {
       </div>
 
     </div>
-  )
+  );
 }

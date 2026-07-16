@@ -1,10 +1,137 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useStore } from '../../services/store';
 import './appStyles.css';
 import cube2dNet from '../../assets/cube-2d-net-scramble.png';
 import playPauseIcon from '../../assets/play-pause.svg';
 import volumeIcon from '../../assets/volume.svg';
 
+const generateScramble = () => {
+  const moves = ['R', 'L', 'U', 'D', 'F', 'B'];
+  const modifiers = ['', "'", '2'];
+  const scramble = [];
+  let lastMove = '';
+  
+  for (let i = 0; i < 20; i++) {
+    let move = moves[Math.floor(Math.random() * moves.length)];
+    while (move === lastMove) {
+      move = moves[Math.floor(Math.random() * moves.length)];
+    }
+    const modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
+    scramble.push(move + modifier);
+    lastMove = move;
+  }
+  return scramble.join(' ');
+};
+
 export default function TimerDashboard() {
+  const activeSession = useStore((state) => state.activeSession);
+  const solves = useStore((state) => state.solves);
+  const addSolve = useStore((state) => state.addSolve);
+
+  // Timer States
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [isHolding, setIsHolding] = useState(false);
+  const [scramble, setScramble] = useState(generateScramble());
+
+  const startTimeRef = useRef(null);
+  const timerIntervalRef = useRef(null);
+
+  const startTimer = () => {
+    startTimeRef.current = Date.now();
+    setIsRunning(true);
+    timerIntervalRef.current = setInterval(() => {
+      setTime((Date.now() - startTimeRef.current) / 1000);
+    }, 10);
+  };
+
+  const stopTimer = async () => {
+    clearInterval(timerIntervalRef.current);
+    setIsRunning(false);
+    const finalTime = (Date.now() - startTimeRef.current) / 1000;
+    setTime(finalTime);
+    
+    if (activeSession) {
+      try {
+        await addSolve(finalTime, scramble);
+      } catch (err) {
+        console.error('Failed to save solve:', err);
+      }
+    }
+    setScramble(generateScramble());
+  };
+
+  useEffect(() => {
+    let holdTimeout = null;
+
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (isRunning) {
+          stopTimer();
+          return;
+        }
+        if (!isHolding && !isReady) {
+          setIsHolding(true);
+          holdTimeout = setTimeout(() => {
+            setIsReady(true);
+          }, 350); // 350ms hold to turn ready (green)
+        }
+      } else {
+        if (isRunning) {
+          stopTimer();
+        }
+      }
+    };
+
+    const handleKeyUp = (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        clearTimeout(holdTimeout);
+        setIsHolding(false);
+        if (isReady) {
+          setIsReady(false);
+          startTimer();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      clearTimeout(holdTimeout);
+      clearInterval(timerIntervalRef.current);
+    };
+  }, [isRunning, isHolding, isReady, scramble, activeSession]);
+
+  const formatTime = (t) => {
+    const mins = Math.floor(t / 60);
+    const secs = t % 60;
+    const secPart = Math.floor(secs).toString();
+    const msPart = Math.round((secs - Math.floor(secs)) * 100).toString().padStart(2, '0');
+    if (mins > 0) {
+      return `${mins} : ${secPart.padStart(2, '0')} : ${msPart}`;
+    }
+    return `${secPart} : ${msPart}`;
+  };
+
+  // Session stats calculations
+  const validSolves = useMemo(() => {
+    return solves
+      .filter(s => s.penalty !== 'DNF')
+      .map(s => s.penalty === 'PLUS_TWO' ? s.time + 2 : s.time);
+  }, [solves]);
+
+  const mean = useMemo(() => {
+    return validSolves.length 
+      ? (validSolves.reduce((a, b) => a + b, 0) / validSolves.length).toFixed(2) 
+      : '0.00';
+  }, [validSolves]);
+
   // State for the 4 bottom features. Max 2 can be true.
   const [selectedFeatures, setSelectedFeatures] = useState({
     visualizer: true,
@@ -16,17 +143,11 @@ export default function TimerDashboard() {
   const handleFeatureToggle = (feature) => {
     setSelectedFeatures(prev => {
       const isCurrentlySelected = prev[feature];
-      
       if (isCurrentlySelected) {
-        // Deselect it
         return { ...prev, [feature]: false };
       } else {
-        // Count how many are currently selected
         const selectedCount = Object.values(prev).filter(Boolean).length;
         if (selectedCount >= 2) {
-          // If 2 are already selected, we can't select more (or we could replace one).
-          // For now, let's just ignore the click or perhaps unselect the first one.
-          // Let's implement replacing the first selected one for better UX.
           const firstSelected = Object.keys(prev).find(key => prev[key]);
           return { ...prev, [firstSelected]: false, [feature]: true };
         } else {
@@ -44,19 +165,30 @@ export default function TimerDashboard() {
           <div className="scramble-title">Scramble</div>
           <div className="scramble-text-container">
             <div className="scramble-text">
-              R2 F2 U' L2 U F2 U2 R2 D' F' D R B L U B2 L' F' R2 U
+              {scramble}
             </div>
           </div>
         </div>
 
         <div className="timer-display-box">
-          <div className="timer-digits">0 : 00</div>
-          <div className="timer-instruction">Hold 'SPACE' and release to start</div>
+          <div 
+            className="timer-digits"
+            style={{ 
+              color: isReady ? '#34a853' : isHolding ? '#fbbc05' : '#ffffff',
+              fontVariantNumeric: 'tabular-nums',
+              transition: 'color 0.15s ease'
+            }}
+          >
+            {formatTime(time)}
+          </div>
+          <div className="timer-instruction">
+            {isRunning ? 'Press any key to stop' : isReady ? 'Release SPACE to start' : isHolding ? 'Keep holding...' : "Hold 'SPACE' and release to start"}
+          </div>
         </div>
 
         <div className="timer-actions">
-          <button className="timer-btn">Reset</button>
-          <button className="timer-btn primary">New Scramble</button>
+          <button className="timer-btn" onClick={() => setTime(0)}>Reset</button>
+          <button className="timer-btn primary" onClick={() => setScramble(generateScramble())}>New Scramble</button>
         </div>
       </div>
 
@@ -108,9 +240,9 @@ export default function TimerDashboard() {
             <div className="feature-panel session-panel">
               <div className="feature-panel-title">Session Details</div>
               <div className="session-details-content">
-                <p>Current Session: 3x3 WCA</p>
-                <p>Solves: 25</p>
-                <p>Mean: 8.65</p>
+                <p>Current Session: {activeSession?.name || 'Default Session'}</p>
+                <p>Solves: {solves.length}</p>
+                <p>Mean: {mean}</p>
               </div>
             </div>
           )}

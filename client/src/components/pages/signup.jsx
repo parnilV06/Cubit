@@ -1,16 +1,36 @@
-
-import { Link, useNavigate } from 'react-router-dom'
-import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
-import illustration from '../../assets/login-signup-illustration.png'
-import './auth.css'
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useStore } from '../../services/store';
+import logoIcon from '../../assets/cubit-logo-icon-svg.svg';
+import illustration from '../../assets/login-signup-illustration.png';
+import './auth.css';
 
 export default function Signup() {
-  const navigate = useNavigate()
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSignupSubmit = (e) => {
-    e.preventDefault()
-    navigate('/profile')
-  }
+  const register = useStore((state) => state.register);
+  const loadingUser = useStore((state) => state.loadingUser);
+
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!username || !email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+    try {
+      // Use username as displayName for registration since we don't have separate visual field
+      await register(username, username, email, password);
+      navigate('/app');
+    } catch (err) {
+      setError(err.message || 'Registration failed. Try a different username/email.');
+    }
+  };
+
   return (
     <div className="auth-page">
 
@@ -55,6 +75,15 @@ export default function Signup() {
           {/* Divider */}
           <div className="auth-divider">or Sign Up with Email</div>
 
+          {error && (
+            <div 
+              className="auth-error-message" 
+              style={{ color: '#ff4d4d', marginBottom: '1rem', fontSize: '0.9rem', textAlign: 'center', fontWeight: '500' }}
+            >
+              {error}
+            </div>
+          )}
+
           {/* Fields */}
           <div className="auth-fields">
             <div className="auth-field-group">
@@ -65,6 +94,8 @@ export default function Signup() {
                 className="auth-input"
                 placeholder="Bruh"
                 autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
             </div>
 
@@ -76,6 +107,8 @@ export default function Signup() {
                 className="auth-input"
                 placeholder="mail@abc.com"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -87,13 +120,20 @@ export default function Signup() {
                 className="auth-input"
                 placeholder="••••••••••••••••"
                 autoComplete="new-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
 
           {/* Submit */}
-          <button type="submit" className="auth-submit-btn" id="signup-submit-btn">
-            Sign Up
+          <button 
+            type="submit" 
+            className="auth-submit-btn" 
+            id="signup-submit-btn"
+            disabled={loadingUser}
+          >
+            {loadingUser ? 'Creating Account...' : 'Sign Up'}
           </button>
 
           {/* Redirect to login */}
@@ -105,5 +145,5 @@ export default function Signup() {
       </div>
 
     </div>
-  )
+  );
 }
