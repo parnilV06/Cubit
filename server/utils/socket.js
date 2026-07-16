@@ -4,11 +4,31 @@ const jwt = require('jsonwebtoken');
 let io;
 
 const initializeSocket = (httpServer) => {
-    const allowedOrigins = [
-        process.env.CLIENT_ORIGIN,
-        'http://localhost:5173',
-        'http://127.0.0.1:5173',
-    ].filter(Boolean);
+    const parseAllowedOrigins = () => {
+        const origins = [
+            process.env.CLIENT_ORIGIN,
+            process.env.CLIENT_URL,
+            'http://localhost:5173',
+            'http://127.0.0.1:5173',
+        ];
+        const list = [];
+        origins.forEach(item => {
+            if (item) {
+                item.split(',').forEach(o => {
+                    const trimmed = o.trim();
+                    if (trimmed) {
+                        const clean = trimmed.replace(/\/$/, '');
+                        if (!list.includes(clean)) {
+                            list.push(clean);
+                        }
+                    }
+                });
+            }
+        });
+        return list;
+    };
+
+    const allowedOrigins = parseAllowedOrigins();
 
     io = new Server(httpServer, {
         cors: {
