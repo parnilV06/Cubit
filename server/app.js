@@ -26,12 +26,29 @@ const parseAllowedOrigins = () => {
 
 const allowedOrigins = parseAllowedOrigins();
 
+const isOriginAllowed = (origin) => {
+  if (!origin) return false;
+  const cleanOrigin = origin.replace(/\/$/, '');
+  if (allowedOrigins.has(cleanOrigin)) {
+    return true;
+  }
+  // Allow all Vercel deployments starting with cubit-
+  if (cleanOrigin.startsWith('https://cubit-') && cleanOrigin.endsWith('.vercel.app')) {
+    return true;
+  }
+  return false;
+};
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
 
-  if (origin && allowedOrigins.has(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Vary', 'Origin');
+  if (origin) {
+    if (isOriginAllowed(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+    } else {
+      console.warn(`[CORS Blocked] Origin "${origin}" is not allowed. Allowed list:`, Array.from(allowedOrigins));
+    }
   }
 
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');

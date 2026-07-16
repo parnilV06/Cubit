@@ -30,9 +30,28 @@ const initializeSocket = (httpServer) => {
 
     const allowedOrigins = parseAllowedOrigins();
 
+    const isOriginAllowed = (origin) => {
+        if (!origin) return false;
+        const cleanOrigin = origin.replace(/\/$/, '');
+        if (allowedOrigins.includes(cleanOrigin)) {
+            return true;
+        }
+        if (cleanOrigin.startsWith('https://cubit-') && cleanOrigin.endsWith('.vercel.app')) {
+            return true;
+        }
+        return false;
+    };
+
     io = new Server(httpServer, {
         cors: {
-            origin: allowedOrigins,
+            origin: (origin, callback) => {
+                if (!origin || isOriginAllowed(origin)) {
+                    callback(null, true);
+                } else {
+                    console.warn(`[Socket CORS Blocked] Origin "${origin}" is not allowed.`);
+                    callback(new Error('Not allowed by CORS'));
+                }
+            },
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
         }
     });
