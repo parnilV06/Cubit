@@ -6,7 +6,9 @@ export const initiateSocketConnection = (token) => {
   if (socket) return socket;
 
   // Use base backend url without /api
-  const backendUrl = 'http://localhost:5000';
+  const backendUrl = import.meta.env.VITE_API_BASE_URL 
+    ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '').replace(/\/$/, '')
+    : 'http://localhost:5000';
   
   socket = io(backendUrl, {
     auth: {
