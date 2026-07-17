@@ -37,20 +37,20 @@ export default function StatsDashboard() {
 
     // 1. Map KPIs
     const kpis = {
-      pb: data.kpis.pb ? (data.kpis.pb / 1000).toFixed(2) : '0.00',
-      mean: data.kpis.mean ? (data.kpis.mean / 1000).toFixed(2) : '0.00',
-      ao5: data.kpis.ao5 ? (data.kpis.ao5 / 1000).toFixed(2) : '0.00',
-      ao12: data.kpis.ao12 ? (data.kpis.ao12 / 1000).toFixed(2) : '0.00',
+      pb: data.kpis.pb ? Number(data.kpis.pb).toFixed(2) : '0.00',
+      mean: data.kpis.mean ? Number(data.kpis.mean).toFixed(2) : '0.00',
+      ao5: data.kpis.ao5 ? Number(data.kpis.ao5).toFixed(2) : '0.00',
+      ao12: data.kpis.ao12 ? Number(data.kpis.ao12).toFixed(2) : '0.00',
       totalSolves: data.kpis.totalSolves || 0
     };
 
     // 2. Map Solve Trend Data
     const solveTrendData = data.solveTrend.map((item, index) => ({
       session: item.sessionName || `S${index + 1}`,
-      pb: item.pb ? Number((item.pb / 1000).toFixed(2)) : null,
-      mean: item.mean ? Number((item.mean / 1000).toFixed(2)) : null,
-      ao5: item.ao5 ? Number((item.ao5 / 1000).toFixed(2)) : null,
-      ao12: item.ao12 ? Number((item.ao12 / 1000).toFixed(2)) : null,
+      pb: item.pb ? Number(Number(item.pb).toFixed(2)) : null,
+      mean: item.mean ? Number(Number(item.mean).toFixed(2)) : null,
+      ao5: item.ao5 ? Number(Number(item.ao5).toFixed(2)) : null,
+      ao12: item.ao12 ? Number(Number(item.ao12).toFixed(2)) : null,
     }));
 
     // 3. Map Time Distribution
@@ -62,14 +62,14 @@ export default function StatsDashboard() {
     // 4. Map Best Time Progress
     const progressData = data.bestProgress.map(item => ({
       date: item.sessionName,
-      bestTime: item.bestTime ? Number((item.bestTime / 1000).toFixed(2)) : null
+      bestTime: item.bestTime ? Number(Number(item.bestTime).toFixed(2)) : null
     }));
 
     // 5. Map Recent Sessions
     const recentSessionsData = data.recentSessions.map(item => ({
       name: item.sessionName,
-      best: item.best ? (item.best / 1000).toFixed(2) : '--',
-      mean: item.average ? (item.average / 1000).toFixed(2) : '--',
+      best: item.best ? Number(item.best).toFixed(2) : '--',
+      mean: item.average ? Number(item.average).toFixed(2) : '--',
       ao5: '--',
       ao12: '--',
       date: new Date(item.createdAt).toLocaleDateString()
