@@ -38,6 +38,7 @@ export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   register: (displayName, username, email, password) =>
     api.post('/auth/register', { displayName, username, email, password }),
+  loginWithGoogle: (credential) => api.post('/auth/google', { credential }),
   getMe: () => api.get('/auth/me'),
 };
 
