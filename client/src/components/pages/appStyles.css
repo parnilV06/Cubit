@@ -541,3 +541,45 @@
 .lesson-start-btn:hover {
   border-top-color: var(--brand-primary, #572ff7);
 }
+
+/* Toast Notification Styles */
+.timer-toast {
+  position: absolute;
+  top: 24px;
+  background-color: rgba(52, 168, 83, 0.15); /* Transparent green match */
+  backdrop-filter: blur(10px);
+  border: 1px solid #34a853;
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: toastFadeInOut 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes toastFadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+}
+
