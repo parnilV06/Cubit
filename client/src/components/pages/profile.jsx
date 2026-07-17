@@ -354,14 +354,14 @@ export default function Profile() {
 
           <div className="profile-sidebar-stat-card" id="sidebar-stat-pb">
             <span className="profile-sidebar-stat-number">
-              {statsData?.kpis?.pb ? `${(statsData.kpis.pb / 1000).toFixed(2)}s` : '-- : --'}
+              {statsData?.kpis?.pb ? `${Number(statsData.kpis.pb).toFixed(2)}s` : '-- : --'}
             </span>
             <p className="profile-sidebar-stat-label">Personal Best</p>
           </div>
 
           <div className="profile-sidebar-stat-card" id="sidebar-stat-avg">
             <span className="profile-sidebar-stat-number">
-              {statsData?.kpis?.mean ? `${(statsData.kpis.mean / 1000).toFixed(2)}s` : '-- : --'}
+              {statsData?.kpis?.mean ? `${Number(statsData.kpis.mean).toFixed(2)}s` : '-- : --'}
             </span>
             <p className="profile-sidebar-stat-label">Avg Solve</p>
           </div>
