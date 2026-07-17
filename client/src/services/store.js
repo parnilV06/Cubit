@@ -31,6 +31,21 @@ export const useStore = create((set, get) => ({
     }
   },
 
+  loginWithGoogle: async (credential) => {
+    set({ loadingUser: true, authError: null });
+    try {
+      const response = await authAPI.loginWithGoogle(credential);
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      set({ user, token, isAuthenticated: true, loadingUser: false });
+      // Fetch active session immediately after login
+      await get().fetchActiveSession();
+    } catch (error) {
+      set({ authError: error.message, loadingUser: false });
+      throw error;
+    }
+  },
+
   register: async (displayName, username, email, password) => {
     set({ loadingUser: true, authError: null });
     try {
