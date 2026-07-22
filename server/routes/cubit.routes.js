@@ -11,6 +11,7 @@ const trainerRoutes = require('./trainer.routes');
 const communityRoutes = require('./community.routes');
 const friendRoutes = require('./friend.routes');
 const notificationRoutes = require('./notification.routes');
+const focusRoutes = require('./focus.routes');
 
 router.use('/auth', authRoutes);
 router.use('/profile', profileRoutes);
@@ -21,5 +22,6 @@ router.use('/trainer', trainerRoutes);
 router.use('/community', communityRoutes);
 router.use('/friends', friendRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/focus-tracks', focusRoutes);
 
 module.exports = router;
