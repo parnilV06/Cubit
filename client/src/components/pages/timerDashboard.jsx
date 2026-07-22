@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { Plus, Pencil, X, Play, Pause, Volume2, VolumeX, Repeat } from 'lucide-react';
 import { useStore } from '../../services/store';
+import { useFocusStore } from '../../services/focusStore';
 import './appStyles.css';
 import cube2dNet from '../../assets/cube-2d-net-scramble.png';
-import playPauseIcon from '../../assets/play-pause.svg';
-import volumeIcon from '../../assets/volume.svg';
 
 const generateScramble = () => {
   const moves = ['R', 'L', 'U', 'D', 'F', 'B'];
@@ -25,8 +25,11 @@ const generateScramble = () => {
 
 export default function TimerDashboard() {
   const activeSession = useStore((state) => state.activeSession);
+  const sessions = useStore((state) => state.sessions);
   const solves = useStore((state) => state.solves);
   const addSolve = useStore((state) => state.addSolve);
+  const createSession = useStore((state) => state.createSession);
+  const renameSession = useStore((state) => state.renameSession);
 
   // Timer States
   const [timerState, setTimerState] = useState('idle'); // 'idle', 'holding', 'ready', 'running', 'saving', 'error'
@@ -34,6 +37,63 @@ export default function TimerDashboard() {
   const [frozenTime, setFrozenTime] = useState(0);
   const [saveError, setSaveError] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '' });
+
+  // Create Session Modal States
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [newSessionName, setNewSessionName] = useState('');
+  const [selectedPuzzleType, setSelectedPuzzleType] = useState('THREE_BY_THREE');
+  const [modalError, setModalError] = useState('');
+  const [isSubmittingSession, setIsSubmittingSession] = useState(false);
+
+  // Rename Session Modal States
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [renameSessionName, setRenameSessionName] = useState('');
+  const [renameModalError, setRenameModalError] = useState('');
+  const [isSubmittingRename, setIsSubmittingRename] = useState(false);
+
+  // Focus Mode Audio Store State
+  const focusTracks = useFocusStore((state) => state.tracks);
+  const currentTrack = useFocusStore((state) => state.currentTrack);
+  const isPlaying = useFocusStore((state) => state.isPlaying);
+  const currentTime = useFocusStore((state) => state.currentTime);
+  const duration = useFocusStore((state) => state.duration);
+  const volume = useFocusStore((state) => state.volume);
+  const isMuted = useFocusStore((state) => state.isMuted);
+  const isLooping = useFocusStore((state) => state.isLooping);
+  const audioError = useFocusStore((state) => state.audioError);
+  const fetchFocusTracks = useFocusStore((state) => state.fetchTracks);
+  const selectTrack = useFocusStore((state) => state.selectTrack);
+  const togglePlay = useFocusStore((state) => state.togglePlay);
+  const seekFocusAudio = useFocusStore((state) => state.seek);
+  const setVolume = useFocusStore((state) => state.setVolume);
+  const toggleMute = useFocusStore((state) => state.toggleMute);
+  const toggleLoop = useFocusStore((state) => state.toggleLoop);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+
+  useEffect(() => {
+    fetchFocusTracks();
+  }, [fetchFocusTracks]);
+
+  const formatAudioTime = (seconds) => {
+    if (!seconds || isNaN(seconds) || seconds < 0) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  const handleProgressClick = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const trackDuration = duration || currentTrack?.duration || 0;
+    if (width > 0 && trackDuration > 0) {
+      const percentage = clickX / width;
+      seekFocusAudio(percentage * trackDuration);
+    }
+  };
+
+  const effectiveDuration = duration || currentTrack?.duration || 0;
+  const progressPercent = effectiveDuration > 0 ? Math.min(100, Math.max(0, (currentTime / effectiveDuration) * 100)) : 0;
 
   // Refs for timing & event handling
   const timerStateRef = useRef('idle');
@@ -44,6 +104,7 @@ export default function TimerDashboard() {
   const digitsRef = useRef(null);
   const scrambleRef = useRef(scramble);
   const activeSessionRef = useRef(activeSession);
+  const isAnyModalOpenRef = useRef(false);
 
   // Keep refs in sync
   useEffect(() => {
@@ -53,6 +114,10 @@ export default function TimerDashboard() {
   useEffect(() => {
     activeSessionRef.current = activeSession;
   }, [activeSession]);
+
+  useEffect(() => {
+    isAnyModalOpenRef.current = isCreateModalOpen || isRenameModalOpen;
+  }, [isCreateModalOpen, isRenameModalOpen]);
 
   // Synchronize timerStateRef with timerState
   const setTimerStateAndRef = (newState) => {
@@ -188,9 +253,122 @@ export default function TimerDashboard() {
     setScramble(generateScramble());
   };
 
+  // Helper: Auto-calculate next session name (e.g. Session 7)
+  const calculateNextSessionName = (sessionsList) => {
+    if (!sessionsList || sessionsList.length === 0) return 'Session 1';
+    let maxNum = 0;
+    sessionsList.forEach((s) => {
+      if (s.name) {
+        const match = s.name.match(/^Session\s+(\d+)$/i);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (num > maxNum) maxNum = num;
+        }
+      }
+    });
+    const nextNum = maxNum > 0 ? maxNum + 1 : sessionsList.length + 1;
+    return `Session ${nextNum}`;
+  };
+
+  // Handlers for Create Session Modal
+  const handleOpenCreateSessionModal = () => {
+    const defaultName = calculateNextSessionName(sessions);
+    setNewSessionName(defaultName);
+    setSelectedPuzzleType(activeSession?.puzzleType || 'THREE_BY_THREE');
+    setModalError('');
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateSessionModal = () => {
+    setIsCreateModalOpen(false);
+    setModalError('');
+  };
+
+  const handleCreateSessionSubmit = async (e) => {
+    if (e) e.preventDefault();
+    const trimmedName = newSessionName.trim();
+    if (!trimmedName) {
+      setModalError('Session name cannot be empty.');
+      return;
+    }
+
+    const isDuplicate = sessions.some(
+      (s) => s.name && s.name.trim().toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (isDuplicate) {
+      setModalError('A session with this name already exists.');
+      return;
+    }
+
+    setIsSubmittingSession(true);
+    setModalError('');
+    try {
+      await createSession(trimmedName, selectedPuzzleType);
+      setIsCreateModalOpen(false);
+      handleReset();
+      triggerToast(`Switched to new session: ${trimmedName}`);
+    } catch (err) {
+      console.error('Failed to create session:', err);
+      setModalError(
+        err.response?.data?.message || err.message || 'Failed to create session'
+      );
+    } finally {
+      setIsSubmittingSession(false);
+    }
+  };
+
+  // Handlers for Rename Session Modal
+  const handleOpenRenameModal = () => {
+    if (!activeSession) return;
+    setRenameSessionName(activeSession.name || '');
+    setRenameModalError('');
+    setIsRenameModalOpen(true);
+  };
+
+  const handleCloseRenameModal = () => {
+    setIsRenameModalOpen(false);
+    setRenameModalError('');
+  };
+
+  const handleRenameSessionSubmit = async (e) => {
+    if (e) e.preventDefault();
+    const trimmedName = renameSessionName.trim();
+    if (!trimmedName) {
+      setRenameModalError('Session name cannot be empty.');
+      return;
+    }
+    if (trimmedName === activeSession?.name) {
+      setIsRenameModalOpen(false);
+      return;
+    }
+
+    const isDuplicate = sessions.some(
+      (s) => s.id !== activeSession?.id && s.name && s.name.trim().toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (isDuplicate) {
+      setRenameModalError('A session with this name already exists.');
+      return;
+    }
+
+    setIsSubmittingRename(true);
+    setRenameModalError('');
+    try {
+      await renameSession(activeSession.id, trimmedName);
+      setIsRenameModalOpen(false);
+      triggerToast(`Session renamed to: ${trimmedName}`);
+    } catch (err) {
+      console.error('Failed to rename session:', err);
+      setRenameModalError(
+        err.response?.data?.message || err.message || 'Failed to rename session'
+      );
+    } finally {
+      setIsSubmittingRename(false);
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.repeat) {
+      if (e.repeat || isAnyModalOpenRef.current) {
         return;
       }
 
@@ -228,6 +406,10 @@ export default function TimerDashboard() {
     };
 
     const handleKeyUp = (e) => {
+      if (isAnyModalOpenRef.current) {
+        return;
+      }
+
       const activeElement = document.activeElement;
       if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
         return;
@@ -483,35 +665,244 @@ export default function TimerDashboard() {
 
           {selectedFeatures.session && (
             <div className="feature-panel session-panel">
-              <div className="feature-panel-title">Session Details</div>
+              <div className="session-panel-header">
+                <h4 className="session-panel-title">Session Management</h4>
+              </div>
               <div className="session-details-content">
-                <p>Current Session: {activeSession?.name || 'Default Session'}</p>
-                <p>Solves: {solves.length}</p>
-                <p>Mean: {mean}</p>
+                <p>
+                  <span className="label">Current Session:</span>{' '}
+                  <span className="val">{activeSession?.name || 'Default Session'}</span>
+                </p>
+                <p>
+                  <span className="label">Solves:</span>{' '}
+                  <span className="val">{solves.length}</span>
+                </p>
+                <p>
+                  <span className="label">Mean:</span>{' '}
+                  <span className="val">{mean}</span>
+                </p>
+              </div>
+              <div className="session-actions">
+                <button
+                  className="session-action-btn primary"
+                  onClick={handleOpenCreateSessionModal}
+                >
+                  <Plus size={14} /> New Session
+                </button>
+                <button
+                  className="session-action-btn secondary"
+                  onClick={handleOpenRenameModal}
+                  disabled={!activeSession}
+                >
+                  <Pencil size={14} /> Rename
+                </button>
               </div>
             </div>
           )}
 
           {selectedFeatures.focus && (
             <div className="feature-panel focus-panel">
-              <div className="focus-title">Deep Focus Synth Music</div>
+              <div className="focus-title">{currentTrack?.title || 'Deep Focus Synth Music'}</div>
+              {audioError && <div className="focus-error-message">{audioError}</div>}
               <div className="focus-progress-container">
-                <div className="focus-progress-bar">
-                  <div className="focus-progress-fill" style={{width: '50%'}}></div>
+                <div 
+                  className="focus-progress-bar" 
+                  onClick={handleProgressClick}
+                  style={{ cursor: 'pointer' }}
+                  title="Click to seek"
+                >
+                  <div className="focus-progress-fill" style={{ width: `${progressPercent}%` }}></div>
                 </div>
-                <div className="focus-time">2:00 / 4:00</div>
+                <div className="focus-time">
+                  {formatAudioTime(currentTime)} / {formatAudioTime(effectiveDuration)}
+                </div>
               </div>
               <div className="focus-controls">
-                <select className="track-select">
-                  <option>choose track...</option>
+                <select 
+                  className="track-select"
+                  value={currentTrack?.id || ''}
+                  onChange={(e) => selectTrack(e.target.value)}
+                >
+                  {focusTracks.length === 0 ? (
+                    <option value="">choose track...</option>
+                  ) : (
+                    focusTracks.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.title} ({t.category})
+                      </option>
+                    ))
+                  )}
                 </select>
-                <button className="icon-btn"><img src={playPauseIcon} alt="Play" /></button>
-                <button className="icon-btn"><img src={volumeIcon} alt="Volume" /></button>
+
+                <button 
+                  className="icon-btn" 
+                  onClick={togglePlay}
+                  title={isPlaying ? "Pause" : "Play"}
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? <Pause size={20} color="white" /> : <Play size={20} color="white" />}
+                </button>
+
+                <div 
+                  className="focus-volume-wrapper"
+                  onMouseEnter={() => setShowVolumeSlider(true)}
+                  onMouseLeave={() => setShowVolumeSlider(false)}
+                >
+                  <button 
+                    className="icon-btn" 
+                    onClick={toggleMute}
+                    title={isMuted ? "Unmute" : "Mute"}
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted || volume === 0 ? <VolumeX size={20} color="white" /> : <Volume2 size={20} color="white" />}
+                  </button>
+                  {showVolumeSlider && (
+                    <input 
+                      type="range" 
+                      className="focus-volume-slider" 
+                      min="0" 
+                      max="1" 
+                      step="0.05" 
+                      value={isMuted ? 0 : volume}
+                      onChange={(e) => setVolume(parseFloat(e.target.value))}
+                      title={`Volume: ${Math.round((isMuted ? 0 : volume) * 100)}%`}
+                    />
+                  )}
+                </div>
+
+                <button 
+                  className="icon-btn"
+                  onClick={toggleLoop}
+                  title={isLooping ? "Looping Enabled" : "Looping Disabled"}
+                  aria-label="Toggle Loop"
+                >
+                  <Repeat size={18} color={isLooping ? "var(--brand-primary, #572ff7)" : "rgba(255,255,255,0.5)"} />
+                </button>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Create Session Modal */}
+      {isCreateModalOpen && (
+        <div className="session-modal-overlay" onClick={handleCloseCreateSessionModal}>
+          <div className="session-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="session-modal-header">
+              <h3>Create New Session</h3>
+              <button
+                className="session-modal-close-btn"
+                onClick={handleCloseCreateSessionModal}
+                type="button"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateSessionSubmit} className="session-modal-form">
+              {modalError && <div className="session-modal-error">{modalError}</div>}
+
+              <div className="session-form-group">
+                <label htmlFor="session-name-input">Session Name</label>
+                <input
+                  id="session-name-input"
+                  type="text"
+                  className="session-input"
+                  value={newSessionName}
+                  onChange={(e) => setNewSessionName(e.target.value)}
+                  placeholder="e.g. Session 7"
+                  autoFocus
+                />
+              </div>
+
+              <div className="session-form-group">
+                <label htmlFor="puzzle-type-select">Puzzle Type</label>
+                <select
+                  id="puzzle-type-select"
+                  className="session-select"
+                  value={selectedPuzzleType}
+                  onChange={(e) => setSelectedPuzzleType(e.target.value)}
+                >
+                  <option value="THREE_BY_THREE">3 × 3 WCA</option>
+                  <option value="TWO_BY_TWO">2 × 2 WCA</option>
+                  <option value="FOUR_BY_FOUR">4 × 4 WCA</option>
+                </select>
+              </div>
+
+              <div className="session-modal-actions">
+                <button
+                  type="button"
+                  className="session-modal-btn cancel"
+                  onClick={handleCloseCreateSessionModal}
+                  disabled={isSubmittingSession}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="session-modal-btn primary"
+                  disabled={isSubmittingSession}
+                >
+                  {isSubmittingSession ? 'Creating...' : 'Create Session'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Rename Session Modal */}
+      {isRenameModalOpen && (
+        <div className="session-modal-overlay" onClick={handleCloseRenameModal}>
+          <div className="session-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="session-modal-header">
+              <h3>Rename Session</h3>
+              <button
+                className="session-modal-close-btn"
+                onClick={handleCloseRenameModal}
+                type="button"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleRenameSessionSubmit} className="session-modal-form">
+              {renameModalError && <div className="session-modal-error">{renameModalError}</div>}
+
+              <div className="session-form-group">
+                <label htmlFor="rename-session-input">Session Name</label>
+                <input
+                  id="rename-session-input"
+                  type="text"
+                  className="session-input"
+                  value={renameSessionName}
+                  onChange={(e) => setRenameSessionName(e.target.value)}
+                  placeholder="Enter new name"
+                  autoFocus
+                />
+              </div>
+
+              <div className="session-modal-actions">
+                <button
+                  type="button"
+                  className="session-modal-btn cancel"
+                  onClick={handleCloseRenameModal}
+                  disabled={isSubmittingRename}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="session-modal-btn primary"
+                  disabled={isSubmittingRename}
+                >
+                  {isSubmittingRename ? 'Saving...' : 'Rename Session'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

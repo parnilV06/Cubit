@@ -114,4 +114,8 @@ export const notificationAPI = {
   markAllAsRead: () => api.patch('/notifications/read-all'),
 };
 
+export const focusAPI = {
+  getTracks: () => api.get('/focus-tracks'),
+};
+
 export default api;

@@ -117,6 +117,20 @@ export const useStore = create((set, get) => ({
     }
   },
 
+  renameSession: async (sessionId, newName) => {
+    try {
+      const response = await sessionAPI.renameSession(sessionId, newName);
+      const updatedSession = response.data?.session || response.session;
+      set(state => ({
+        activeSession: state.activeSession?.id === sessionId ? updatedSession : state.activeSession,
+      }));
+      await get().fetchSessions();
+    } catch (error) {
+      console.error('Failed to rename session:', error);
+      throw error;
+    }
+  },
+
   selectSession: async (sessionId) => {
     const session = get().sessions.find(s => s.id === sessionId);
     if (session) {

@@ -247,13 +247,269 @@
 .session-panel {
   width: 100%;
   max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.session-panel-header {
+  width: 100%;
+  text-align: center;
+}
+
+.session-panel-title {
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: white;
+  margin: 0;
+  text-align: center;
 }
 
 .session-details-content {
-  margin-top: 35px;
+  width: 100%;
+  margin-top: 0;
   color: #ccc;
   font-family: 'Rubik', sans-serif;
-  line-height: 2;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.session-details-content p {
+  margin: 2px 0;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.session-details-content .label {
+  color: #888;
+}
+
+.session-details-content .val {
+  color: #fff;
+  font-weight: 500;
+}
+
+.session-actions {
+  margin-top: 0;
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.session-action-btn {
+  flex: 1;
+  height: 32px;
+  border-radius: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.session-action-btn.primary {
+  background-color: var(--brand-primary, #572ff7);
+  border-color: var(--brand-primary, #572ff7);
+  color: white;
+}
+
+.session-action-btn.primary:hover {
+  background-color: #4823d4;
+  border-color: #4823d4;
+  box-shadow: 0 4px 12px rgba(87, 47, 247, 0.3);
+}
+
+.session-action-btn.secondary {
+  background-color: var(--bg-secondary, #0f0f13);
+  border-color: var(--border-primary, #272730);
+  color: #ccc;
+}
+
+.session-action-btn.secondary:hover {
+  background-color: var(--bg-card-sec, #1d1d24);
+  border-color: var(--brand-primary, #572ff7);
+  color: white;
+}
+
+.session-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------
+   Session Management Modal
+   ------------------------------------- */
+.session-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeInModal 0.2s ease-out;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.session-modal-content {
+  background-color: var(--bg-card, #17171c);
+  border: 1px solid var(--border-primary, #272730);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.session-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.session-modal-header h3 {
+  margin: 0;
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.session-modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.session-modal-close-btn:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.session-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.session-modal-error {
+  background-color: rgba(234, 67, 53, 0.15);
+  border: 1px solid #ea4335;
+  color: #ea4335;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+}
+
+.session-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.session-form-group label {
+  color: #bbb;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.session-input,
+.session-select {
+  width: 100%;
+  height: 42px;
+  background-color: var(--bg-secondary, #0f0f13);
+  border: 1px solid var(--border-primary, #272730);
+  border-radius: 8px;
+  padding: 0 14px;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.session-input:focus,
+.session-select:focus {
+  border-color: var(--brand-primary, #572ff7);
+}
+
+.session-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.session-modal-btn {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.session-modal-btn.cancel {
+  background-color: transparent;
+  border: 1px solid var(--border-primary, #272730);
+  color: #ccc;
+}
+
+.session-modal-btn.cancel:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.session-modal-btn.primary {
+  background-color: var(--brand-primary, #572ff7);
+  color: white;
+}
+
+.session-modal-btn.primary:hover {
+  background-color: #4823d4;
+}
+
+.session-modal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .focus-panel {
@@ -262,16 +518,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 25px;
-  padding: 20px 30px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 26px 28px 22px;
+  box-sizing: border-box;
 }
 
 .focus-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 24px;
+  font-size: 22px;
+  font-weight: 600;
   color: white;
   text-align: center;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .focus-progress-container {
@@ -280,46 +540,59 @@
   align-items: center;
   gap: 10px;
   width: 100%;
+  margin: 2px 0;
 }
 
 .focus-progress-bar {
   width: 100%;
-  height: 10px;
+  height: 8px;
   background-color: var(--bg-primary, #08080a);
   border-radius: 5px;
   overflow: hidden;
+  position: relative;
+  transition: opacity 0.2s;
+}
+
+.focus-progress-bar:hover {
+  opacity: 0.85;
 }
 
 .focus-progress-fill {
   height: 100%;
   background-color: var(--brand-primary, #572ff7);
   border-radius: 5px;
+  transition: width 0.1s linear;
 }
 
 .focus-time {
   font-family: 'Rubik', sans-serif;
-  font-size: 16px;
-  color: white;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .focus-controls {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  width: 100%;
 }
 
 .track-select {
   background-color: var(--bg-card, #2b2b35);
   border: 1px solid var(--border-primary);
   border-radius: 10px;
-  padding: 8px 15px;
+  padding: 8px 12px;
   color: white;
   font-family: 'Rubik', sans-serif;
   font-size: 12px;
   outline: none;
-  width: 175px;
+  width: 190px;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .icon-btn {
@@ -342,6 +615,29 @@
   width: 24px;
   height: 24px;
   filter: invert(1);
+}
+
+.focus-volume-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.focus-volume-slider {
+  width: 65px;
+  height: 4px;
+  accent-color: var(--brand-primary, #572ff7);
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.focus-error-message {
+  font-family: 'Rubik', sans-serif;
+  font-size: 12px;
+  color: #ff5555;
+  text-align: center;
+  margin-top: -15px;
 }
 
 /* -------------------------------------
