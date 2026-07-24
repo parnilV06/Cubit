@@ -314,6 +314,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .stats-dropdown {
@@ -325,7 +326,22 @@
   font-size: 14px;
   color: white;
   cursor: pointer;
-  flex: 1;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.stats-dropdown.session-select {
+  width: 150px;
+  max-width: 150px;
+  flex: 0 0 150px;
+}
+
+.stats-dropdown.puzzle-select {
+  width: 110px;
+  max-width: 110px;
+  flex: 0 0 110px;
 }
 
 .stats-grid {
@@ -414,3 +430,13 @@
 .badge.pb { background-color: #22c55e; }
 .badge.dnf { background-color: #ef4444; }
 .badge.plus2 { background-color: #f59e0b; }
+
+.solve-actions {
+  display: none;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.stats-list-item:hover .solve-actions {
+  display: flex;
+}

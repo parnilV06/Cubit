@@ -883,7 +883,70 @@ Protected
 
 ✅
 
+---
 
+# Session Notes
+
+Base Route
+
+```
+/api/notes
+```
+
+---
+
+## Get Notes for Session
+
+GET
+
+```
+/session/:sessionId
+```
+
+Returns notes for a session, ordered chronologically (newest first).
+
+Protected
+
+✅
+
+---
+
+## Create Note
+
+POST
+
+```
+/
+```
+
+Request
+
+```json
+{
+    "sessionId": "string",
+    "content": "string"
+}
+```
+
+Protected
+
+✅
+
+---
+
+## Delete Note
+
+DELETE
+
+```
+/:id
+```
+
+Protected
+
+✅
+
+---
 
 # Health
 

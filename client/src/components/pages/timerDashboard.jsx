@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Plus, Pencil, X, Play, Pause, Volume2, VolumeX, Repeat } from 'lucide-react';
+import { Plus, Pencil, X, Play, Pause, Volume2, VolumeX, Repeat, Check, Trash } from 'lucide-react';
 import { useStore } from '../../services/store';
 import { useFocusStore } from '../../services/focusStore';
 import './appStyles.css';
@@ -30,6 +30,9 @@ export default function TimerDashboard() {
   const addSolve = useStore((state) => state.addSolve);
   const createSession = useStore((state) => state.createSession);
   const renameSession = useStore((state) => state.renameSession);
+  const notes = useStore((state) => state.notes);
+  const addNote = useStore((state) => state.addNote);
+  const deleteNoteAction = useStore((state) => state.deleteNoteAction);
 
   // Timer States
   const [timerState, setTimerState] = useState('idle'); // 'idle', 'holding', 'ready', 'running', 'saving', 'error'
@@ -50,6 +53,28 @@ export default function TimerDashboard() {
   const [renameSessionName, setRenameSessionName] = useState('');
   const [renameModalError, setRenameModalError] = useState('');
   const [isSubmittingRename, setIsSubmittingRename] = useState(false);
+
+  // Notes Local States & Handlers
+  const [noteText, setNoteText] = useState('');
+
+  const handleSaveNote = async () => {
+    const trimmed = noteText.trim();
+    if (!trimmed) return;
+    try {
+      await addNote(trimmed);
+      setNoteText('');
+    } catch (err) {
+      console.error('Failed to save note:', err);
+    }
+  };
+
+  const handleDeleteNote = async (id) => {
+    try {
+      await deleteNoteAction(id);
+    } catch (err) {
+      console.error('Failed to delete note:', err);
+    }
+  };
 
   // Focus Mode Audio Store State
   const focusTracks = useFocusStore((state) => state.tracks);
@@ -658,8 +683,41 @@ export default function TimerDashboard() {
 
           {selectedFeatures.notes && (
             <div className="feature-panel notes-panel">
-              <div className="feature-panel-title">Session Notes</div>
-              <textarea placeholder="Type your notes here..." className="notes-textarea"></textarea>
+              <div className="notes-scroll-wrapper">
+                <div className="feature-panel-title">Session Notes</div>
+                <div className="notes-input-wrapper">
+                  <textarea 
+                    placeholder="Type your notes here..." 
+                    className="notes-textarea"
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                  ></textarea>
+                  {noteText.trim() && (
+                    <button className="save-note-btn" onClick={handleSaveNote} title="Save Note">
+                      <Check size={14} />
+                    </button>
+                  )}
+                </div>
+                <div className="notes-list-container">
+                  {notes && notes.length > 0 ? (
+                    notes.map(note => (
+                      <div key={note.id} className="note-item">
+                        <div className="note-body">
+                          <p className="note-content">{note.content}</p>
+                          <span className="note-timestamp">
+                            {new Date(note.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                        <button className="delete-note-btn" onClick={() => handleDeleteNote(note.id)} title="Delete Note">
+                          <Trash size={12} />
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-notes-placeholder">No notes for this session.</div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 

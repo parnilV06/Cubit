@@ -70,6 +70,12 @@ export const solveAPI = {
   deleteSolve: (id) => api.delete(`/solves/${id}`),
 };
 
+export const noteAPI = {
+  getNotes: (sessionId) => api.get(`/notes/session/${sessionId}`),
+  createNote: (sessionId, content) => api.post('/notes', { sessionId, content }),
+  deleteNote: (id) => api.delete(`/notes/${id}`),
+};
+
 export const statsAPI = {
   getDashboard: () => api.get('/stats/dashboard'),
 };

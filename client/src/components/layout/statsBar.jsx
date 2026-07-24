@@ -94,7 +94,7 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
       <div className="stats-content">
         <div className="stats-dropdowns">
           <select 
-            className="stats-dropdown" 
+            className="stats-dropdown session-select" 
             value={activeSession?.id || ''}
             onChange={(e) => selectSession(e.target.value)}
           >
@@ -102,7 +102,7 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </select>
-          <select className="stats-dropdown" disabled value={activeSession?.puzzleType || 'THREE_BY_THREE'}>
+          <select className="stats-dropdown puzzle-select" disabled value={activeSession?.puzzleType || 'THREE_BY_THREE'}>
             <option value="THREE_BY_THREE">3 x 3 WCA</option>
             <option value="TWO_BY_TWO">2 x 2 WCA</option>
             <option value="FOUR_BY_FOUR">4 x 4 WCA</option>
@@ -161,7 +161,7 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
                       +2
                     </span>
                   ) : (
-                    <>
+                    <div className="solve-actions">
                       <button 
                         onClick={() => handlePenaltyChange(solve.id, 'PLUS_TWO')} 
                         style={{ background: 'transparent', border: '1px solid #572ff7', color: '#a0a0ff', fontSize: '0.65rem', padding: '1px 3px', borderRadius: '4px', cursor: 'pointer' }}
@@ -174,7 +174,7 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
                       >
                         DNF
                       </button>
-                    </>
+                    </div>
                   )}
                   
                   <button 

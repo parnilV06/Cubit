@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { authAPI, sessionAPI, solveAPI } from './api';
+import { authAPI, sessionAPI, solveAPI, noteAPI } from './api';
 
 export const useStore = create((set, get) => ({
   // Auth State
@@ -14,6 +14,8 @@ export const useStore = create((set, get) => ({
   activeSession: null,
   solves: [],
   loadingSolves: false,
+  notes: [],
+  loadingNotes: false,
 
   // Auth Actions
   login: async (email, password) => {
@@ -97,6 +99,7 @@ export const useStore = create((set, get) => ({
       set({ activeSession });
       if (activeSession) {
         await get().fetchSolves(activeSession.id);
+        await get().fetchNotes(activeSession.id);
       }
       await get().fetchSessions();
     } catch (error) {
@@ -110,6 +113,7 @@ export const useStore = create((set, get) => ({
       const newSession = response.data.session;
       set({ activeSession: newSession });
       await get().fetchSolves(newSession.id);
+      await get().fetchNotes(newSession.id);
       await get().fetchSessions();
     } catch (error) {
       console.error('Failed to create session:', error);
@@ -136,6 +140,7 @@ export const useStore = create((set, get) => ({
     if (session) {
       set({ activeSession: session });
       await get().fetchSolves(sessionId);
+      await get().fetchNotes(sessionId);
     }
   },
 
@@ -205,6 +210,45 @@ export const useStore = create((set, get) => ({
       await get().fetchActiveSession();
     } catch (error) {
       console.error('Failed to delete solve:', error);
+      throw error;
+    }
+  },
+
+  // Notes Actions
+  fetchNotes: async (sessionId) => {
+    set({ loadingNotes: true });
+    try {
+      const response = await noteAPI.getNotes(sessionId);
+      set({ notes: response.data.notes || [], loadingNotes: false });
+    } catch (error) {
+      set({ loadingNotes: false });
+      console.error('Failed to fetch notes:', error);
+    }
+  },
+
+  addNote: async (content) => {
+    const { activeSession } = get();
+    if (!activeSession) return;
+    try {
+      const response = await noteAPI.createNote(activeSession.id, content);
+      const newNote = response.data.note;
+      set(state => ({
+        notes: [newNote, ...state.notes],
+      }));
+    } catch (error) {
+      console.error('Failed to add note:', error);
+      throw error;
+    }
+  },
+
+  deleteNoteAction: async (id) => {
+    try {
+      await noteAPI.deleteNote(id);
+      set(state => ({
+        notes: state.notes.filter(n => n.id !== id),
+      }));
+    } catch (error) {
+      console.error('Failed to delete note:', error);
       throw error;
     }
   },
