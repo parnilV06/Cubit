@@ -66,6 +66,7 @@ Cubit V1 consists of the following core entities.
 User
 Session
 Solve
+Note
 Lesson
 LessonProgress
 Post
@@ -169,7 +170,7 @@ Session
 
 ↓
 
-Many Solves
+Many Solves & Many Notes
 ```
 
 isActive
@@ -333,12 +334,26 @@ Each notification belongs to exactly one user.
 
 ---
 
+## Note
+
+Represents a user-created text note associated with a specific cubing session.
+
+Stores:
+
+* Content (string)
+* Timestamp (createdAt, updatedAt)
+
+Each note belongs to exactly one Session.
+
+---
+
 # Database Relationships
 
 | Parent  | Child          | Relationship               |
 | ------- | -------------- | -------------------------- |
 | User    | Session        | One → Many                 |
 | Session | Solve          | One → Many                 |
+| Session | Note           | One → Many                 |
 | User    | Post           | One → Many                 |
 | Post    | Comment        | One → Many                 |
 | User    | Comment        | One → Many                 |
@@ -415,6 +430,7 @@ Deleting a User should remove:
 Deleting a Session should remove:
 
 * Solves
+* Notes
 
 Deleting a Post should remove:
 
@@ -463,6 +479,11 @@ Notification
 
 * userId
 * read
+
+Note
+
+* sessionId
+* createdAt
 
 ---
 
