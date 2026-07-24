@@ -414,3 +414,13 @@
 .badge.pb { background-color: #22c55e; }
 .badge.dnf { background-color: #ef4444; }
 .badge.plus2 { background-color: #f59e0b; }
+
+.solve-actions {
+  display: none;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.stats-list-item:hover .solve-actions {
+  display: flex;
+}

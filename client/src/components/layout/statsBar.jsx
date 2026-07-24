@@ -161,7 +161,7 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
                       +2
                     </span>
                   ) : (
-                    <>
+                    <div className="solve-actions">
                       <button 
                         onClick={() => handlePenaltyChange(solve.id, 'PLUS_TWO')} 
                         style={{ background: 'transparent', border: '1px solid #572ff7', color: '#a0a0ff', fontSize: '0.65rem', padding: '1px 3px', borderRadius: '4px', cursor: 'pointer' }}
@@ -174,7 +174,7 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
                       >
                         DNF
                       </button>
-                    </>
+                    </div>
                   )}
                   
                   <button 
