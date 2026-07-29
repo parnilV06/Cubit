@@ -17,6 +17,7 @@
     "axios": "^1.18.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cstimer_module": "^0.1.5",
     "dayjs": "^1.11.21",
     "lucide-react": "^1.18.0",
     "react": "^19.2.6",
