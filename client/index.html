@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Cubit is a fast, modern, minimal, and open-source cubing platform. Built for everyone from beginners to sub-10s. Time, train, and improve." />
     <title>Cubit | The Modern Speedcubing Platform</title>
+    <script>
+      // Polyfill global $ required by cstimer_module in browser ESM environments
+      if (typeof window !== 'undefined') {
+        window.$ = window.$ || {
+          isArray: Array.isArray,
+          noop: function() {},
+          now: function() { return +new Date(); }
+        };
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

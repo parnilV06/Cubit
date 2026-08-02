@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ChevronRight, ChevronLeft, Trash2 } from 'lucide-react';
 import { useStore } from '../../services/store';
 import { calculateAverageOfN } from '../../utils/statsHelpers';
+import { formatPuzzleDisplay } from '../../services/scramble/index';
 import './layout.css';
 
 const StatsBar = ({ isExpanded, setIsExpanded }) => {
@@ -73,15 +74,6 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
     }
   };
 
-  const formatPuzzleType = (type) => {
-    switch (type) {
-      case 'THREE_BY_THREE': return '3 x 3 WCA';
-      case 'TWO_BY_TWO': return '2 x 2 WCA';
-      case 'FOUR_BY_FOUR': return '4 x 4 WCA';
-      default: return type || '3 x 3 WCA';
-    }
-  };
-
   return (
     <div className={`app-stats-bar ${isExpanded ? 'expanded' : 'collapsed'}`}>
       <button 
@@ -102,11 +94,9 @@ const StatsBar = ({ isExpanded, setIsExpanded }) => {
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
           </select>
-          <select className="stats-dropdown puzzle-select" disabled value={activeSession?.puzzleType || 'THREE_BY_THREE'}>
-            <option value="THREE_BY_THREE">3 x 3 WCA</option>
-            <option value="TWO_BY_TWO">2 x 2 WCA</option>
-            <option value="FOUR_BY_FOUR">4 x 4 WCA</option>
-          </select>
+          <div className="puzzle-capsule" title="Session Puzzle Type (Read-only)">
+            {formatPuzzleDisplay(activeSession?.puzzleType)}
+          </div>
         </div>
 
         <div className="stats-grid">
