@@ -344,6 +344,29 @@
   flex: 0 0 110px;
 }
 
+.puzzle-capsule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-card-sec, #1d1d24);
+  border: 1px solid var(--border-primary);
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+  width: 110px;
+  max-width: 110px;
+  flex: 0 0 110px;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  cursor: default;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

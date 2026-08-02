@@ -2,29 +2,13 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { Plus, Pencil, X, Play, Pause, Volume2, VolumeX, Repeat, Check, Trash } from 'lucide-react';
 import { useStore } from '../../services/store';
 import { useFocusStore } from '../../services/focusStore';
+import CubeNetRenderer from '../../services/cubeEngine/visualizer/CubeNetRenderer.jsx';
 import './appStyles.css';
-import cube2dNet from '../../assets/cube-2d-net-scramble.png';
-
-const generateScramble = () => {
-  const moves = ['R', 'L', 'U', 'D', 'F', 'B'];
-  const modifiers = ['', "'", '2'];
-  const scramble = [];
-  let lastMove = '';
-  
-  for (let i = 0; i < 20; i++) {
-    let move = moves[Math.floor(Math.random() * moves.length)];
-    while (move === lastMove) {
-      move = moves[Math.floor(Math.random() * moves.length)];
-    }
-    const modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
-    scramble.push(move + modifier);
-    lastMove = move;
-  }
-  return scramble.join(' ');
-};
 
 export default function TimerDashboard() {
   const activeSession = useStore((state) => state.activeSession);
+  const activeScramble = useStore((state) => state.activeScramble);
+  const generateNewScramble = useStore((state) => state.generateNewScramble);
   const sessions = useStore((state) => state.sessions);
   const solves = useStore((state) => state.solves);
   const addSolve = useStore((state) => state.addSolve);
@@ -34,9 +18,15 @@ export default function TimerDashboard() {
   const addNote = useStore((state) => state.addNote);
   const deleteNoteAction = useStore((state) => state.deleteNoteAction);
 
+  // Auto-generate active scramble if missing or session loaded
+  useEffect(() => {
+    if (activeSession && !activeScramble) {
+      generateNewScramble();
+    }
+  }, [activeSession, activeScramble, generateNewScramble]);
+
   // Timer States
   const [timerState, setTimerState] = useState('idle'); // 'idle', 'holding', 'ready', 'running', 'saving', 'error'
-  const [scramble, setScramble] = useState(generateScramble());
   const [frozenTime, setFrozenTime] = useState(0);
   const [saveError, setSaveError] = useState(null);
   const [toast, setToast] = useState({ show: false, message: '' });
@@ -127,14 +117,14 @@ export default function TimerDashboard() {
   const animationFrameIdRef = useRef(null);
   const holdTimeoutRef = useRef(null);
   const digitsRef = useRef(null);
-  const scrambleRef = useRef(scramble);
+  const activeScrambleRef = useRef(activeScramble);
   const activeSessionRef = useRef(activeSession);
   const isAnyModalOpenRef = useRef(false);
 
   // Keep refs in sync
   useEffect(() => {
-    scrambleRef.current = scramble;
-  }, [scramble]);
+    activeScrambleRef.current = activeScramble;
+  }, [activeScramble]);
 
   useEffect(() => {
     activeSessionRef.current = activeSession;
@@ -214,14 +204,13 @@ export default function TimerDashboard() {
     setFrozenTime(durationSeconds);
     setTimerStateAndRef('saving');
 
-    const currentScramble = scrambleRef.current;
+    const currentScrambleText = activeScrambleRef.current?.scramble || '';
     const currentSession = activeSessionRef.current;
 
     if (currentSession) {
       try {
-        await addSolve(durationSeconds, currentScramble);
+        await addSolve(durationSeconds, currentScrambleText);
         setTimerStateAndRef('idle');
-        setScramble(generateScramble());
         if (digitsRef.current) {
           digitsRef.current.textContent = '0.000';
         }
@@ -233,7 +222,7 @@ export default function TimerDashboard() {
       }
     } else {
       setTimerStateAndRef('idle');
-      setScramble(generateScramble());
+      generateNewScramble();
       if (digitsRef.current) {
         digitsRef.current.textContent = '0.000';
       }
@@ -275,7 +264,7 @@ export default function TimerDashboard() {
   };
 
   const handleNewScramble = () => {
-    setScramble(generateScramble());
+    generateNewScramble();
   };
 
   // Helper: Auto-calculate next session name (e.g. Session 7)
@@ -509,7 +498,7 @@ export default function TimerDashboard() {
       : '0.00';
   }, [validSolves]);
 
-  // State for the 4 bottom features. Max 2 can be true.
+  // State for bottom features
   const [selectedFeatures, setSelectedFeatures] = useState({
     visualizer: true,
     notes: false,
@@ -546,15 +535,18 @@ export default function TimerDashboard() {
             <span>{toast.message}</span>
           </div>
         )}
+
+        {/* Scramble Display Box */}
         <div className="scramble-box">
           <div className="scramble-title">Scramble</div>
           <div className="scramble-text-container">
             <div className="scramble-text">
-              {scramble}
+              {activeScramble?.scramble || 'Loading scramble...'}
             </div>
           </div>
         </div>
 
+        {/* Timer Display Box */}
         <div className="timer-display-box">
           {timerState === 'idle' && (
             <>
@@ -618,6 +610,7 @@ export default function TimerDashboard() {
           )}
         </div>
 
+        {/* Action Buttons */}
         <div className="timer-actions">
           <button 
             className="timer-btn" 
@@ -674,10 +667,17 @@ export default function TimerDashboard() {
         </div>
 
         <div className="features-content">
+          {/* Live Stage 2 Net Visualizer */}
           {selectedFeatures.visualizer && (
             <div className="feature-panel visualizer-panel">
               <div className="feature-panel-title">Scrambled State</div>
-              <img src={cube2dNet} alt="Cube 2D Net" className="cube-net-img" />
+              <div className="visualizer-net-container">
+                <CubeNetRenderer 
+                  netData={activeScramble?.visualization} 
+                  cubeState={activeScramble?.cubeState} 
+                  maxContainerWidth={240} 
+                />
+              </div>
             </div>
           )}
 
@@ -884,6 +884,7 @@ export default function TimerDashboard() {
                   <option value="THREE_BY_THREE">3 × 3 WCA</option>
                   <option value="TWO_BY_TWO">2 × 2 WCA</option>
                   <option value="FOUR_BY_FOUR">4 × 4 WCA</option>
+                  <option value="FIVE_BY_FIVE">5 × 5 WCA</option>
                 </select>
               </div>
 
