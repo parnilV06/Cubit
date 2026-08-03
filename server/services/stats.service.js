@@ -24,23 +24,6 @@ const getDashboardStats = async (userId) => {
     const sessions = user.sessions;
     const allSolves = sessions.flatMap(s => s.solves);
 
-    if (sessions.length === 0 || allSolves.length === 0) {
-        return {
-            kpis: {
-                pb: null,
-                ao5: null,
-                ao12: null,
-                mean: null,
-                totalSolves: 0,
-                totalSessions: sessions.length
-            },
-            solveTrend: [],
-            timeDistribution: [],
-            bestProgress: [],
-            recentSessions: []
-        };
-    }
-
     return {
         kpis: {
             pb: calculations.calculatePB(allSolves),

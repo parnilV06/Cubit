@@ -406,6 +406,28 @@
 .session-panel-header {
   width: 100%;
   text-align: center;
+  position: relative;
+}
+
+.session-delete-icon-btn {
+  position: absolute;
+  top: -2px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.session-delete-icon-btn:hover {
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.1);
 }
 
 .session-panel-title {

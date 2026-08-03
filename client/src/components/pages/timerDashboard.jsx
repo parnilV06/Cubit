@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Plus, Pencil, X, Play, Pause, Volume2, VolumeX, Repeat, Check, Trash } from 'lucide-react';
+import { Plus, Pencil, X, Play, Pause, Volume2, VolumeX, Repeat, Check, Trash, Trash2 } from 'lucide-react';
 import { useStore } from '../../services/store';
 import { useFocusStore } from '../../services/focusStore';
 import CubeNetRenderer from '../../services/cubeEngine/visualizer/CubeNetRenderer.jsx';
+import SessionDeleteModal from '../ui/SessionDeleteModal.jsx';
 import './appStyles.css';
 
 export default function TimerDashboard() {
@@ -14,6 +15,7 @@ export default function TimerDashboard() {
   const addSolve = useStore((state) => state.addSolve);
   const createSession = useStore((state) => state.createSession);
   const renameSession = useStore((state) => state.renameSession);
+  const deleteSession = useStore((state) => state.deleteSession);
   const notes = useStore((state) => state.notes);
   const addNote = useStore((state) => state.addNote);
   const deleteNoteAction = useStore((state) => state.deleteNoteAction);
@@ -43,6 +45,29 @@ export default function TimerDashboard() {
   const [renameSessionName, setRenameSessionName] = useState('');
   const [renameModalError, setRenameModalError] = useState('');
   const [isSubmittingRename, setIsSubmittingRename] = useState(false);
+
+  // Delete Session Modal States
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleOpenDeleteModal = () => {
+    if (!activeSession) return;
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleConfirmDeleteSession = async (sessionId) => {
+    try {
+      await deleteSession(sessionId);
+      handleReset();
+      triggerToast('Session deleted');
+    } catch (err) {
+      console.error('Failed to delete session:', err);
+      throw err;
+    }
+  };
 
   // Notes Local States & Handlers
   const [noteText, setNoteText] = useState('');
@@ -131,8 +156,8 @@ export default function TimerDashboard() {
   }, [activeSession]);
 
   useEffect(() => {
-    isAnyModalOpenRef.current = isCreateModalOpen || isRenameModalOpen;
-  }, [isCreateModalOpen, isRenameModalOpen]);
+    isAnyModalOpenRef.current = isCreateModalOpen || isRenameModalOpen || isDeleteModalOpen;
+  }, [isCreateModalOpen, isRenameModalOpen, isDeleteModalOpen]);
 
   // Synchronize timerStateRef with timerState
   const setTimerStateAndRef = (newState) => {
@@ -725,6 +750,16 @@ export default function TimerDashboard() {
             <div className="feature-panel session-panel">
               <div className="session-panel-header">
                 <h4 className="session-panel-title">Session Management</h4>
+                {activeSession && (
+                  <button
+                    className="session-delete-icon-btn"
+                    onClick={handleOpenDeleteModal}
+                    title="Delete Current Session"
+                    aria-label="Delete Current Session"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                )}
               </div>
               <div className="session-details-content">
                 <p>
@@ -962,6 +997,14 @@ export default function TimerDashboard() {
           </div>
         </div>
       )}
+      {/* Session Delete Confirmation Modal */}
+      <SessionDeleteModal
+        isOpen={isDeleteModalOpen}
+        session={activeSession}
+        isOnlySession={sessions.length <= 1}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDeleteSession}
+      />
     </div>
   );
 }

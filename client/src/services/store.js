@@ -203,6 +203,44 @@ export const useStore = create((set, get) => ({
     }
   },
 
+  deleteSession: async (sessionId) => {
+    const { sessions, selectedSessionId, selectSession } = get();
+    try {
+      // 1. Determine deterministic fallback if deleting the selected session
+      let fallbackId = null;
+      if (selectedSessionId === sessionId) {
+        const sortedChronological = [...sessions].sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
+        const currentIndex = sortedChronological.findIndex((s) => s.id === sessionId);
+        if (currentIndex > 0) {
+          fallbackId = sortedChronological[currentIndex - 1].id;
+        } else if (sortedChronological.length > 1) {
+          fallbackId = sortedChronological[1].id;
+        }
+      }
+
+      // 2. Delete session on backend
+      await sessionAPI.deleteSession(sessionId);
+
+      // 3. Fetch updated sessions list from backend
+      const response = await sessionAPI.getSessions();
+      const updatedSessions = response.data.sessions || [];
+      set({ sessions: updatedSessions });
+
+      // 4. Switch to fallback or first available session if selected session was deleted
+      if (selectedSessionId === sessionId && updatedSessions.length > 0) {
+        const targetId = (fallbackId && updatedSessions.some(s => s.id === fallbackId))
+          ? fallbackId
+          : updatedSessions[0].id;
+        await selectSession(targetId);
+      }
+    } catch (error) {
+      console.error('Failed to delete session:', error);
+      throw error;
+    }
+  },
+
   selectSession: async (sessionId) => {
     const session = get().sessions.find(s => s.id === sessionId);
     if (session) {

@@ -2,9 +2,8 @@ const { calculatePB, calculateMean } = require('./kpis');
 
 const calculateRecentSessions = (sessions) => {
     const sorted = [...sessions].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    const recent = sorted.slice(0, 5);
     
-    return recent.map((session) => {
+    return sorted.map((session) => {
         const originalIndex = sessions.findIndex(s => s.id === session.id);
         const name = session.name || `Session ${originalIndex + 1}`;
         
