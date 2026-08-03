@@ -1,4 +1,5 @@
 const { prisma } = require('../config/database');
+const GamificationEngine = require('./gamification');
 
 const getSolves = async (userId, sessionId) => {
     // verify session ownership
@@ -31,13 +32,20 @@ const addSolve = async (userId, data) => {
         throw new Error("Cannot add solves to an archived session");
     }
 
-    return await prisma.solve.create({
-        data: {
-            sessionId,
-            time,
-            scramble,
-            penalty
-        }
+    return await prisma.$transaction(async (tx) => {
+        const newSolve = await tx.solve.create({
+            data: {
+                sessionId,
+                time,
+                scramble,
+                penalty
+            }
+        });
+
+        // Trigger authoritative Gamification Engine processing
+        await GamificationEngine.processSolveCreation(userId, newSolve, tx);
+
+        return newSolve;
     });
 };
 
@@ -58,11 +66,18 @@ const updateSolve = async (userId, solveId, data) => {
     
     const { penalty } = data;
     
-    return await prisma.solve.update({
-        where: { id: solveId },
-        data: {
-            penalty
-        }
+    return await prisma.$transaction(async (tx) => {
+        const updatedSolve = await tx.solve.update({
+            where: { id: solveId },
+            data: {
+                penalty
+            }
+        });
+
+        // Reconcile Solve Rating mutation
+        await GamificationEngine.processSolveMutation(userId, solveId, penalty, tx);
+
+        return updatedSolve;
     });
 };
 
@@ -76,8 +91,13 @@ const deleteSolve = async (userId, solveId) => {
         return false;
     }
 
-    await prisma.solve.delete({
-        where: { id: solveId }
+    await prisma.$transaction(async (tx) => {
+        // Reconcile Solve Rating deletion
+        await GamificationEngine.processSolveDeletion(userId, solveId, tx);
+
+        await tx.solve.delete({
+            where: { id: solveId }
+        });
     });
 
     return true;

@@ -1,4 +1,5 @@
 const { prisma } = require('../config/database');
+const GamificationEngine = require('./gamification');
 
 const createDefaultActiveSession = async (userId, tx = prisma) => {
     return await tx.session.create({
@@ -23,7 +24,8 @@ const getSessions = async (userId) => {
             createdAt: true,
             updatedAt: true,
             isActive: true,
-            isArchived: true
+            isArchived: true,
+            evaluatedForImprovement: true
         }
     });
 };
@@ -44,6 +46,15 @@ const createSession = async (userId, data) => {
     const { name = "New Session", puzzleType = "THREE_BY_THREE" } = data;
 
     const result = await prisma.$transaction(async (tx) => {
+        // Find current active session to evaluate improvement
+        const previousActive = await tx.session.findFirst({
+            where: { userId, isActive: true }
+        });
+
+        if (previousActive) {
+            await GamificationEngine.processSessionCloseOrSwitch(userId, previousActive.id, tx);
+        }
+
         await tx.session.updateMany({
             where: { userId, isActive: true },
             data: { isActive: false }
@@ -88,6 +99,9 @@ const archiveSession = async (userId, sessionId) => {
     if (!session || session.userId !== userId) return null;
 
     const result = await prisma.$transaction(async (tx) => {
+        // Evaluate improvement on session being archived
+        await GamificationEngine.processSessionCloseOrSwitch(userId, sessionId, tx);
+
         const archivedSession = await tx.session.update({
             where: { id: sessionId },
             data: {

@@ -458,6 +458,110 @@ const getPBLeaderboard = async (currentUserId, options = {}) => {
     };
 };
 
+const getRatingLeaderboard = async (currentUserId, options = {}) => {
+    const { scope = 'global', limit = 50 } = options;
+    const isFriendsScope = scope === 'friends';
+
+    let eligibleUserIds = null;
+
+    if (isFriendsScope && currentUserId) {
+        const friendships = await prisma.friendship.findMany({
+            where: {
+                status: 'ACCEPTED',
+                OR: [
+                    { senderId: currentUserId },
+                    { receiverId: currentUserId }
+                ]
+            }
+        });
+
+        const friendIds = friendships.map(f =>
+            f.senderId === currentUserId ? f.receiverId : f.senderId
+        );
+        eligibleUserIds = [currentUserId, ...friendIds];
+    }
+
+    const whereClause = eligibleUserIds ? { id: { in: eligibleUserIds } } : {};
+
+    const users = await prisma.user.findMany({
+        where: whereClause,
+        orderBy: [
+            { totalRating: 'desc' },
+            { username: 'asc' }
+        ],
+        select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatarUrl: true,
+            totalRating: true,
+            currentStreak: true,
+            longestStreak: true
+        }
+    });
+
+    const rankedEntries = users.map((user, index) => {
+        const ratingVal = user.totalRating ? Number(user.totalRating) : 0;
+        return {
+            rank: index + 1,
+            userId: user.id,
+            username: user.username,
+            displayName: user.displayName,
+            avatarUrl: user.avatarUrl,
+            rating: Number(ratingVal.toFixed(2)),
+            formattedRating: ratingVal.toFixed(2),
+            streak: {
+                current: user.currentStreak || 0,
+                longest: user.longestStreak || 0
+            },
+            isCurrentUser: currentUserId ? user.id === currentUserId : false
+        };
+    });
+
+    const entryUserIds = rankedEntries.filter(e => !e.isCurrentUser).map(e => e.userId);
+    const friendships = (currentUserId && entryUserIds.length > 0) ? await prisma.friendship.findMany({
+        where: {
+            OR: [
+                { senderId: currentUserId, receiverId: { in: entryUserIds } },
+                { senderId: { in: entryUserIds }, receiverId: currentUserId }
+            ]
+        }
+    }) : [];
+
+    const friendshipMap = new Map();
+    friendships.forEach(f => {
+        const otherId = f.senderId === currentUserId ? f.receiverId : f.senderId;
+        friendshipMap.set(otherId, f);
+    });
+
+    const enrichEntry = (entry) => {
+        if (entry.isCurrentUser) {
+            return { ...entry, relationshipStatus: 'SELF', requestId: null };
+        }
+        const f = friendshipMap.get(entry.userId);
+        let relationshipStatus = 'NONE';
+        let requestId = null;
+        if (f) {
+            requestId = f.id;
+            if (f.status === 'ACCEPTED') relationshipStatus = 'ACCEPTED';
+            else if (f.status === 'PENDING') relationshipStatus = f.senderId === currentUserId ? 'OUTGOING_PENDING' : 'INCOMING_PENDING';
+        }
+        return { ...entry, relationshipStatus, requestId };
+    };
+
+    const maxLimit = Math.max(1, parseInt(limit) || 50);
+    const topEntries = rankedEntries.slice(0, maxLimit).map(enrichEntry);
+    const rawCurrentUserEntry = rankedEntries.find(e => e.isCurrentUser);
+    const currentUserEntry = rawCurrentUserEntry ? enrichEntry(rawCurrentUserEntry) : null;
+
+    return {
+        scope: isFriendsScope ? 'friends' : 'global',
+        entries: topEntries,
+        totalEntries: rankedEntries.length,
+        currentUserEntry
+    };
+};
+
 module.exports = {
     getPosts,
     createPost,
@@ -467,5 +571,6 @@ module.exports = {
     unlikePost,
     addComment,
     deleteComment,
-    getPBLeaderboard
+    getPBLeaderboard,
+    getRatingLeaderboard
 };
