@@ -3,7 +3,8 @@ const profileService = require('../services/profile.service');
 const getProfileByUsername = async (req, res, next) => {
     try {
         const { username } = req.params;
-        const profile = await profileService.getProfileByUsername(username);
+        const currentUserId = req.user ? req.user.id : null;
+        const profile = await profileService.getProfileByUsername(username, currentUserId);
 
         if (!profile) {
             return res.status(404).json({

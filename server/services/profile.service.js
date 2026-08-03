@@ -2,7 +2,7 @@ const { prisma } = require('../config/database');
 const cloudinary = require('../config/cloudinary');
 const streamifier = require('streamifier');
 
-const getProfileByUsername = async (username) => {
+const getProfileByUsername = async (username, currentUserId = null) => {
     const user = await prisma.user.findUnique({
         where: { username },
         select: {
@@ -33,13 +33,61 @@ const getProfileByUsername = async (username) => {
         }
     });
 
+    const totalSolves = await prisma.solve.count({
+        where: { session: { userId: user.id } }
+    });
+
+    const pbSolve = await prisma.solve.findFirst({
+        where: { session: { userId: user.id }, penalty: { not: 'DNF' } },
+        orderBy: { time: 'asc' }
+    });
+
+    const avgResult = await prisma.solve.aggregate({
+        where: { session: { userId: user.id }, penalty: { not: 'DNF' } },
+        _avg: { time: true }
+    });
+
+    let relationshipStatus = 'NONE';
+    let requestId = null;
+
+    if (currentUserId) {
+        if (currentUserId === user.id) {
+            relationshipStatus = 'SELF';
+        } else {
+            const friendship = await prisma.friendship.findFirst({
+                where: {
+                    OR: [
+                        { senderId: currentUserId, receiverId: user.id },
+                        { senderId: user.id, receiverId: currentUserId }
+                    ]
+                }
+            });
+
+            if (friendship) {
+                requestId = friendship.id;
+                if (friendship.status === 'ACCEPTED') {
+                    relationshipStatus = 'ACCEPTED';
+                } else if (friendship.status === 'PENDING') {
+                    relationshipStatus = friendship.senderId === currentUserId ? 'OUTGOING_PENDING' : 'INCOMING_PENDING';
+                }
+            }
+        }
+    }
+
     const { id, _count, ...profileData } = user;
 
     return {
+        id,
         ...profileData,
         totalPosts: _count.posts,
         totalSessions: _count.sessions,
-        totalFriends
+        totalFriends,
+        totalSolves,
+        pb: pbSolve ? (pbSolve.penalty === 'PLUS_TWO' ? pbSolve.time + 2000 : pbSolve.time) : null,
+        avgSolve: avgResult._avg?.time || null,
+        relationshipStatus,
+        requestId,
+        isOwnProfile: currentUserId ? currentUserId === user.id : false
     };
 };
 

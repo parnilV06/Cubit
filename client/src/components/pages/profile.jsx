@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../../services/store';
 import { profileAPI, friendAPI, statsAPI, trainerAPI } from '../../services/api';
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg';
@@ -35,6 +35,10 @@ const ModalOverlay = ({ onClose, title, children }) => (
 export default function Profile() {
   const user = useStore((state) => state.user);
   const fetchMe = useStore((state) => state.fetchMe);
+  const { username: paramUsername } = useParams();
+
+  const targetUsername = paramUsername || user?.username;
+  const isOwnProfile = !paramUsername || (user && paramUsername === user.username);
 
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +49,7 @@ export default function Profile() {
   const [editBio, setEditBio] = useState('');
   const [avatarFile, setAvatarFile] = useState(null);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   // Modals
   const [showFollowModal, setShowFollowModal] = useState(null); // 'friends' or null
@@ -59,25 +64,26 @@ export default function Profile() {
 
   // Fetch all necessary data on mount / user change
   useEffect(() => {
-    if (!user) return;
+    if (!targetUsername) return;
     
     const fetchProfileData = async () => {
       try {
         setLoading(true);
-        const profileResponse = await profileAPI.getProfile(user.username);
+        const profileResponse = await profileAPI.getProfile(targetUsername);
         setProfileData(profileResponse.data);
         
-        // Initialize form fields
-        setEditDisplayName(profileResponse.data.displayName || '');
-        setEditBio(profileResponse.data.bio || '');
+        if (isOwnProfile) {
+          setEditDisplayName(profileResponse.data.displayName || '');
+          setEditBio(profileResponse.data.bio || '');
 
-        // Fetch stats dashboard
-        const statsResponse = await statsAPI.getDashboard();
-        setStatsData(statsResponse.data);
+          // Fetch stats dashboard for own profile
+          const statsResponse = await statsAPI.getDashboard();
+          setStatsData(statsResponse.data);
 
-        // Fetch trainer progress
-        const trainerResponse = await trainerAPI.getProgress();
-        setTrainerProgress(trainerResponse.data);
+          // Fetch trainer progress for own profile
+          const trainerResponse = await trainerAPI.getProgress();
+          setTrainerProgress(trainerResponse.data);
+        }
       } catch (err) {
         console.error('Failed to load profile details:', err);
       } finally {
@@ -86,7 +92,7 @@ export default function Profile() {
     };
     
     fetchProfileData();
-  }, [user]);
+  }, [targetUsername, isOwnProfile]);
 
   // Load friends if the modal opens
   useEffect(() => {
@@ -112,17 +118,14 @@ export default function Profile() {
     try {
       setSavingProfile(true);
       
-      // Update text fields
       await profileAPI.updateProfile({ displayName: editDisplayName, bio: editBio });
 
-      // Upload avatar if selected
       if (avatarFile) {
         const formData = new FormData();
         formData.append('avatar', avatarFile);
         await profileAPI.uploadAvatar(formData);
       }
 
-      // Refresh data
       await fetchMe();
       const updatedProfile = await profileAPI.getProfile(user.username);
       setProfileData(updatedProfile.data);
@@ -136,14 +139,37 @@ export default function Profile() {
     }
   };
 
+  const handleSendFriendRequest = async () => {
+    try {
+      setActionLoading(true);
+      await friendAPI.sendRequest(profileData.username);
+      setProfileData(prev => ({ ...prev, relationshipStatus: 'OUTGOING_PENDING' }));
+    } catch (err) {
+      alert(err.response?.data?.message || err.message || 'Failed to send friend request');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleAcceptFriendRequest = async () => {
+    try {
+      setActionLoading(true);
+      await friendAPI.acceptRequest(profileData.requestId);
+      setProfileData(prev => ({ ...prev, relationshipStatus: 'ACCEPTED', totalFriends: (prev.totalFriends || 0) + 1 }));
+    } catch (err) {
+      alert(err.response?.data?.message || err.message || 'Failed to accept friend request');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleRemoveFriend = async (friendId) => {
     if (window.confirm('Are you sure you want to remove this friend?')) {
       try {
         await friendAPI.deleteFriendship(friendId);
-        // Refresh list and profile count
         const response = await friendAPI.getFriends();
         setFriendsList(response.data);
-        const profileResponse = await profileAPI.getProfile(user.username);
+        const profileResponse = await profileAPI.getProfile(targetUsername);
         setProfileData(profileResponse.data);
       } catch (err) {
         console.error('Failed to delete friendship:', err);
@@ -161,7 +187,7 @@ export default function Profile() {
   }, [trainerProgress]);
 
   const isStep3Completed = useMemo(() => {
-    return !!statsData && statsData.kpis.totalSolves > 0;
+    return !!statsData && statsData.kpis?.totalSolves > 0;
   }, [statsData]);
 
   const isStep4Completed = useMemo(() => {
@@ -185,8 +211,8 @@ export default function Profile() {
       {/* ── Left Column: Main content ── */}
       <main className="profile-main-content">
         <header className="profile-header">
-          <h1 className="profile-header-title">Profile</h1>
-          <p className="profile-header-sub">Your home on Cubit</p>
+          <h1 className="profile-header-title">{isOwnProfile ? 'Profile' : `${profileData.displayName || profileData.username}'s Profile`}</h1>
+          <p className="profile-header-sub">{isOwnProfile ? 'Your home on Cubit' : `@${profileData.username}`}</p>
         </header>
 
         {/* Profile Card (Hero) */}
@@ -207,7 +233,7 @@ export default function Profile() {
               </p>
               
               <div className="profile-hero-stats-row" style={{ marginTop: '15px' }}>
-                <div className="profile-hero-stat-badge" onClick={() => setShowFollowModal('friends')} style={{ cursor: 'pointer' }}>
+                <div className="profile-hero-stat-badge" onClick={() => isOwnProfile && setShowFollowModal('friends')} style={{ cursor: isOwnProfile ? 'pointer' : 'default' }}>
                   <span className="profile-hero-stat-value">{profileData?.totalFriends || 0}</span>
                   <span className="profile-hero-stat-label">Friends</span>
                 </div>
@@ -219,120 +245,159 @@ export default function Profile() {
             </div>
           </div>
           
-          <button className="profile-edit-btn" id="profile-edit-button" onClick={() => setShowEditProfile(true)}>
-            Edit Profile
-          </button>
+          {isOwnProfile ? (
+            <button className="profile-edit-btn" id="profile-edit-button" onClick={() => setShowEditProfile(true)}>
+              Edit Profile
+            </button>
+          ) : (
+            <div style={{ display: 'flex', gap: '10px' }}>
+              {profileData?.relationshipStatus === 'NONE' && (
+                <button 
+                  className="profile-edit-btn" 
+                  style={{ backgroundColor: '#572FF7', color: '#fff', border: 'none' }} 
+                  disabled={actionLoading}
+                  onClick={handleSendFriendRequest}
+                >
+                  {actionLoading ? '...' : 'Add Friend +'}
+                </button>
+              )}
+              {profileData?.relationshipStatus === 'OUTGOING_PENDING' && (
+                <button className="profile-edit-btn" style={{ backgroundColor: '#2B2B35', color: '#A8A8B5', border: 'none' }} disabled>
+                  Requested
+                </button>
+              )}
+              {profileData?.relationshipStatus === 'INCOMING_PENDING' && (
+                <button 
+                  className="profile-edit-btn" 
+                  style={{ backgroundColor: '#34A853', color: '#fff', border: 'none' }} 
+                  disabled={actionLoading}
+                  onClick={handleAcceptFriendRequest}
+                >
+                  {actionLoading ? '...' : 'Accept Request'}
+                </button>
+              )}
+              {profileData?.relationshipStatus === 'ACCEPTED' && (
+                <button className="profile-edit-btn" style={{ backgroundColor: '#1E3A8A', color: '#60A5FA', border: 'none' }} disabled>
+                  Friends ✓
+                </button>
+              )}
+            </div>
+          )}
         </section>
 
-        {/* Quick Actions */}
-        <section className="profile-section-container">
-          <h3 className="profile-section-title">Quick Actions</h3>
-          
-          <div className="profile-quick-actions-grid">
-            <Link to="/app" className="profile-action-card" id="quick-action-timer">
-              <div className="profile-action-icon-wrapper">
-                <img src={stopwatchIcon} alt="Timer Icon" className="profile-action-icon" />
-              </div>
-              <h4 className="profile-action-title">Timer</h4>
-              <p className="profile-action-desc">Start Solving now</p>
-              <span className="profile-action-arrow">→</span>
-            </Link>
-
-            <Link to="/app/trainer" className="profile-action-card" id="quick-action-trainer">
-              <div className="profile-action-icon-wrapper">
-                <img src={trainerIcon} alt="Trainer Icon" className="profile-action-icon" />
-              </div>
-              <h4 className="profile-action-title">Trainer</h4>
-              <p className="profile-action-desc">Learn and Train</p>
-              <span className="profile-action-arrow">→</span>
-            </Link>
-
-            <Link to="/app/stats" className="profile-action-card" id="quick-action-stats">
-              <div className="profile-action-icon-wrapper">
-                <img src={statsIcon} alt="Stats Icon" className="profile-action-icon" />
-              </div>
-              <h4 className="profile-action-title">Stats</h4>
-              <p className="profile-action-desc">Analyze your Stats</p>
-              <span className="profile-action-arrow">→</span>
-            </Link>
-
-            <Link to="/app/community" className="profile-action-card" id="quick-action-community">
-              <div className="profile-action-icon-wrapper">
-                <img src={communityIcon} alt="Community Icon" className="profile-action-icon" />
-              </div>
-              <h4 className="profile-action-title">Community</h4>
-              <p className="profile-action-desc">Explore Cubit Community</p>
-              <span className="profile-action-arrow">→</span>
-            </Link>
-          </div>
-        </section>
-
-        {/* Getting Started */}
-        <section className="profile-section-container">
-          <div className="profile-section-header">
-            <h3 className="profile-section-title">Getting Started</h3>
-            <span className="profile-getting-started-progress">
-              {completedStepsCount} / 4 Completed
-            </span>
-          </div>
-          <p className="profile-section-subtext">
-            Complete these steps and become a part of Cubit
-          </p>
-          
-          <div className="profile-timeline-container">
-            <div className="profile-timeline-line"></div>
-            <div 
-              className="profile-timeline-progress-line" 
-              style={{ width: `${(completedStepsCount / 4) * 100}%` }}
-            ></div>
+        {/* Quick Actions (For Own Profile) */}
+        {isOwnProfile && (
+          <section className="profile-section-container">
+            <h3 className="profile-section-title">Quick Actions</h3>
             
-            <div className="profile-timeline-steps">
-              {/* Step 1 */}
-              <div className={`profile-timeline-step ${isStep1Completed ? 'completed' : 'active'}`}>
-                <div className="profile-timeline-number">1</div>
-                <div className="profile-timeline-step-icon-wrapper">
-                  <img src={userAddIcon} alt="User Add Icon" className="profile-timeline-step-icon" />
+            <div className="profile-quick-actions-grid">
+              <Link to="/app" className="profile-action-card" id="quick-action-timer">
+                <div className="profile-action-icon-wrapper">
+                  <img src={stopwatchIcon} alt="Timer Icon" className="profile-action-icon" />
                 </div>
-                <h4 className="profile-timeline-step-title">Upload Profile Pic</h4>
-                <p className="profile-timeline-step-desc">Add a profile picture</p>
-              </div>
+                <h4 className="profile-action-title">Timer</h4>
+                <p className="profile-action-desc">Start Solving now</p>
+                <span className="profile-action-arrow">→</span>
+              </Link>
 
-              {/* Step 2 */}
-              <div className={`profile-timeline-step ${isStep2Completed ? 'completed' : ''}`}>
-                <div className="profile-timeline-number">2</div>
-                <div className="profile-timeline-step-icon-wrapper">
-                  <img src={trainerIcon} alt="Trainer Icon" className="profile-timeline-step-icon" />
+              <Link to="/app/trainer" className="profile-action-card" id="quick-action-trainer">
+                <div className="profile-action-icon-wrapper">
+                  <img src={trainerIcon} alt="Trainer Icon" className="profile-action-icon" />
                 </div>
-                <h4 className="profile-timeline-step-title">Learn the Basics</h4>
-                <p className="profile-timeline-step-desc">Learn & Train</p>
-              </div>
+                <h4 className="profile-action-title">Trainer</h4>
+                <p className="profile-action-desc">Learn and Train</p>
+                <span className="profile-action-arrow">→</span>
+              </Link>
 
-              {/* Step 3 */}
-              <div className={`profile-timeline-step ${isStep3Completed ? 'completed' : ''}`}>
-                <div className="profile-timeline-number">3</div>
-                <div className="profile-timeline-step-icon-wrapper">
-                  <svg className="profile-timeline-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                    <line x1="12" y1="22.08" x2="12" y2="12" />
-                  </svg>
+              <Link to="/app/stats" className="profile-action-card" id="quick-action-stats">
+                <div className="profile-action-icon-wrapper">
+                  <img src={statsIcon} alt="Stats Icon" className="profile-action-icon" />
                 </div>
-                <h4 className="profile-timeline-step-title">Start your First Solve</h4>
-                <p className="profile-timeline-step-desc">Open Timer and Solve !</p>
-              </div>
+                <h4 className="profile-action-title">Stats</h4>
+                <p className="profile-action-desc">Analyze your Stats</p>
+                <span className="profile-action-arrow">→</span>
+              </Link>
 
-              {/* Step 4 */}
-              <div className={`profile-timeline-step ${isStep4Completed ? 'completed' : ''}`}>
-                <div className="profile-timeline-number">4</div>
-                <div className="profile-timeline-step-icon-wrapper">
-                  <img src={communityIcon} alt="Community Icon" className="profile-timeline-step-icon" />
+              <Link to="/app/community" className="profile-action-card" id="quick-action-community">
+                <div className="profile-action-icon-wrapper">
+                  <img src={communityIcon} alt="Community Icon" className="profile-action-icon" />
                 </div>
-                <h4 className="profile-timeline-step-title">Explore Community</h4>
-                <p className="profile-timeline-step-desc">Connect and Grow !</p>
+                <h4 className="profile-action-title">Community</h4>
+                <p className="profile-action-desc">Explore Cubit Community</p>
+                <span className="profile-action-arrow">→</span>
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {/* Getting Started (For Own Profile) */}
+        {isOwnProfile && (
+          <section className="profile-section-container">
+            <div className="profile-section-header">
+              <h3 className="profile-section-title">Getting Started</h3>
+              <span className="profile-getting-started-progress">
+                {completedStepsCount} / 4 Completed
+              </span>
+            </div>
+            <p className="profile-section-subtext">
+              Complete these steps and become a part of Cubit
+            </p>
+            
+            <div className="profile-timeline-container">
+              <div className="profile-timeline-line"></div>
+              <div 
+                className="profile-timeline-progress-line" 
+                style={{ width: `${(completedStepsCount / 4) * 100}%` }}
+              ></div>
+              
+              <div className="profile-timeline-steps">
+                {/* Step 1 */}
+                <div className={`profile-timeline-step ${isStep1Completed ? 'completed' : 'active'}`}>
+                  <div className="profile-timeline-number">1</div>
+                  <div className="profile-timeline-step-icon-wrapper">
+                    <img src={userAddIcon} alt="User Add Icon" className="profile-timeline-step-icon" />
+                  </div>
+                  <h4 className="profile-timeline-step-title">Upload Profile Pic</h4>
+                  <p className="profile-timeline-step-desc">Add a profile picture</p>
+                </div>
+
+                {/* Step 2 */}
+                <div className={`profile-timeline-step ${isStep2Completed ? 'completed' : ''}`}>
+                  <div className="profile-timeline-number">2</div>
+                  <div className="profile-timeline-step-icon-wrapper">
+                    <img src={trainerIcon} alt="Trainer Icon" className="profile-timeline-step-icon" />
+                  </div>
+                  <h4 className="profile-timeline-step-title">Learn the Basics</h4>
+                  <p className="profile-timeline-step-desc">Learn & Train</p>
+                </div>
+
+                {/* Step 3 */}
+                <div className={`profile-timeline-step ${isStep3Completed ? 'completed' : ''}`}>
+                  <div className="profile-timeline-number">3</div>
+                  <div className="profile-timeline-step-icon-wrapper">
+                    <svg className="profile-timeline-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                      <line x1="12" y1="22.08" x2="12" y2="12" />
+                    </svg>
+                  </div>
+                  <h4 className="profile-timeline-step-title">Start your First Solve</h4>
+                  <p className="profile-timeline-step-desc">Open Timer and Solve !</p>
+                </div>
+
+                {/* Step 4 */}
+                <div className={`profile-timeline-step ${isStep4Completed ? 'completed' : ''}`}>
+                  <div className="profile-timeline-number">4</div>
+                  <div className="profile-timeline-step-icon-wrapper">
+                    <img src={communityIcon} alt="Community Icon" className="profile-timeline-step-icon" />
+                  </div>
+                  <h4 className="profile-timeline-step-title">Explore Community</h4>
+                  <p className="profile-timeline-step-desc">Connect and Grow !</p>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       {/* ── Right Column: Sidebar ── */}
@@ -348,20 +413,30 @@ export default function Profile() {
         {/* Vertical stats stacking */}
         <div className="profile-sidebar-stats-stack">
           <div className="profile-sidebar-stat-card" id="sidebar-stat-solves">
-            <span className="profile-sidebar-stat-number">{statsData?.kpis?.totalSolves || 0}</span>
+            <span className="profile-sidebar-stat-number">
+              {isOwnProfile ? (statsData?.kpis?.totalSolves ?? profileData?.totalSolves ?? 0) : (profileData?.totalSolves ?? 0)}
+            </span>
             <p className="profile-sidebar-stat-label">Total Solves</p>
           </div>
 
           <div className="profile-sidebar-stat-card" id="sidebar-stat-pb">
             <span className="profile-sidebar-stat-number">
-              {statsData?.kpis?.pb ? `${Number(statsData.kpis.pb).toFixed(2)}s` : '-- : --'}
+              {isOwnProfile ? (
+                statsData?.kpis?.pb ? `${Number(statsData.kpis.pb).toFixed(2)}s` : '-- : --'
+              ) : (
+                profileData?.pb ? `${(Number(profileData.pb) / 1000).toFixed(2)}s` : '-- : --'
+              )}
             </span>
             <p className="profile-sidebar-stat-label">Personal Best</p>
           </div>
 
           <div className="profile-sidebar-stat-card" id="sidebar-stat-avg">
             <span className="profile-sidebar-stat-number">
-              {statsData?.kpis?.mean ? `${Number(statsData.kpis.mean).toFixed(2)}s` : '-- : --'}
+              {isOwnProfile ? (
+                statsData?.kpis?.mean ? `${Number(statsData.kpis.mean).toFixed(2)}s` : '-- : --'
+              ) : (
+                profileData?.avgSolve ? `${(Number(profileData.avgSolve) / 1000).toFixed(2)}s` : '-- : --'
+              )}
             </span>
             <p className="profile-sidebar-stat-label">Avg Solve</p>
           </div>
@@ -377,7 +452,7 @@ export default function Profile() {
       {/* MODALS */}
       
       {/* Edit Profile Modal */}
-      {showEditProfile && (
+      {showEditProfile && isOwnProfile && (
         <ModalOverlay title="Edit Profile" onClose={() => setShowEditProfile(false)}>
           <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
@@ -423,7 +498,7 @@ export default function Profile() {
       )}
 
       {/* Friends Modal */}
-      {showFollowModal === 'friends' && (
+      {showFollowModal === 'friends' && isOwnProfile && (
         <ModalOverlay 
           title="Friends List" 
           onClose={() => setShowFollowModal(null)}

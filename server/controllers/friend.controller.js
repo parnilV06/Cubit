@@ -78,11 +78,26 @@ const removeFriend = async (req, res, next) => {
     }
 };
 
+const searchUsers = async (req, res, next) => {
+    try {
+        const query = req.query.q || req.query.query || '';
+        const results = await friendService.searchUsers(req.user.id, query);
+        return res.status(200).json({
+            success: true,
+            message: "User search results fetched successfully",
+            data: results
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getFriends,
     getRequests,
     sendFriendRequest,
     acceptRequest,
     rejectRequest,
-    removeFriend
+    removeFriend,
+    searchUsers
 };
