@@ -6,6 +6,7 @@ const authMiddleware = require('../middlewares/auth.middleware');
 router.use(authMiddleware);
 
 router.get('/', friendController.getFriends);
+router.get('/search', friendController.searchUsers);
 router.get('/requests', friendController.getRequests);
 router.post('/request', friendController.sendFriendRequest);
 router.patch('/request/:id/accept', friendController.acceptRequest);

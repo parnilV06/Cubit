@@ -299,6 +299,165 @@ const deleteComment = async (userId, commentId) => {
     });
 };
 
+const getPBLeaderboard = async (currentUserId, options = {}) => {
+    const { puzzleType = 'THREE_BY_THREE', scope = 'global', limit = 50 } = options;
+
+    const PUZZLE_MAP = {
+        '2x2': 'TWO_BY_TWO',
+        '3x3': 'THREE_BY_THREE',
+        '4x4': 'FOUR_BY_FOUR',
+        '5x5': 'FIVE_BY_FIVE',
+        'TWO_BY_TWO': 'TWO_BY_TWO',
+        'THREE_BY_THREE': 'THREE_BY_THREE',
+        'FOUR_BY_FOUR': 'FOUR_BY_FOUR',
+        'FIVE_BY_FIVE': 'FIVE_BY_FIVE'
+    };
+
+    const targetPuzzle = PUZZLE_MAP[puzzleType] || 'THREE_BY_THREE';
+    const isFriendsScope = scope.toLowerCase() === 'friends';
+
+    let allowedUserIds = null;
+
+    if (isFriendsScope && currentUserId) {
+        const friendships = await prisma.friendship.findMany({
+            where: {
+                status: 'ACCEPTED',
+                OR: [
+                    { senderId: currentUserId },
+                    { receiverId: currentUserId }
+                ]
+            },
+            select: { senderId: true, receiverId: true }
+        });
+
+        const friendIds = friendships.map(f => f.senderId === currentUserId ? f.receiverId : f.senderId);
+        allowedUserIds = [currentUserId, ...friendIds];
+    }
+
+    const solveWhere = {
+        penalty: { not: 'DNF' },
+        session: {
+            puzzleType: targetPuzzle,
+            ...(allowedUserIds ? { userId: { in: allowedUserIds } } : {})
+        }
+    };
+
+    const solves = await prisma.solve.findMany({
+        where: solveWhere,
+        select: {
+            id: true,
+            time: true,
+            penalty: true,
+            createdAt: true,
+            session: {
+                select: {
+                    userId: true,
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                            displayName: true,
+                            avatarUrl: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const userPBMap = new Map();
+
+    for (const solve of solves) {
+        const userId = solve.session.userId;
+        const user = solve.session.user;
+        const effectiveTime = solve.penalty === 'PLUS_TWO' ? solve.time + 2000 : solve.time;
+
+        if (!userPBMap.has(userId)) {
+            userPBMap.set(userId, {
+                user,
+                pbTime: effectiveTime,
+                pbCreatedAt: solve.createdAt
+            });
+        } else {
+            const existing = userPBMap.get(userId);
+            if (effectiveTime < existing.pbTime) {
+                existing.pbTime = effectiveTime;
+                existing.pbCreatedAt = solve.createdAt;
+            } else if (effectiveTime === existing.pbTime && new Date(solve.createdAt) < new Date(existing.pbCreatedAt)) {
+                existing.pbCreatedAt = solve.createdAt;
+            }
+        }
+    }
+
+    const pbList = Array.from(userPBMap.values());
+    pbList.sort((a, b) => {
+        if (a.pbTime !== b.pbTime) {
+            return a.pbTime - b.pbTime;
+        }
+        const timeA = new Date(a.pbCreatedAt).getTime();
+        const timeB = new Date(b.pbCreatedAt).getTime();
+        if (timeA !== timeB) {
+            return timeA - timeB;
+        }
+        return a.user.id.localeCompare(b.user.id);
+    });
+
+    const rankedEntries = pbList.map((entry, index) => ({
+        rank: index + 1,
+        userId: entry.user.id,
+        username: entry.user.username,
+        displayName: entry.user.displayName,
+        avatarUrl: entry.user.avatarUrl,
+        time: entry.pbTime,
+        formattedTime: (entry.pbTime / 1000).toFixed(2) + 's',
+        isCurrentUser: currentUserId ? entry.user.id === currentUserId : false
+    }));
+
+    const entryUserIds = rankedEntries.filter(e => !e.isCurrentUser).map(e => e.userId);
+    const friendships = (currentUserId && entryUserIds.length > 0) ? await prisma.friendship.findMany({
+        where: {
+            OR: [
+                { senderId: currentUserId, receiverId: { in: entryUserIds } },
+                { senderId: { in: entryUserIds }, receiverId: currentUserId }
+            ]
+        }
+    }) : [];
+
+    const friendshipMap = new Map();
+    friendships.forEach(f => {
+        const otherId = f.senderId === currentUserId ? f.receiverId : f.senderId;
+        friendshipMap.set(otherId, f);
+    });
+
+    const enrichEntry = (entry) => {
+        if (entry.isCurrentUser) {
+            return { ...entry, relationshipStatus: 'SELF', requestId: null };
+        }
+        const f = friendshipMap.get(entry.userId);
+        let relationshipStatus = 'NONE';
+        let requestId = null;
+        if (f) {
+            requestId = f.id;
+            if (f.status === 'ACCEPTED') relationshipStatus = 'ACCEPTED';
+            else if (f.status === 'PENDING') relationshipStatus = f.senderId === currentUserId ? 'OUTGOING_PENDING' : 'INCOMING_PENDING';
+        }
+        return { ...entry, relationshipStatus, requestId };
+    };
+
+    const maxLimit = Math.max(1, parseInt(limit) || 50);
+    const topEntries = rankedEntries.slice(0, maxLimit).map(enrichEntry);
+    const rawCurrentUserEntry = rankedEntries.find(e => e.isCurrentUser);
+    const currentUserEntry = rawCurrentUserEntry ? enrichEntry(rawCurrentUserEntry) : null;
+
+    return {
+        puzzleType: targetPuzzle,
+        scope: isFriendsScope ? 'friends' : 'global',
+        entries: topEntries,
+        totalEntries: rankedEntries.length,
+        currentUserEntry
+    };
+};
+
 module.exports = {
     getPosts,
     createPost,
@@ -307,5 +466,6 @@ module.exports = {
     likePost,
     unlikePost,
     addComment,
-    deleteComment
+    deleteComment,
+    getPBLeaderboard
 };

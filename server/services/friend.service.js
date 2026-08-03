@@ -194,11 +194,90 @@ const removeFriend = async (userId, friendshipId) => {
     });
 };
 
+const searchUsers = async (currentUserId, query) => {
+    if (!query || typeof query !== 'string' || !query.trim()) {
+        return [];
+    }
+
+    const q = query.trim();
+
+    const users = await prisma.user.findMany({
+        where: {
+            OR: [
+                { username: { contains: q, mode: 'insensitive' } },
+                { displayName: { contains: q, mode: 'insensitive' } }
+            ]
+        },
+        select: {
+            id: true,
+            username: true,
+            displayName: true,
+            avatarUrl: true,
+            bio: true
+        },
+        take: 20
+    });
+
+    if (users.length === 0) return [];
+
+    const targetUserIds = users.filter(u => u.id !== currentUserId).map(u => u.id);
+
+    const friendships = targetUserIds.length > 0 ? await prisma.friendship.findMany({
+        where: {
+            OR: [
+                { senderId: currentUserId, receiverId: { in: targetUserIds } },
+                { senderId: { in: targetUserIds }, receiverId: currentUserId }
+            ]
+        }
+    }) : [];
+
+    const friendshipMap = new Map();
+    friendships.forEach(f => {
+        const otherId = f.senderId === currentUserId ? f.receiverId : f.senderId;
+        friendshipMap.set(otherId, f);
+    });
+
+    return users.map(user => {
+        if (user.id === currentUserId) {
+            return {
+                ...user,
+                relationshipStatus: 'SELF',
+                requestId: null
+            };
+        }
+
+        const friendship = friendshipMap.get(user.id);
+        let relationshipStatus = 'NONE';
+        let requestId = null;
+
+        if (friendship) {
+            requestId = friendship.id;
+            if (friendship.status === 'ACCEPTED') {
+                relationshipStatus = 'ACCEPTED';
+            } else if (friendship.status === 'PENDING') {
+                if (friendship.senderId === currentUserId) {
+                    relationshipStatus = 'OUTGOING_PENDING';
+                } else {
+                    relationshipStatus = 'INCOMING_PENDING';
+                }
+            }
+        }
+
+        return {
+            ...user,
+            relationshipStatus,
+            requestId
+        };
+    });
+};
+
 module.exports = {
     getFriends,
     getRequests,
     sendFriendRequest,
     acceptRequest,
     rejectRequest,
-    removeFriend
+    removeFriend,
+    searchUsers
 };
+

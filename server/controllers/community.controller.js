@@ -73,6 +73,20 @@ const deleteComment = async (req, res, next) => {
     }
 };
 
+const getPBLeaderboard = async (req, res, next) => {
+    try {
+        const { puzzleType, scope, limit } = req.query;
+        const result = await communityService.getPBLeaderboard(req.user.id, { puzzleType, scope, limit });
+        return res.status(200).json({
+            success: true,
+            message: "PB Leaderboard fetched successfully",
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getPosts,
     createPost,
@@ -81,5 +95,6 @@ module.exports = {
     likePost,
     unlikePost,
     addComment,
-    deleteComment
+    deleteComment,
+    getPBLeaderboard
 };

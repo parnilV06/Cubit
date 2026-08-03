@@ -6,6 +6,7 @@ const upload = require('../middlewares/upload.middleware');
 
 router.use(authMiddleware);
 
+router.get('/leaderboard/pb', communityController.getPBLeaderboard);
 router.get('/posts', communityController.getPosts);
 router.post('/posts', (req, res, next) => {
     upload.single('image')(req, res, (err) => {

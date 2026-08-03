@@ -93,6 +93,7 @@ export const communityAPI = {
     if (type) url += `&type=${type}`;
     return api.get(url);
   },
+  getPBLeaderboard: (params = {}) => api.get('/community/leaderboard/pb', { params }),
   createPost: (formData) =>
     api.post('/community/posts', formData, {
       headers: {
@@ -107,6 +108,7 @@ export const communityAPI = {
 
 export const friendAPI = {
   getFriends: () => api.get('/friends'),
+  searchUsers: (query) => api.get(`/friends/search?q=${encodeURIComponent(query)}`),
   getRequests: () => api.get('/friends/requests'),
   sendRequest: (username) => api.post('/friends/request', { username }),
   acceptRequest: (requestId) => api.patch(`/friends/request/${requestId}/accept`),

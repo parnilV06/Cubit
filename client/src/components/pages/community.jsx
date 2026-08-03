@@ -28,6 +28,7 @@ export default function Community() {
   const [activeFeedTab, setActiveFeedTab] = useState('Global');
   const [activeLbTab, setActiveLbTab] = useState('Rating');
   const [activeLbFilter, setActiveLbFilter] = useState('Global');
+  const [activeLbPuzzle, setActiveLbPuzzle] = useState('3x3');
   const [isAddPostModalOpen, setIsAddPostModalOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
@@ -50,8 +51,15 @@ export default function Community() {
   // Friends search and request states
   const [isFriendsPopoverOpen, setIsFriendsPopoverOpen] = useState(false);
   const [friendRequests, setFriendRequests] = useState([]);
-  const [searchUsername, setSearchUsername] = useState('');
-  const [sendingRequest, setSendingRequest] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchingUsers, setIsSearchingUsers] = useState(false);
+  const [actionLoadingMap, setActionLoadingMap] = useState({});
+
+  // Leaderboard states
+  const [pbEntries, setPbEntries] = useState([]);
+  const [currentUserPbEntry, setCurrentUserPbEntry] = useState(null);
+  const [loadingLb, setLoadingLb] = useState(false);
 
   // Fetch initial posts & friends
   const fetchPosts = async () => {
@@ -93,11 +101,58 @@ export default function Community() {
     }
   };
 
+  const fetchPBLeaderboard = async () => {
+    try {
+      setLoadingLb(true);
+      const response = await communityAPI.getPBLeaderboard({
+        puzzleType: activeLbPuzzle,
+        scope: activeLbFilter.toLowerCase(),
+        limit: 10
+      });
+      setPbEntries(response.data?.entries || []);
+      setCurrentUserPbEntry(response.data?.currentUserEntry || null);
+    } catch (err) {
+      console.error('Failed to fetch PB leaderboard:', err);
+    } finally {
+      setLoadingLb(false);
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
     fetchFriends();
     fetchNotifications();
   }, []);
+
+  // Debounced search for users
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setIsSearchingUsers(false);
+      return;
+    }
+
+    setIsSearchingUsers(true);
+    const timer = setTimeout(async () => {
+      try {
+        const response = await friendAPI.searchUsers(searchQuery.trim());
+        setSearchResults(response.data || []);
+      } catch (err) {
+        console.error('Failed to search users:', err);
+      } finally {
+        setIsSearchingUsers(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Fetch PB Leaderboard when tab/filter/puzzle changes
+  useEffect(() => {
+    if (activeLbTab === 'Fastest') {
+      fetchPBLeaderboard();
+    }
+  }, [activeLbTab, activeLbFilter, activeLbPuzzle]);
 
   // Listen to incoming real-time notifications via Socket.io
   useEffect(() => {
@@ -105,13 +160,20 @@ export default function Community() {
     if (socket) {
       const handleNewNotification = (notification) => {
         setNotifications(prev => [notification, ...prev]);
+        if (notification.type === 'FRIEND_REQUEST' || notification.type === 'FRIEND_ACCEPTED') {
+          fetchFriendRequests();
+          fetchFriends();
+          if (activeLbTab === 'Fastest' && activeLbFilter === 'Friends') {
+            fetchPBLeaderboard();
+          }
+        }
       };
       socket.on('notification:new', handleNewNotification);
       return () => {
         socket.off('notification:new', handleNewNotification);
       };
     }
-  }, []);
+  }, [activeLbTab, activeLbFilter]);
 
   // Sync friend requests when popover opens
   useEffect(() => {
@@ -127,7 +189,6 @@ export default function Community() {
       } else {
         await communityAPI.likePost(postId);
       }
-      // Reload posts to reflect new like counts/status from backend
       const response = await communityAPI.getPosts();
       setPosts(response.data || []);
     } catch (err) {
@@ -163,7 +224,6 @@ export default function Community() {
         [postId]: [...(prev[postId] || []), response.data]
       }));
       setCommentInputs(prev => ({ ...prev, [postId]: '' }));
-      // Increment comment count locally
       setPosts(prev => prev.map(p => p.id === postId ? { ...p, commentCount: p.commentCount + 1 } : p));
     } catch (err) {
       console.error('Failed to add comment:', err);
@@ -185,7 +245,6 @@ export default function Community() {
       await communityAPI.createPost(formData);
       await fetchPosts();
       
-      // Reset form
       setNewTitle('');
       setNewType('DISCUSSION');
       setNewContent('');
@@ -199,49 +258,52 @@ export default function Community() {
     }
   };
 
-  const handleSendFriendRequest = async (targetUsername) => {
+  const handleSendFriendRequestToUser = async (targetUser) => {
     try {
-      await friendAPI.sendRequest(targetUsername);
-      alert(`Friend request sent to @${targetUsername}!`);
-      setActiveUserPopover(null);
+      setActionLoadingMap(prev => ({ ...prev, [targetUser.id]: true }));
+      await friendAPI.sendRequest(targetUser.username);
+      setSearchResults(prev => prev.map(u => u.id === targetUser.id ? { ...u, relationshipStatus: 'OUTGOING_PENDING' } : u));
+      fetchFriendRequests();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to send friend request');
+      alert(err.response?.data?.message || err.message || 'Failed to send friend request');
+    } finally {
+      setActionLoadingMap(prev => ({ ...prev, [targetUser.id]: false }));
     }
   };
 
-  const handleAcceptRequest = async (requestId) => {
+  const handleAcceptRequestForUser = async (requestId, userIdToUpdate = null) => {
     try {
+      if (userIdToUpdate) setActionLoadingMap(prev => ({ ...prev, [userIdToUpdate]: true }));
       await friendAPI.acceptRequest(requestId);
-      alert('Friend request accepted!');
-      fetchFriendRequests();
-      fetchFriends();
+      if (userIdToUpdate) {
+        setSearchResults(prev => prev.map(u => u.id === userIdToUpdate ? { ...u, relationshipStatus: 'ACCEPTED' } : u));
+      }
+      await fetchFriendRequests();
+      await fetchFriends();
+      if (activeLbTab === 'Fastest' && activeLbFilter === 'Friends') {
+        fetchPBLeaderboard();
+      }
     } catch (err) {
       console.error('Failed to accept request:', err);
+      alert(err.message || 'Failed to accept friend request');
+    } finally {
+      if (userIdToUpdate) setActionLoadingMap(prev => ({ ...prev, [userIdToUpdate]: false }));
     }
   };
 
-  const handleRejectRequest = async (requestId) => {
+  const handleRejectRequestForUser = async (requestId, userIdToUpdate = null) => {
     try {
+      if (userIdToUpdate) setActionLoadingMap(prev => ({ ...prev, [userIdToUpdate]: true }));
       await friendAPI.rejectRequest(requestId);
-      alert('Friend request rejected.');
-      fetchFriendRequests();
+      if (userIdToUpdate) {
+        setSearchResults(prev => prev.map(u => u.id === userIdToUpdate ? { ...u, relationshipStatus: 'NONE', requestId: null } : u));
+      }
+      await fetchFriendRequests();
     } catch (err) {
       console.error('Failed to reject request:', err);
-    }
-  };
-
-  const handleManualFriendSearch = async (e) => {
-    e.preventDefault();
-    if (!searchUsername.trim()) return;
-    try {
-      setSendingRequest(true);
-      await friendAPI.sendRequest(searchUsername.trim());
-      alert(`Friend request sent to @${searchUsername}!`);
-      setSearchUsername('');
-    } catch (err) {
-      alert(err.response?.data?.message || 'User not found or request already exists');
+      alert(err.message || 'Failed to decline friend request');
     } finally {
-      setSendingRequest(false);
+      if (userIdToUpdate) setActionLoadingMap(prev => ({ ...prev, [userIdToUpdate]: false }));
     }
   };
 
@@ -254,7 +316,6 @@ export default function Community() {
     }
   };
 
-  // Tag & Feed selection filtering logic
   const toggleTag = (tag) => {
     if (tag === 'All') {
       setActiveTags(['All']);
@@ -276,13 +337,11 @@ export default function Community() {
   const filteredPosts = useMemo(() => {
     let result = posts;
 
-    // Filter by Tab (Global vs Friends)
     if (activeFeedTab === 'Friends' && user) {
       const friendIds = new Set(friends.map(f => f.id));
       result = result.filter(post => friendIds.has(post.author.id) || post.author.id === user.id);
     }
 
-    // Filter by selected tag filters
     if (!activeTags.includes('All')) {
       result = result.filter(post => {
         return activeTags.some(t => {
@@ -316,7 +375,7 @@ export default function Community() {
           
           {/* Friends Management Popover Button */}
           <div className="friends-btn-wrapper" style={{ position: 'relative' }}>
-            <button className="icon-btn-header" onClick={() => setIsFriendsPopoverOpen(!isFriendsPopoverOpen)}>
+            <button className="icon-btn-header" onClick={() => setIsFriendsPopoverOpen(!isFriendsPopoverOpen)} title="Social & Friends">
               <img src={friendsIcon} alt="Friends Management" />
               {friendRequests.length > 0 && (
                 <span style={{ position: 'absolute', top: '-5px', right: '-5px', backgroundColor: '#572ff7', color: '#fff', fontSize: '10px', width: '16px', height: '16px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -326,46 +385,122 @@ export default function Community() {
             </button>
 
             {isFriendsPopoverOpen && (
-              <div className="notifications-popover" style={{ width: '300px', right: 0 }}>
+              <div className="notifications-popover" style={{ width: '320px', right: 0 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #2B2B35', paddingBottom: '10px', marginBottom: '10px' }}>
-                  <h4 style={{ margin: 0 }}>Social & Friend Requests</h4>
+                  <h4 style={{ margin: 0, fontSize: '14px' }}>Add Friend & Requests</h4>
                   <button onClick={() => setIsFriendsPopoverOpen(false)} style={{ background: 'none', border: 'none', color: '#A8A8B5', cursor: 'pointer' }}><X size={16} /></button>
                 </div>
 
-                <form onSubmit={handleManualFriendSearch} style={{ display: 'flex', gap: '8px', marginBottom: '15px' }}>
+                {/* User Search Input */}
+                <form onSubmit={(e) => e.preventDefault()} style={{ marginBottom: '12px' }}>
                   <input 
                     type="text" 
-                    placeholder="Enter username..." 
-                    value={searchUsername}
-                    onChange={(e) => setSearchUsername(e.target.value)}
-                    style={{ flex: 1, background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '6px 10px', borderRadius: '4px', fontSize: '12px' }}
+                    placeholder="Search by username or display name..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ width: '100%', background: '#0D0D11', border: '1px solid #2B2B35', color: '#fff', padding: '8px 10px', borderRadius: '6px', fontSize: '12px', boxSizing: 'border-box' }}
                   />
-                  <button 
-                    type="submit" 
-                    disabled={sendingRequest}
-                    style={{ background: '#572ff7', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '4px', cursor: 'pointer', fontSize: '11px', fontWeight: 'bold' }}
-                  >
-                    Add
-                  </button>
                 </form>
 
-                <h5 style={{ color: '#A8A8B5', fontSize: '11px', textTransform: 'uppercase', marginBottom: '8px' }}>Pending Requests ({friendRequests.length})</h5>
-                <div className="notifications-list" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                {/* Search Results List */}
+                {searchQuery.trim() !== '' && (
+                  <div style={{ marginBottom: '15px', borderBottom: '1px solid #2B2B35', paddingBottom: '10px' }}>
+                    <h5 style={{ color: '#A8A8B5', fontSize: '11px', textTransform: 'uppercase', marginBottom: '8px', margin: 0 }}>
+                      Search Results
+                    </h5>
+                    <div className="search-results-list" style={{ marginTop: '8px' }}>
+                      {isSearchingUsers ? (
+                        <p style={{ color: '#A8A8B5', fontSize: '11px', textAlign: 'center', margin: '8px 0' }}>Searching...</p>
+                      ) : searchResults.length === 0 ? (
+                        <p style={{ color: '#A8A8B5', fontSize: '11px', textAlign: 'center', margin: '8px 0' }}>No matching users found.</p>
+                      ) : (
+                        searchResults.map(u => (
+                          <div key={u.id} className="search-result-item">
+                            <Link 
+                              to={`/profile/${u.username}`} 
+                              onClick={() => setIsFriendsPopoverOpen(false)}
+                              style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}
+                            >
+                              <img src={u.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + u.username} style={{ width: '28px', height: '28px', borderRadius: '50%' }} alt="avatar" />
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}>{u.displayName || u.username}</span>
+                                <span style={{ color: '#A8A8B5', fontSize: '10px' }}>@{u.username}</span>
+                              </div>
+                            </Link>
+                            
+                            {/* Action Button Based on Relationship State */}
+                            {u.relationshipStatus === 'SELF' && (
+                              <span style={{ color: '#A8A8B5', fontSize: '11px', fontWeight: 'bold', padding: '4px 8px' }}>(You)</span>
+                            )}
+
+                            {u.relationshipStatus === 'NONE' && (
+                              <button 
+                                className="btn-rel-action add"
+                                disabled={actionLoadingMap[u.id]}
+                                onClick={() => handleSendFriendRequestToUser(u)}
+                              >
+                                {actionLoadingMap[u.id] ? '...' : 'Add Friend'}
+                              </button>
+                            )}
+
+                            {u.relationshipStatus === 'OUTGOING_PENDING' && (
+                              <button disabled className="btn-rel-action requested">
+                                Requested
+                              </button>
+                            )}
+
+                            {u.relationshipStatus === 'ACCEPTED' && (
+                              <button disabled className="btn-rel-action friends">
+                                Friends
+                              </button>
+                            )}
+
+                            {u.relationshipStatus === 'INCOMING_PENDING' && (
+                              <button 
+                                className="btn-rel-action accept"
+                                disabled={actionLoadingMap[u.id]}
+                                onClick={() => handleAcceptRequestForUser(u.requestId, u.id)}
+                              >
+                                {actionLoadingMap[u.id] ? '...' : 'Accept'}
+                              </button>
+                            )}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Pending Requests List */}
+                <h5 style={{ color: '#A8A8B5', fontSize: '11px', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
+                  Pending Requests ({friendRequests.length})
+                </h5>
+                <div className="notifications-list" style={{ maxHeight: '180px', overflowY: 'auto' }}>
                   {friendRequests.length === 0 ? (
-                    <p style={{ color: '#A8A8B5', fontSize: '11px', textAlign: 'center', padding: '10px 0' }}>No pending requests.</p>
+                    <p style={{ color: '#A8A8B5', fontSize: '11px', textAlign: 'center', padding: '10px 0', margin: 0 }}>No pending requests.</p>
                   ) : (
                     friendRequests.map(req => (
-                      <div key={req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1c1c24' }}>
+                      <div key={req.requestId || req.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #1c1c24' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <img src={req.sender.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=User"} style={{ width: '24px', height: '24px', borderRadius: '50%' }} alt="avatar" />
+                          <img src={req.sender?.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + (req.sender?.username || 'User')} style={{ width: '28px', height: '28px', borderRadius: '50%' }} alt="avatar" />
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}>{req.sender.displayName || req.sender.username}</span>
-                            <span style={{ color: '#A8A8B5', fontSize: '10px' }}>@{req.sender.username}</span>
+                            <span style={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}>{req.sender?.displayName || req.sender?.username}</span>
+                            <span style={{ color: '#A8A8B5', fontSize: '10px' }}>@{req.sender?.username}</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '4px' }}>
-                          <button onClick={() => handleAcceptRequest(req.id)} style={{ background: '#34a853', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', padding: '4px' }}><UserCheck size={12} /></button>
-                          <button onClick={() => handleRejectRequest(req.id)} style={{ background: '#ff4d4d', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', padding: '4px' }}><X size={12} /></button>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <button 
+                            onClick={() => handleAcceptRequestForUser(req.requestId || req.id, req.sender?.id)} 
+                            style={{ background: '#34a853', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', padding: '4px 8px', fontSize: '11px', fontWeight: 'bold' }}
+                          >
+                            Accept
+                          </button>
+                          <button 
+                            onClick={() => handleRejectRequestForUser(req.requestId || req.id, req.sender?.id)} 
+                            style={{ background: '#ff4d4d', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer', padding: '4px 8px', fontSize: '11px', fontWeight: 'bold' }}
+                          >
+                            Decline
+                          </button>
                         </div>
                       </div>
                     ))
@@ -466,7 +601,7 @@ export default function Community() {
                     <div className="post-header-info">
                       <div className="post-user-info">
                         <img 
-                          src={post.author.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=John"} 
+                          src={post.author.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + post.author.username} 
                           alt={post.author.displayName || post.author.username} 
                           className="post-avatar" 
                         />
@@ -486,7 +621,7 @@ export default function Community() {
                               borderRadius: '8px', zIndex: 20, minWidth: '120px', overflow: 'hidden',
                               display: 'flex', flexDirection: 'column'
                             }}>
-                              <Link to="/profile" style={{
+                              <Link to={`/profile/${post.author.username}`} style={{
                                 padding: '10px 15px', color: '#A8A8B5', fontSize: '12px', textDecoration: 'none',
                                 borderBottom: '1px solid #2B2B35'
                               }} onClick={() => setActiveUserPopover(null)}>
@@ -499,7 +634,7 @@ export default function Community() {
                                     padding: '10px 15px', color: '#572FF7', fontSize: '12px', background: 'transparent',
                                     border: 'none', cursor: 'pointer', textAlign: 'left', fontWeight: 'bold'
                                   }} 
-                                  onClick={() => handleSendFriendRequest(post.author.username)}
+                                  onClick={() => handleSendFriendRequestToUser(post.author)}
                                 >
                                   Add Friend +
                                 </button>
@@ -568,7 +703,13 @@ export default function Community() {
                         ) : (
                           postComments[post.id].map(c => (
                             <div key={c.id} className="comment-item">
-                              <span className="comment-user">{c.author.displayName || c.author.username}</span>
+                              <Link 
+                                to={`/profile/${c.author.username}`} 
+                                className="comment-user" 
+                                style={{ textDecoration: 'none', color: '#fff', fontWeight: 'bold' }}
+                              >
+                                {c.author.displayName || c.author.username}
+                              </Link>
                               <p className="comment-text">{c.content}</p>
                             </div>
                           ))
@@ -605,12 +746,14 @@ export default function Community() {
                 <img 
                   src={friendsIcon} 
                   alt="Friends" 
+                  title="Friends Scope"
                   className={`small-icon filter-icon ${activeLbFilter === 'Friends' ? 'active' : ''}`}
                   onClick={() => setActiveLbFilter('Friends')}
                 />
                 <img 
                   src={globalIcon} 
                   alt="Global" 
+                  title="Global Scope"
                   className={`small-icon filter-icon ${activeLbFilter === 'Global' ? 'active' : ''}`}
                   onClick={() => setActiveLbFilter('Global')}
                 />
@@ -634,23 +777,140 @@ export default function Community() {
               </div>
             </div>
 
+            {/* Puzzle Selector (Only shown for PB / Fastest Leaderboard) */}
+            {activeLbTab === 'Fastest' && (
+              <div className="lb-puzzle-selector">
+                {['2x2', '3x3', '4x4', '5x5'].map(p => (
+                  <button 
+                    key={p} 
+                    className={`lb-puzzle-btn ${activeLbPuzzle === p ? 'active' : ''}`}
+                    onClick={() => setActiveLbPuzzle(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="leaderboard-list">
-              {[
-                { rank: 1, name: "John Doe", score: "999", color: "#F5BE0B" },
-                { rank: 2, name: "Speed Master", score: "950", color: "#8F8E8A" },
-                { rank: 3, name: "Tony Stark", score: "899", color: "#A65A09" },
-                { rank: 4, name: "Bruhaa", score: "888", color: "#A768D4" },
-                { rank: 5, name: "Ded Cuber", score: "845", color: "#A768D4" }
-              ].map(user => (
-                <div key={user.rank} className="leaderboard-item">
-                  <div className="lb-user-info">
-                    <div className="lb-rank" style={{ backgroundColor: user.color }}>{user.rank}.</div>
-                    <span className="lb-name">{user.name}</span>
+              {activeLbTab === 'Rating' ? (
+                // Placeholder rating leaderboard (Top Cuber) - untouched per instructions
+                [
+                  { rank: 1, name: "John Doe", score: "999", color: "#F5BE0B" },
+                  { rank: 2, name: "Speed Master", score: "950", color: "#8F8E8A" },
+                  { rank: 3, name: "Tony Stark", score: "899", color: "#A65A09" },
+                  { rank: 4, name: "Bruhaa", score: "888", color: "#A768D4" },
+                  { rank: 5, name: "Ded Cuber", score: "845", color: "#A768D4" }
+                ].map(userItem => (
+                  <div key={userItem.rank} className="leaderboard-item">
+                    <div className="lb-user-info">
+                      <div className="lb-rank" style={{ backgroundColor: userItem.color }}>{userItem.rank}.</div>
+                      <span className="lb-name">{userItem.name}</span>
+                    </div>
+                    <span className="lb-score">{userItem.score}</span>
                   </div>
-                  <span className="lb-score">{user.score}</span>
-                </div>
-              ))}
-              <button className="view-all-btn">View All</button>
+                ))
+              ) : (
+                // Functional PB Leaderboard
+                loadingLb ? (
+                  <p style={{ color: '#A8A8B5', textAlign: 'center', fontSize: '12px', padding: '20px' }}>Loading leaderboard...</p>
+                ) : pbEntries.length === 0 ? (
+                  <p style={{ color: '#A8A8B5', textAlign: 'center', fontSize: '12px', padding: '20px' }}>No valid PBs found for this puzzle/scope.</p>
+                ) : (
+                  <>
+                    {pbEntries.map(entry => {
+                      const rankColor = entry.rank === 1 ? '#F5BE0B' : entry.rank === 2 ? '#8F8E8A' : entry.rank === 3 ? '#A65A09' : '#572FF7';
+                      const isPopoverOpen = activeUserPopover === `lb_${entry.userId}`;
+                      return (
+                        <div key={entry.userId} className={`leaderboard-item ${entry.isCurrentUser ? 'is-current-user' : ''}`} style={{ position: 'relative' }}>
+                          <div 
+                            className="lb-user-info" 
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => setActiveUserPopover(isPopoverOpen ? null : `lb_${entry.userId}`)}
+                          >
+                            <div className="lb-rank" style={{ backgroundColor: rankColor }}>{entry.rank}.</div>
+                            <img 
+                              src={entry.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + entry.username} 
+                              alt="avatar" 
+                              style={{ width: '22px', height: '22px', borderRadius: '50%' }} 
+                            />
+                            <span className="lb-name" style={{ fontSize: '14px' }}>
+                              {entry.displayName || entry.username} {entry.isCurrentUser && '(You)'}
+                            </span>
+                          </div>
+                          
+                          {/* User Popover Menu */}
+                          {isPopoverOpen && (
+                            <div style={{
+                              position: 'absolute', top: '32px', left: '30px',
+                              backgroundColor: '#17171C', border: '1px solid #2B2B35',
+                              borderRadius: '8px', zIndex: 30, minWidth: '130px', overflow: 'hidden',
+                              display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                            }}>
+                              <Link 
+                                to={`/profile/${entry.username}`} 
+                                style={{ padding: '10px 15px', color: '#A8A8B5', fontSize: '12px', textDecoration: 'none', borderBottom: '1px solid #2B2B35' }} 
+                                onClick={() => setActiveUserPopover(null)}
+                              >
+                                View Profile
+                              </Link>
+                              
+                              {!entry.isCurrentUser && (
+                                <>
+                                  {entry.relationshipStatus === 'NONE' && (
+                                    <button 
+                                      style={{ padding: '10px 15px', color: '#572FF7', fontSize: '12px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontWeight: 'bold' }} 
+                                      onClick={() => { setActiveUserPopover(null); handleSendFriendRequestToUser({ id: entry.userId, username: entry.username }); }}
+                                    >
+                                      Add Friend +
+                                    </button>
+                                  )}
+                                  {entry.relationshipStatus === 'OUTGOING_PENDING' && (
+                                    <span style={{ padding: '10px 15px', color: '#A8A8B5', fontSize: '12px' }}>Requested</span>
+                                  )}
+                                  {entry.relationshipStatus === 'INCOMING_PENDING' && (
+                                    <button 
+                                      style={{ padding: '10px 15px', color: '#34A853', fontSize: '12px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontWeight: 'bold' }} 
+                                      onClick={() => { setActiveUserPopover(null); handleAcceptRequestForUser(entry.requestId, entry.userId); }}
+                                    >
+                                      Accept Request
+                                    </button>
+                                  )}
+                                  {entry.relationshipStatus === 'ACCEPTED' && (
+                                    <span style={{ padding: '10px 15px', color: '#60A5FA', fontSize: '12px' }}>Friends ✓</span>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          <span className="lb-score" style={{ fontWeight: 'bold' }}>{entry.formattedTime}</span>
+                        </div>
+                      );
+                    })}
+
+                    {/* Display Current User's Entry if outside top results */}
+                    {currentUserPbEntry && !pbEntries.some(e => e.userId === currentUserPbEntry.userId) && (
+                      <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px dashed #2B2B35' }}>
+                        <div className="leaderboard-item is-current-user">
+                          <div className="lb-user-info">
+                            <div className="lb-rank" style={{ backgroundColor: '#572FF7' }}>{currentUserPbEntry.rank}.</div>
+                            <img 
+                              src={currentUserPbEntry.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + currentUserPbEntry.username} 
+                              alt="avatar" 
+                              style={{ width: '22px', height: '22px', borderRadius: '50%' }} 
+                            />
+                            <span className="lb-name" style={{ fontSize: '14px' }}>
+                              {currentUserPbEntry.displayName || currentUserPbEntry.username} (You)
+                            </span>
+                          </div>
+                          <span className="lb-score" style={{ fontWeight: 'bold' }}>{currentUserPbEntry.formattedTime}</span>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )
+              )}
             </div>
           </div>
 
