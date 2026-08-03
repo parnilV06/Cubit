@@ -13,6 +13,7 @@ import plusIcon from '../../assets/square-plus.svg';
 import globalIcon from '../../assets/global.svg';
 import heartIcon from '../../assets/heart.svg';
 import commentIcon from '../../assets/comment.svg';
+import fireStreakIcon from '../../assets/fire-streak.svg';
 import cubeImg4 from '../../assets/cube-illustration-4.png';
 
 const FEED_TAGS = ['All', 'Tips', 'Random', 'Discussions', 'News', 'Solves'];
@@ -59,6 +60,8 @@ export default function Community() {
   // Leaderboard states
   const [pbEntries, setPbEntries] = useState([]);
   const [currentUserPbEntry, setCurrentUserPbEntry] = useState(null);
+  const [ratingEntries, setRatingEntries] = useState([]);
+  const [currentUserRatingEntry, setCurrentUserRatingEntry] = useState(null);
   const [loadingLb, setLoadingLb] = useState(false);
 
   // Fetch initial posts & friends
@@ -118,6 +121,22 @@ export default function Community() {
     }
   };
 
+  const fetchRatingLeaderboard = async () => {
+    try {
+      setLoadingLb(true);
+      const response = await communityAPI.getRatingLeaderboard({
+        scope: activeLbFilter.toLowerCase(),
+        limit: 10
+      });
+      setRatingEntries(response.data?.entries || []);
+      setCurrentUserRatingEntry(response.data?.currentUserEntry || null);
+    } catch (err) {
+      console.error('Failed to fetch Rating leaderboard:', err);
+    } finally {
+      setLoadingLb(false);
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
     fetchFriends();
@@ -147,10 +166,12 @@ export default function Community() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch PB Leaderboard when tab/filter/puzzle changes
+  // Fetch Leaderboard when tab/filter/puzzle changes
   useEffect(() => {
     if (activeLbTab === 'Fastest') {
       fetchPBLeaderboard();
+    } else if (activeLbTab === 'Rating') {
+      fetchRatingLeaderboard();
     }
   }, [activeLbTab, activeLbFilter, activeLbPuzzle]);
 
@@ -794,22 +815,120 @@ export default function Community() {
 
             <div className="leaderboard-list">
               {activeLbTab === 'Rating' ? (
-                // Placeholder rating leaderboard (Top Cuber) - untouched per instructions
-                [
-                  { rank: 1, name: "John Doe", score: "999", color: "#F5BE0B" },
-                  { rank: 2, name: "Speed Master", score: "950", color: "#8F8E8A" },
-                  { rank: 3, name: "Tony Stark", score: "899", color: "#A65A09" },
-                  { rank: 4, name: "Bruhaa", score: "888", color: "#A768D4" },
-                  { rank: 5, name: "Ded Cuber", score: "845", color: "#A768D4" }
-                ].map(userItem => (
-                  <div key={userItem.rank} className="leaderboard-item">
-                    <div className="lb-user-info">
-                      <div className="lb-rank" style={{ backgroundColor: userItem.color }}>{userItem.rank}.</div>
-                      <span className="lb-name">{userItem.name}</span>
-                    </div>
-                    <span className="lb-score">{userItem.score}</span>
-                  </div>
-                ))
+                loadingLb ? (
+                  <p style={{ color: '#A8A8B5', textAlign: 'center', fontSize: '12px', padding: '20px' }}>Loading leaderboard...</p>
+                ) : ratingEntries.length === 0 ? (
+                  <p style={{ color: '#A8A8B5', textAlign: 'center', fontSize: '12px', padding: '20px' }}>No ratings recorded yet.</p>
+                ) : (
+                  <>
+                    {ratingEntries.map(entry => {
+                      const rankColor = entry.rank === 1 ? '#F5BE0B' : entry.rank === 2 ? '#8F8E8A' : entry.rank === 3 ? '#A65A09' : '#572FF7';
+                      const isPopoverOpen = activeUserPopover === `lb_rating_${entry.userId}`;
+                      return (
+                        <div key={entry.userId} className={`leaderboard-item ${entry.isCurrentUser ? 'is-current-user' : ''}`} style={{ position: 'relative' }}>
+                          <div 
+                            className="lb-user-info" 
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => setActiveUserPopover(isPopoverOpen ? null : `lb_rating_${entry.userId}`)}
+                          >
+                            <div className="lb-rank" style={{ backgroundColor: rankColor }}>{entry.rank}.</div>
+                            <img 
+                              src={entry.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + entry.username} 
+                              alt="avatar" 
+                              style={{ width: '22px', height: '22px', borderRadius: '50%' }} 
+                            />
+                            <span className="lb-name" style={{ fontSize: '14px' }}>
+                              {entry.displayName || entry.username} {entry.isCurrentUser && '(You)'}
+                            </span>
+                          </div>
+                          
+                          {/* User Popover Menu */}
+                          {isPopoverOpen && (
+                            <div style={{
+                              position: 'absolute', top: '32px', left: '30px',
+                              backgroundColor: '#17171C', border: '1px solid #2B2B35',
+                              borderRadius: '8px', zIndex: 30, minWidth: '130px', overflow: 'hidden',
+                              display: 'flex', flexDirection: 'column', boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                            }}>
+                              <Link 
+                                to={`/profile/${entry.username}`} 
+                                style={{ padding: '10px 15px', color: '#A8A8B5', fontSize: '12px', textDecoration: 'none', borderBottom: '1px solid #2B2B35' }} 
+                                onClick={() => setActiveUserPopover(null)}
+                              >
+                                View Profile
+                              </Link>
+                              
+                              {!entry.isCurrentUser && (
+                                <>
+                                  {entry.relationshipStatus === 'NONE' && (
+                                    <button 
+                                      style={{ padding: '10px 15px', color: '#572FF7', fontSize: '12px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontWeight: 'bold' }} 
+                                      onClick={() => { setActiveUserPopover(null); handleSendFriendRequestToUser({ id: entry.userId, username: entry.username }); }}
+                                    >
+                                      Add Friend +
+                                    </button>
+                                  )}
+                                  {entry.relationshipStatus === 'OUTGOING_PENDING' && (
+                                    <span style={{ padding: '10px 15px', color: '#A8A8B5', fontSize: '12px' }}>Requested</span>
+                                  )}
+                                  {entry.relationshipStatus === 'INCOMING_PENDING' && (
+                                    <button 
+                                      style={{ padding: '10px 15px', color: '#34A853', fontSize: '12px', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', fontWeight: 'bold' }} 
+                                      onClick={() => { setActiveUserPopover(null); handleAcceptRequestForUser(entry.requestId, entry.userId); }}
+                                    >
+                                      Accept Request
+                                    </button>
+                                  )}
+                                  {entry.relationshipStatus === 'ACCEPTED' && (
+                                    <span style={{ padding: '10px 15px', color: '#60A5FA', fontSize: '12px' }}>Friends ✓</span>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {entry.streak?.current > 0 && (
+                              <span style={{ fontSize: '10px', color: '#F59E0B', backgroundColor: 'rgba(245, 158, 11, 0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                <img src={fireStreakIcon} alt="streak" style={{ width: '12px', height: '12px', filter: 'brightness(0) saturate(100%) invert(67%) sepia(89%) saturate(1641%) hue-rotate(349deg) brightness(98%) contrast(97%)' }} />
+                                {entry.streak.current}d
+                              </span>
+                            )}
+                            <span className="lb-score" style={{ fontWeight: 'bold' }}>{entry.formattedRating}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Display Current User's Entry if outside top results */}
+                    {currentUserRatingEntry && !ratingEntries.some(e => e.userId === currentUserRatingEntry.userId) && (
+                      <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px dashed #2B2B35' }}>
+                        <div className="leaderboard-item is-current-user">
+                          <div className="lb-user-info">
+                            <div className="lb-rank" style={{ backgroundColor: '#572FF7' }}>{currentUserRatingEntry.rank}.</div>
+                            <img 
+                              src={currentUserRatingEntry.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + currentUserRatingEntry.username} 
+                              alt="avatar" 
+                              style={{ width: '22px', height: '22px', borderRadius: '50%' }} 
+                            />
+                            <span className="lb-name" style={{ fontSize: '14px' }}>
+                              {currentUserRatingEntry.displayName || currentUserRatingEntry.username} (You)
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {currentUserRatingEntry.streak?.current > 0 && (
+                              <span style={{ fontSize: '10px', color: '#F59E0B', backgroundColor: 'rgba(245, 158, 11, 0.1)', padding: '2px 6px', borderRadius: '4px', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                <img src={fireStreakIcon} alt="streak" style={{ width: '12px', height: '12px', filter: 'brightness(0) saturate(100%) invert(67%) sepia(89%) saturate(1641%) hue-rotate(349deg) brightness(98%) contrast(97%)' }} />
+                                {currentUserRatingEntry.streak.current}d
+                              </span>
+                            )}
+                            <span className="lb-score" style={{ fontWeight: 'bold' }}>{currentUserRatingEntry.formattedRating}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )
               ) : (
                 // Functional PB Leaderboard
                 loadingLb ? (

@@ -87,6 +87,20 @@ const getPBLeaderboard = async (req, res, next) => {
     }
 };
 
+const getRatingLeaderboard = async (req, res, next) => {
+    try {
+        const { scope, limit } = req.query;
+        const result = await communityService.getRatingLeaderboard(req.user.id, { scope, limit });
+        return res.status(200).json({
+            success: true,
+            message: "Rating Leaderboard fetched successfully",
+            data: result
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getPosts,
     createPost,
@@ -96,5 +110,6 @@ module.exports = {
     unlikePost,
     addComment,
     deleteComment,
-    getPBLeaderboard
+    getPBLeaderboard,
+    getRatingLeaderboard
 };

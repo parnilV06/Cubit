@@ -94,6 +94,7 @@ export const communityAPI = {
     return api.get(url);
   },
   getPBLeaderboard: (params = {}) => api.get('/community/leaderboard/pb', { params }),
+  getRatingLeaderboard: (params = {}) => api.get('/community/leaderboard/rating', { params }),
   createPost: (formData) =>
     api.post('/community/posts', formData, {
       headers: {
@@ -104,6 +105,11 @@ export const communityAPI = {
   unlikePost: (id) => api.delete(`/community/posts/${id}/like`),
   addComment: (postId, content) => api.post(`/community/posts/${postId}/comments`, { content }),
   deleteComment: (commentId) => api.delete(`/community/comments/${commentId}`),
+};
+
+export const ratingAPI = {
+  getRatingSummary: () => api.get('/rating/me'),
+  reconcileRating: () => api.post('/rating/reconcile'),
 };
 
 export const friendAPI = {

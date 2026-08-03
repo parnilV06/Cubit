@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useStore } from '../../services/store';
-import { profileAPI, friendAPI, statsAPI, trainerAPI } from '../../services/api';
+import { profileAPI, friendAPI, statsAPI, trainerAPI, ratingAPI } from '../../services/api';
 import logoIcon from '../../assets/cubit-logo-icon-svg.svg';
 import stopwatchIcon from '../../assets/stopwatch.svg';
 import trainerIcon from '../../assets/trainer.svg';
 import statsIcon from '../../assets/stats.svg';
 import communityIcon from '../../assets/community.svg';
 import userAddIcon from '../../assets/user-add.svg';
+import fireStreakIcon from '../../assets/fire-streak.svg';
 
 import './profile.css';
 
@@ -62,6 +63,9 @@ export default function Profile() {
   // Trainer Progress
   const [trainerProgress, setTrainerProgress] = useState(null);
 
+  // Rating Summary
+  const [ratingSummary, setRatingSummary] = useState(null);
+
   // Fetch all necessary data on mount / user change
   useEffect(() => {
     if (!targetUsername) return;
@@ -83,6 +87,14 @@ export default function Profile() {
           // Fetch trainer progress for own profile
           const trainerResponse = await trainerAPI.getProgress();
           setTrainerProgress(trainerResponse.data);
+
+          // Fetch rating summary for own profile
+          try {
+            const ratingResponse = await ratingAPI.getRatingSummary();
+            setRatingSummary(ratingResponse.data);
+          } catch (rErr) {
+            console.error('Failed to fetch rating summary:', rErr);
+          }
         }
       } catch (err) {
         console.error('Failed to load profile details:', err);
@@ -228,11 +240,26 @@ export default function Profile() {
             
             <div className="profile-hero-details">
               <h2 className="profile-display-name">{profileData?.displayName || profileData?.username}</h2>
-              <p className="profile-bio" style={{ color: '#A8A8B5', fontSize: '0.9rem', marginTop: '4px', maxWidth: '400px' }}>
+              <p className="profile-bio" style={{ color: '#A8A8B5', fontSize: '0.9rem', marginTop: '4px', maxWidth: '650px' }}>
                 {profileData?.bio || "No bio yet."}
               </p>
               
-              <div className="profile-hero-stats-row" style={{ marginTop: '15px' }}>
+              <div className="profile-hero-stats-row" style={{ marginTop: '6px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <div className="profile-hero-stat-badge" style={{ border: '1px solid rgba(87, 47, 247, 0.6)', background: 'rgba(22, 20, 38, 0.92)', backdropFilter: 'blur(8px)' }}>
+                  <span className="profile-hero-stat-value" style={{ color: '#818CF8' }}>
+                    {profileData?.totalRating ? Number(profileData.totalRating).toFixed(2) : '0.00'}
+                  </span>
+                  <span className="profile-hero-stat-label">Cubit Rating</span>
+                </div>
+                {profileData?.currentStreak > 0 && (
+                  <div className="profile-hero-stat-badge" style={{ border: '1px solid rgba(245, 158, 11, 0.6)', background: 'rgba(32, 24, 14, 0.92)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <img src={fireStreakIcon} alt="streak" style={{ width: '15px', height: '15px', filter: 'brightness(0) saturate(100%) invert(67%) sepia(89%) saturate(1641%) hue-rotate(349deg) brightness(98%) contrast(97%)' }} />
+                    <span className="profile-hero-stat-value" style={{ color: '#F59E0B' }}>
+                      {profileData.currentStreak}d
+                    </span>
+                    <span className="profile-hero-stat-label">Streak</span>
+                  </div>
+                )}
                 <div className="profile-hero-stat-badge" onClick={() => isOwnProfile && setShowFollowModal('friends')} style={{ cursor: isOwnProfile ? 'pointer' : 'default' }}>
                   <span className="profile-hero-stat-value">{profileData?.totalFriends || 0}</span>
                   <span className="profile-hero-stat-label">Friends</span>
@@ -284,6 +311,56 @@ export default function Profile() {
             </div>
           )}
         </section>
+
+        {/* Rating Breakdown (For Own Profile) */}
+        {isOwnProfile && ratingSummary && (
+          <section className="profile-section-container">
+            <h3 className="profile-section-title">Rating Breakdown</h3>
+            <p className="profile-section-subtext">Detailed accounting of your Cubit Rating points</p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '15px', marginTop: '15px' }}>
+              <div style={{ background: '#17171C', border: '1px solid #2B2B35', borderRadius: '10px', padding: '16px' }}>
+                <span style={{ fontSize: '11px', color: '#A8A8B5', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <img src={stopwatchIcon} alt="solves" style={{ width: '13px', height: '13px', filter: 'brightness(0) invert(1)' }} />
+                  Solves
+                </span>
+                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#fff', marginTop: '4px' }}>
+                  {ratingSummary.breakdown.solve.toFixed(2)} <span style={{ fontSize: '12px', color: '#A8A8B5' }}>pts</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#17171C', border: '1px solid #2B2B35', borderRadius: '10px', padding: '16px' }}>
+                <span style={{ fontSize: '11px', color: '#A8A8B5', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <img src={statsIcon} alt="improvement" style={{ width: '13px', height: '13px', filter: 'brightness(0) saturate(100%) invert(73%) sepia(50%) saturate(490%) hue-rotate(108deg) brightness(96%) contrast(88%)' }} />
+                  Improvement
+                </span>
+                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#34D399', marginTop: '4px' }}>
+                  {ratingSummary.breakdown.improvement.toFixed(2)} <span style={{ fontSize: '12px', color: '#A8A8B5' }}>pts</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#17171C', border: '1px solid #2B2B35', borderRadius: '10px', padding: '16px' }}>
+                <span style={{ fontSize: '11px', color: '#A8A8B5', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <img src={trainerIcon} alt="trainer" style={{ width: '13px', height: '13px', filter: 'brightness(0) saturate(100%) invert(67%) sepia(61%) saturate(543%) hue-rotate(185deg) brightness(99%) contrast(98%)' }} />
+                  Trainer
+                </span>
+                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#60A5FA', marginTop: '4px' }}>
+                  {ratingSummary.breakdown.trainer.toFixed(2)} <span style={{ fontSize: '12px', color: '#A8A8B5' }}>pts</span>
+                </div>
+              </div>
+
+              <div style={{ background: '#17171C', border: '1px solid #2B2B35', borderRadius: '10px', padding: '16px' }}>
+                <span style={{ fontSize: '11px', color: '#A8A8B5', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <img src={fireStreakIcon} alt="activity" style={{ width: '13px', height: '13px', filter: 'brightness(0) saturate(100%) invert(67%) sepia(89%) saturate(1641%) hue-rotate(349deg) brightness(98%) contrast(97%)' }} />
+                  Activity & Streaks
+                </span>
+                <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#F59E0B', marginTop: '4px' }}>
+                  {ratingSummary.breakdown.activity.toFixed(2)} <span style={{ fontSize: '12px', color: '#A8A8B5' }}>pts</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Quick Actions (For Own Profile) */}
         {isOwnProfile && (

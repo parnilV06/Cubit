@@ -13,6 +13,7 @@ const friendRoutes = require('./friend.routes');
 const notificationRoutes = require('./notification.routes');
 const focusRoutes = require('./focus.routes');
 const noteRoutes = require('./note.routes');
+const ratingRoutes = require('./rating.routes');
 
 router.use('/auth', authRoutes);
 router.use('/profile', profileRoutes);
@@ -25,5 +26,6 @@ router.use('/friends', friendRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/focus-tracks', focusRoutes);
 router.use('/notes', noteRoutes);
+router.use('/rating', ratingRoutes);
 
 module.exports = router;

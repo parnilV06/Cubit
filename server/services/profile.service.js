@@ -11,6 +11,9 @@ const getProfileByUsername = async (username, currentUserId = null) => {
             username: true,
             avatarUrl: true,
             bio: true,
+            totalRating: true,
+            currentStreak: true,
+            longestStreak: true,
             createdAt: true,
             _count: {
                 select: {

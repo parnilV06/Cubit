@@ -91,39 +91,46 @@ const completeLesson = async (slug, userId) => {
         throw new Error("Lesson not found");
     }
 
-    const existingProgress = await prisma.lessonProgress.findUnique({
-        where: {
-            userId_lessonId: {
-                userId,
-                lessonId: lesson.id
+    const GamificationEngine = require('./gamification');
+
+    return await prisma.$transaction(async (tx) => {
+        const existingProgress = await tx.lessonProgress.findUnique({
+            where: {
+                userId_lessonId: {
+                    userId,
+                    lessonId: lesson.id
+                }
             }
+        });
+
+        if (existingProgress && existingProgress.completed) {
+            return { success: true, message: "Already completed" };
         }
+
+        if (existingProgress) {
+            await tx.lessonProgress.update({
+                where: { id: existingProgress.id },
+                data: {
+                    completed: true,
+                    completedAt: new Date()
+                }
+            });
+        } else {
+            await tx.lessonProgress.create({
+                data: {
+                    userId,
+                    lessonId: lesson.id,
+                    completed: true,
+                    completedAt: new Date()
+                }
+            });
+        }
+
+        // Award Trainer Rating (First time completion only)
+        const awardedPoints = await GamificationEngine.awardTrainerCompletion(userId, lesson.id, lesson.difficulty, tx);
+
+        return { success: true, message: "Lesson marked as completed", awardedRating: awardedPoints };
     });
-
-    if (existingProgress && existingProgress.completed) {
-        return { success: true, message: "Already completed" };
-    }
-
-    if (existingProgress) {
-        await prisma.lessonProgress.update({
-            where: { id: existingProgress.id },
-            data: {
-                completed: true,
-                completedAt: new Date()
-            }
-        });
-    } else {
-        await prisma.lessonProgress.create({
-            data: {
-                userId,
-                lessonId: lesson.id,
-                completed: true,
-                completedAt: new Date()
-            }
-        });
-    }
-
-    return { success: true, message: "Lesson marked as completed" };
 };
 
 const getProgress = async (userId) => {

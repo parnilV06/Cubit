@@ -25,9 +25,24 @@
   justify-content: flex-start;
   gap: 20px;
   height: 100%;
-  overflow: hidden;       /* no scrolling in main panel either */
+  overflow-y: auto;       /* enable smooth vertical scrolling */
   box-sizing: border-box;
   text-align: left;
+}
+
+/* Custom scrollbar for main panel */
+.profile-main-content::-webkit-scrollbar {
+  width: 6px;
+}
+.profile-main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.profile-main-content::-webkit-scrollbar-thumb {
+  background: #2B2B35;
+  border-radius: 3px;
+}
+.profile-main-content::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-primary);
 }
 
 /* Header styling */
@@ -52,22 +67,22 @@
 }
 
 /* ---------- Hero / Profile Card ---------- */
-.profile-hero-card
- {
-    position: relative;
-    border: 1px solid var(--border-primary);
-    border-radius: 16px;
-    padding: 20px 32px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    height: 140px;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    background-image: url(/src/assets/hero-bg-transparent.png);
-    background-size: cover;
-    background-position: -25px -205px;
-    background-repeat: no-repeat;
+.profile-hero-card {
+  position: relative;
+  border: 1px solid var(--border-primary);
+  border-radius: 16px;
+  padding: 24px 36px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-height: 165px;
+  height: auto;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  background-image: url(/src/assets/hero-bg-transparent.png);
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
 }
 
 .profile-hero-content {
@@ -75,14 +90,14 @@
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
   width: 100%;
 }
 
 .profile-avatar-container {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
@@ -105,9 +120,9 @@
 .profile-hero-details {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   flex-grow: 1;
-  margin-left: 36px;
+  margin-left: 8px;
   transition: margin-left 0.25s ease;
 }
 
@@ -130,15 +145,17 @@
 }
 
 .profile-hero-stat-badge {
-  border: 2px solid rgba(87, 47, 247, 0.6);
+  border: 1px solid rgba(87, 47, 247, 0.6);
   border-radius: 8px;
   padding: 6px 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(8, 8, 10, 0.7);
+  background: rgba(18, 18, 24, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .profile-hero-stat-badge:hover {
