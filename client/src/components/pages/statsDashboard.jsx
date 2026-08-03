@@ -16,19 +16,20 @@ export default function StatsDashboard() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchDashboardData = async (isInitial = false) => {
+    try {
+      if (isInitial) setLoading(true);
+      const response = await statsAPI.getDashboard();
+      setData(response.data);
+    } catch (err) {
+      console.error('Failed to fetch dashboard data:', err);
+    } finally {
+      if (isInitial) setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        const response = await statsAPI.getDashboard();
-        setData(response.data);
-      } catch (err) {
-        console.error('Failed to fetch dashboard data:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDashboardData();
+    fetchDashboardData(true);
   }, []);
 
   // Compute processed and mapped data from live API payload
@@ -67,12 +68,15 @@ export default function StatsDashboard() {
 
     // 5. Map Recent Sessions
     const recentSessionsData = data.recentSessions.map(item => ({
+      id: item.sessionId,
       name: item.sessionName,
+      puzzleType: item.puzzleType || 'THREE_BY_THREE',
       best: item.best ? Number(item.best).toFixed(2) : '--',
       mean: item.average ? Number(item.average).toFixed(2) : '--',
       ao5: '--',
       ao12: '--',
-      date: new Date(item.createdAt).toLocaleDateString()
+      date: new Date(item.createdAt).toLocaleDateString(),
+      createdAt: item.createdAt
     }));
 
     return {
@@ -134,7 +138,10 @@ export default function StatsDashboard() {
       </div>
 
       {/* Recent Sessions Table */}
-      <RecentSessions sessions={mappedStats.recentSessionsData} />
+      <RecentSessions 
+        sessions={mappedStats.recentSessionsData} 
+        refetchDashboard={() => fetchDashboardData(false)}
+      />
     </div>
   );
 }

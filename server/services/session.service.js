@@ -118,8 +118,19 @@ const deleteSession = async (userId, sessionId) => {
             where: { id: sessionId }
         });
 
-        if (session.isActive) {
+        // Check if user has any remaining sessions
+        const remainingSession = await tx.session.findFirst({
+            where: { userId },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        if (!remainingSession) {
             await createDefaultActiveSession(userId, tx);
+        } else if (session.isActive) {
+            await tx.session.update({
+                where: { id: remainingSession.id },
+                data: { isActive: true }
+            });
         }
     });
 
