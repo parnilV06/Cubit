@@ -1,9 +1,13 @@
 
 
-import { Link } from 'react-router-dom'
-import logoIcon from '../../assets/cubit-logo-icon-svg.svg'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import logoIcon from '../../assets/cubit-logo-icon-svg.svg';
+import ContactModal from '../ui/ContactModal.jsx';
 
 export default function LandingFooter() {
+  const [isContactOpen, setIsContactOpen] = useState(false);
+
   return (
     <footer className="landing-footer" id="landing-footer-section">
       <div className="footer-container">
@@ -40,7 +44,26 @@ export default function LandingFooter() {
               </a>
               <ul className="footer-links-list">
                 <li>
-                  <a href="#contact" className="footer-link">Contact Us</a>
+                  <button
+                    type="button"
+                    onClick={() => setIsContactOpen(true)}
+                    className="footer-link"
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      padding: 0,
+                      margin: 0,
+                      fontFamily: 'inherit',
+                      fontSize: '13.5px',
+                      fontWeight: '400',
+                      color: 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      lineHeight: 'inherit',
+                    }}
+                  >
+                    Contact Us
+                  </button>
                 </li>
                 <li>
                   <Link to="/privacy" className="footer-link">Privacy Policy</Link>
@@ -93,11 +116,15 @@ export default function LandingFooter() {
 
         {/* Bottom Row: Copyright left, Credits right */}
         <div className="footer-bottom-row">
-          <p className="footer-copyright">© 2026 Cubit . All rights reserved</p>
+          <p className="footer-copyright">© 2026 Cubit. All rights reserved</p>
           <p className="footer-credits">Made with 💜 by Parnil Vyawahare</p>
         </div>
 
       </div>
+
+      {/* Contact Us Modal */}
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
     </footer>
-  )
+  );
 }
+

@@ -50,7 +50,6 @@ html {
 @media (min-width: 1025px) {
 
   .landing-hero,
-  .landing-section,
   .cta-card-section {
     height: calc(100vh - 72px);
     padding: 40px 60px;
@@ -67,6 +66,10 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-height: calc(100vh - 72px);
+    height: auto;
+    padding: 60px 60px;
+    box-sizing: border-box;
   }
 
   .cta-card-section {
