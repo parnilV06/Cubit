@@ -1,13 +1,11 @@
+import { Link } from 'react-router-dom';
+import { ChevronRight } from 'lucide-react';
 
-import { Link } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import LandingNav from '../layout/landingNav.jsx';
+import LandingFooter from '../layout/landingFooter.jsx';
+import InteractiveCube from '../ui/InteractiveCube.jsx';
 
-import LandingNav from '../layout/landingNav.jsx'
-import LandingFooter from '../layout/landingFooter.jsx'
-import InteractiveCube from '../ui/InteractiveCube.jsx'
-
-
-import './landing.css'
+import './landing.css';
 
 export default function Landing() {
   return (
@@ -27,11 +25,11 @@ export default function Landing() {
 
         <div className="hero-content">
           <h1 className="hero-title">
-            Time . Train .
+            Time . Train .{' '}
             <span className="hero-title-highlight">Improve</span>
           </h1>
           <p className="hero-subtitle">
-            Cubit is a fast , modern , minimal and Open Source Cubing platform . Built for everyone from newbies to sub 10’s . It’s time now to “Cube-it” the modern way
+            Cubit is a fast, modern, minimal, and open-source speedcubing platform. Built for everyone from beginners to sub-10s. It&apos;s time to Cube-it the modern way.
           </p>
           <div className="hero-actions">
             <Link to="/signup" className="btn-primary" id="hero-cta-start">
@@ -56,19 +54,19 @@ export default function Landing() {
           2. FEATURES GRID SECTION
           ========================================== */}
       <section className="landing-section" id="features">
-        <h2 className="section-title">Everything you need ,<br></br> Nothing you don’t</h2>
+        <h2 className="section-title">
+          Everything you need,<br /> Nothing you don&apos;t
+        </h2>
         <p className="section-subtitle">
-          Cubit is built by cubers , for cubers . Every feature exists because
-          someone reaches for it during a solve .
+          Cubit is built by cubers, for cubers. Every feature exists because someone reaches for it during a solve.
         </p>
 
         <div className="features-grid">
-          {/* Card 1: Precession Timer */}
+          {/* Card 1: Precision Timer */}
           <div className="feature-card">
-            <h3 className="feature-title">Precession Timer</h3>
+            <h3 className="feature-title">Precision Timer</h3>
             <p className="feature-desc">
-              Millisecond-accurate solves with inspection, hold-to-start. +2 and DNF.
-              Exactly the controls you expect.
+              Millisecond-accurate solves with inspection, hold-to-start, +2 and DNF penalties. Exactly the controls you expect.
             </p>
           </div>
 
@@ -76,14 +74,13 @@ export default function Landing() {
           <div className="feature-card">
             <h3 className="feature-title">Session Tracking</h3>
             <p className="feature-desc">
-              Group solves into sessions per event. Auto calculated a05, a012 ,a100
-              and best single. with full history.
+              Group solves into sessions per event. Auto-calculated Ao5, Ao12, Ao100, and best single with full solve history.
             </p>
           </div>
 
           {/* Card 3: Smart Scrambles */}
           <div className="feature-card">
-            <h3 className="feature-title">Smart Scrambles & Visualizer</h3>
+            <h3 className="feature-title">Smart Scrambles &amp; Visualizer</h3>
             <p className="feature-desc">
               WCA-style scrambles for 2×2 to 5×5, paired with an accurate 2D cube-state visualizer so you know exactly what your scramble should look like.
             </p>
@@ -93,8 +90,7 @@ export default function Landing() {
           <div className="feature-card">
             <h3 className="feature-title">Train and Learn</h3>
             <p className="feature-desc">
-              Begginer friendly learning and training modes, To onboard you
-              into the world of speedcubing .
+              Beginner-friendly learning and training modes to onboard you into the world of speedcubing.
             </p>
           </div>
 
@@ -102,8 +98,7 @@ export default function Landing() {
           <div className="feature-card">
             <h3 className="feature-title">Progress Analytics</h3>
             <p className="feature-desc">
-              See PB history. time-of-day patterns. and recognition vs. execution splits.
-              Charts you actually need.
+              See PB history, solve trends, Ao5/Ao12 charts, and detailed performance breakdown. Charts you actually need.
             </p>
           </div>
 
@@ -111,7 +106,7 @@ export default function Landing() {
           <div className="feature-card">
             <h3 className="feature-title">Focus Mode</h3>
             <p className="feature-desc">
-              Stay in the zone with built-in focus tracks and ambient sounds designed to reduce distractions while you solve.
+              Stay in the zone with built-in focus tracks and ambient audio designed to reduce distractions while you solve.
             </p>
           </div>
         </div>
@@ -124,20 +119,22 @@ export default function Landing() {
         <div className="training-card">
           <h2 className="training-card-title">
             Start your SpeedCubing journey
-            <span className="training-card-title-sub">WITH <span style={{ color: 'var(--brand-primary)', fontFamily: 'var(--font-logo)', fontSize: '64px' }}>C</span> <span style={{ fontFamily: 'var(--font-logo)', fontSize: '64px' }}>
-              U B I T </span> </span>
+            <span className="training-card-title-sub">
+              WITH <span style={{ color: 'var(--brand-primary)', fontFamily: 'var(--font-logo)', fontSize: '64px' }}>C</span>{' '}
+              <span style={{ fontFamily: 'var(--font-logo)', fontSize: '64px' }}>U B I T</span>
+            </span>
           </h2>
 
           <div className="training-divider"></div>
 
           <p className="training-card-desc">
-            Special Learn and Train mode , Crafted for begginers , designed for your very first Rubik’s cube solve ,
+            Special Learn and Train mode, crafted for beginners and designed for your very first Rubik&apos;s Cube solve.
             <br /><br />
-            Learn Algorithms , train weak areas and kickstart your journey in the world of Rubik’s cube .
+            Learn algorithms, train weak areas, and kickstart your journey in speedcubing.
           </p>
 
           <div className="training-card-actions">
-            <Link to="/trainer" className="btn-primary" id="training-cta">
+            <Link to="/app/trainer" className="btn-primary" id="training-cta">
               Explore Learn Mode
               <ChevronRight className="btn-chevron" />
             </Link>
@@ -157,11 +154,11 @@ export default function Landing() {
               improves together.
             </h2>
             <p className="section-subtitle">
-              Connect with cubers around the world, Share, learn, help, and grow together.
+              Connect with cubers around the world. Share, learn, help, and grow together.
             </p>
 
             <div className="community-actions-container">
-              <Link to="/community" className="btn-primary" id="community-cta">
+              <Link to="/app/community" className="btn-primary" id="community-cta">
                 Join the Community
                 <ChevronRight className="btn-chevron" />
               </Link>
@@ -172,7 +169,6 @@ export default function Landing() {
             <div className="community-visual-container">
               <svg viewBox="0 0 200 200" className="community-svg-bg">
                 <defs>
-                  {/* Clip paths for circular avatars */}
                   <clipPath id="avatar-clip-1">
                     <circle cx="160" cy="140" r="18" />
                   </clipPath>
@@ -192,7 +188,7 @@ export default function Landing() {
                 <circle cx="100" cy="100" r="80" fill="none" className="orbit-line" stroke="rgba(167, 104, 212, 0.25)" strokeWidth="1" />
                 <circle cx="100" cy="100" r="55" fill="none" className="orbit-line" stroke="rgba(167, 104, 212, 0.25)" strokeWidth="1" />
 
-                {/* Smaller purple circles as design elements */}
+                {/* Orbit circles */}
                 <circle cx="100" cy="20" r="4" fill="var(--brand-sec)" />
                 <circle cx="180" cy="100" r="4" fill="var(--brand-sec)" />
                 <circle cx="100" cy="180" r="4" fill="var(--brand-sec)" />
@@ -202,13 +198,11 @@ export default function Landing() {
 
                 {/* Central Cubit Logo */}
                 <g transform="translate(100, 100) scale(0.12) translate(-182, -216.5)">
-                  {/* Outer hexagonal shape */}
                   <path d="M0.5 118.6V317.1C1.91839 323.303 3.71713 326.121 8.5 330.1L178.5 430.6C186.187 432.82 190.257 432.377 197.5 430.6L362.5 328.1C362.816 324.036 363.824 322.712 362 320.1C360.176 317.487 301 284.6 301 284.6C296.72 283.086 294.932 281.513 288.5 284.6C282.068 287.686 193 344.1 193 344.1C188.175 345.328 185.357 345.469 180 344.1L85 289.1C77.9794 285.306 75.8106 281.84 74 274.1V162.1C75.3492 156.49 76.4425 153.965 81.5 151.1L176 93.0996C183.368 89.5736 188.029 88.5885 195.5 92.0996L288 146.1H298L361 107.1C364.299 103.659 364.157 101.566 361 97.5996L200 4.09963C189.218 -0.682341 183.948 -0.717379 176 4.09963C176 4.09963 10 104.1 6.5 106.6C3 109.1 0.5 114.1 0.5 118.6Z" fill="url(#comm-logo-grad)" />
-                  {/* Inner diamond shape */}
                   <path d="M102 181.1L100 267.6L182 314.6V226.6L102 181.1Z" fill="url(#comm-logo-grad)" />
                 </g>
 
-                {/* User Avatars with outer borders */}
+                {/* User Avatars */}
                 <image href="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&h=150&q=80" x="142" y="122" width="36" height="36" clipPath="url(#avatar-clip-1)" />
                 <circle cx="160" cy="140" r="18" fill="none" stroke="var(--brand-sec)" strokeWidth="1.5" />
 
@@ -222,25 +216,75 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* 3-column features grid at bottom */}
+        {/* 3-column features grid */}
         <div className="community-grid">
           <div className="community-card">
             <h3 className="community-card-title">Discuss and Learn</h3>
             <p className="community-card-desc">
-              Begginer friendly learning and training modes, To onboard you into the world of speedcubing .
+              Share solve tips, ask questions, discuss algorithms, and learn from experienced speedcubers.
             </p>
           </div>
           <div className="community-card">
             <h3 className="community-card-title">Connect and Share</h3>
             <p className="community-card-desc">
-              See PB history. time-of-day patterns. and recognition vs. execution splits. Charts you actually need.
+              Share Personal Bests, post solve achievements, make friends, and follow rival cubers.
             </p>
           </div>
           <div className="community-card">
-            <h3 className="community-card-title">Events and Challenges</h3>
+            <h3 className="community-card-title">Leaderboards &amp; Ranks</h3>
             <p className="community-card-desc">
-              Open Cubit once and use it on a plane. at a comp. anywhere. Your solves stay on your device until you sync.
+              Track global and friend ranks across events, compare PB stats, and compete for top positions.
             </p>
+          </div>
+        </div>
+
+        {/* ==========================================
+            PART 1: COMPACT CUBIT RATING + LEADERBOARD BANNER
+            ========================================== */}
+        <div
+          className="community-rating-banner"
+          style={{
+            marginTop: '32px',
+            backgroundColor: 'var(--bg-secondary)',
+            border: '1px solid var(--border-primary)',
+            borderRadius: '16px',
+            padding: '24px 28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '24px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ flex: '1 1 300px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '4px 12px',
+                borderRadius: '999px',
+                backgroundColor: 'rgba(167, 104, 212, 0.12)',
+                border: '1px solid rgba(167, 104, 212, 0.25)',
+                marginBottom: '8px',
+              }}
+            >
+              <span style={{ fontSize: '12px', fontWeight: '600', color: '#A768D4', fontFamily: 'var(--font-heading)' }}>
+                Cubit Rating &amp; Leaderboards
+              </span>
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-heading)', marginBottom: '6px' }}>
+              Build Your Cubit Rating.
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
+              Earn Cubit Rating as you solve, improve, train, and stay consistent. Compare PBs, climb the Top Cuber rankings, and compete with friends or the global Cubit community.
+            </p>
+          </div>
+          <div>
+            <Link to="/app/community" className="btn-primary" style={{ whiteSpace: 'nowrap' }}>
+              Climb the Leaderboard
+              <ChevronRight className="btn-chevron" />
+            </Link>
           </div>
         </div>
       </section>
@@ -251,9 +295,11 @@ export default function Landing() {
       <section className="landing-section" id="open-source">
         <div className="open-source-main-row">
           <div className="open-source-left-col">
-            <h2 className="section-title">Built in the open. <br></br>Built to stay that way.</h2>
+            <h2 className="section-title">
+              Built in the open. <br /> Built to stay that way.
+            </h2>
             <p className="section-subtitle">
-              Cubit will never have a paywall. The code lives on GitHub. issues are public. and the roadmap is decided in the open with the community.
+              Cubit will never have a paywall. The code lives on GitHub, issues are public, and development is transparent.
             </p>
 
             <div className="open-source-actions">
@@ -264,7 +310,7 @@ export default function Landing() {
                 className="btn-primary"
                 id="github-star-cta"
               >
-                Star on Github
+                Star on GitHub
                 <ChevronRight className="btn-chevron" />
               </a>
               <a
@@ -307,20 +353,70 @@ export default function Landing() {
           <div className="pillar-card">
             <h3 className="pillar-title">Free</h3>
             <p className="pillar-desc">
-              Always . Every Feature , no tiers , no paywalls
+              Always. Every feature, no tiers, no paywalls.
             </p>
           </div>
           <div className="pillar-card">
             <h3 className="pillar-title">Open Source</h3>
             <p className="pillar-desc">
-              MIT licensed , fork it , audit it , contribute
+              GNU GPL-3.0 licensed. Fork it, audit it, contribute.
             </p>
           </div>
           <div className="pillar-card">
-            <h3 className="pillar-title">Local first</h3>
+            <h3 className="pillar-title">Cloud Sync</h3>
             <p className="pillar-desc">
-              Your data lives on your device by default
+              Secure cloud database &amp; session architecture.
             </p>
+          </div>
+        </div>
+
+        {/* ==========================================
+            PART 2: CUBIT.JS OPEN SOURCE CTA BANNER
+            ========================================== */}
+        <div
+          className="cubitjs-banner"
+          style={{
+            marginTop: '32px',
+            backgroundColor: 'var(--bg-secondary)',
+            border: '1px solid var(--border-primary)',
+            borderRadius: '16px',
+            padding: '24px 28px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '24px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ flex: '1 1 300px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '4px 12px',
+                borderRadius: '999px',
+                backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                border: '1px solid rgba(59, 130, 246, 0.25)',
+                marginBottom: '8px',
+              }}
+            >
+              <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--brand-primary)', fontFamily: 'var(--font-heading)' }}>
+                Standalone npm Package
+              </span>
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: '700', color: 'var(--text-primary)', fontFamily: 'var(--font-heading)', marginBottom: '6px' }}>
+              Cubit.js — Built for Cubit. Open for everyone.
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.6', margin: 0 }}>
+              Explore the standalone JavaScript package behind Cubit&apos;s 2D Rubik&apos;s Cube visualization tooling.
+            </p>
+          </div>
+          <div>
+            <Link to="/cubitjs" className="btn-outline" style={{ whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              Explore Cubit.js
+              <ChevronRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
@@ -333,11 +429,14 @@ export default function Landing() {
           <div className="cta-glow"></div>
 
           <div className="cta-card-left">
-            <span className="cta-tag">Ready to “ Cube-it ”</span>
+            <span className="cta-tag">Ready to &ldquo;Cube-it&rdquo;</span>
             <h2 className="cta-title">
               Start your journey <br />
-              with <span className="cta-title-sub"><span style={{ color: 'var(--brand-primary)', fontFamily: 'var(--font-logo)', fontSize: '64px' }}>C</span> <span style={{ fontFamily: 'var(--font-logo)', fontSize: '64px' }}>
-                U B I T </span></span>
+              with{' '}
+              <span className="cta-title-sub">
+                <span style={{ color: 'var(--brand-primary)', fontFamily: 'var(--font-logo)', fontSize: '64px' }}>C</span>{' '}
+                <span style={{ fontFamily: 'var(--font-logo)', fontSize: '64px' }}>U B I T</span>
+              </span>
             </h2>
             <p className="cta-subtext">
               Join a growing community of cubers and <br />
@@ -357,5 +456,5 @@ export default function Landing() {
       {/* Footer component */}
       <LandingFooter />
     </div>
-  )
+  );
 }

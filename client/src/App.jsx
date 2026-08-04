@@ -8,6 +8,7 @@ import Signup from './components/pages/signup.jsx';
 import Profile from './components/pages/profile.jsx';
 import Privacy from './components/pages/privacy.jsx';
 import Terms from './components/pages/terms.jsx';
+import CubitJSPage from './components/pages/cubitjs.jsx';
 
 // App Layout & Pages
 import AppLayout from './components/layout/appLayout.jsx';
@@ -51,6 +52,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/cubitjs" element={<CubitJSPage />} />
         
         {/* Protected Routes */}
         <Route 
