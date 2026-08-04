@@ -83,10 +83,9 @@ export default function Landing() {
 
           {/* Card 3: Smart Scrambles */}
           <div className="feature-card">
-            <h3 className="feature-title">Smart Scrambles</h3>
+            <h3 className="feature-title">Smart Scrambles & Visualizer</h3>
             <p className="feature-desc">
-              WCA-spec scramble generation for every event. Visual scramble preview
-              shows the cube state before you start.
+              WCA-style scrambles for 2×2 to 5×5, paired with an accurate 2D cube-state visualizer so you know exactly what your scramble should look like.
             </p>
           </div>
 
@@ -108,12 +107,11 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Card 6: Works Offline */}
+          {/* Card 6: Focus Mode */}
           <div className="feature-card">
-            <h3 className="feature-title">Works Offline</h3>
+            <h3 className="feature-title">Focus Mode</h3>
             <p className="feature-desc">
-              Open Cubit once and use it on a plane. at a comp. anywhere.
-              Your solves stay on your device until you sync.
+              Stay in the zone with built-in focus tracks and ambient sounds designed to reduce distractions while you solve.
             </p>
           </div>
         </div>
@@ -260,7 +258,7 @@ export default function Landing() {
 
             <div className="open-source-actions">
               <a
-                href="https://github.com"
+                href="https://github.com/parnilV06/Cubit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
@@ -270,7 +268,7 @@ export default function Landing() {
                 <ChevronRight className="btn-chevron" />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/parnilV06/Cubit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline"
@@ -289,7 +287,13 @@ export default function Landing() {
                 Help shape Cubit. Contribute code, ideas, or support development with a small donation.
               </p>
               <div className="support-card-actions">
-                <a href="#support" className="btn-outline" id="coffee-donate-cta">
+                <a
+                  href="https://github.com/sponsors/parnilV06"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-outline"
+                  id="coffee-donate-cta"
+                >
                   Buy me a Coffee
                   <ChevronRight className="btn-chevron" />
                 </a>

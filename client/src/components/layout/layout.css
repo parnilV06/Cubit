@@ -34,6 +34,7 @@
 
 .app-nav.collapsed {
   width: 80px;
+  align-items: center;
 }
 
 .nav-toggle-btn {
@@ -68,8 +69,24 @@
   transition: width 0.3s ease;
 }
 
+.app-nav.collapsed .nav-header {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .app-nav.collapsed .nav-logo {
-  width: 50px;
+  width: 44px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
 }
 
 .nav-brand-text {
@@ -94,36 +111,63 @@
 .nav-links {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   padding: 0;
   align-items: center;
+  width: 100%;
+}
+
+.app-nav.collapsed .nav-links {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-link {
   display: flex;
   align-items: center;
   gap: 25px;
-  padding: 10px;
+  padding: 10px 16px;
   text-decoration: none;
   color: white;
   width: 200px;
   border-radius: 8px;
   transition: background-color 0.2s, color 0.2s;
   justify-content: flex-start;
+  box-sizing: border-box;
 }
 
 .app-nav.collapsed .nav-link {
-  width: auto;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  gap: 0;
   justify-content: center;
-  padding: 10px;
+  align-items: center;
+  border-radius: 12px;
+  margin: 0 auto;
 }
 
 .nav-icon-container {
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
+}
+
+.app-nav.collapsed .nav-icon-container {
+  margin: 0 auto;
 }
 
 .nav-icon-container img {
@@ -156,23 +200,59 @@
 
 .nav-footer {
   margin-top: auto;
-  padding: 20px;
+  padding: 20px 16px;
   border-top: 2px solid var(--border-primary);
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.app-nav.collapsed .nav-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: none;
 }
 
 .user-profile {
   display: flex;
   align-items: center;
   gap: 15px;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.app-nav.collapsed .user-profile {
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .avatar-placeholder {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background-color: var(--brand-primary, #572ff7);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.app-nav.collapsed .avatar-placeholder {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+  display: block;
 }
 
 .user-name {
@@ -183,9 +263,10 @@
 
 .profile-popover {
   position: absolute;
-  bottom: 60px;
-  left: 0;
-  width: 200px;
+  bottom: 65px;
+  right: 12px;
+  left: auto;
+  width: 190px;
   background-color: var(--bg-card-sec, #1d1d24);
   border: 1px solid var(--border-primary, #2b2b35);
   border-radius: 12px;
@@ -193,23 +274,32 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
-  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
-  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.app-nav.collapsed .profile-popover {
+  position: absolute;
+  right: calc(100% + 12px);  /* Float to the left of the collapsed sidebar */
+  bottom: 8px;
+  left: auto;
+  width: 170px;
+  box-shadow: -4px 8px 24px rgba(0, 0, 0, 0.6);
 }
 
 .nav-transition {
-  transition: opacity 0.3s ease, max-width 0.3s ease, transform 0.3s ease, margin 0.3s ease, padding 0.3s ease;
+  transition: opacity 0.25s ease, max-width 0.25s ease, transform 0.25s ease;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .nav-transition.hide {
-  opacity: 0;
-  max-width: 0;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 0;
-  padding-right: 0;
+  display: none !important;
+  opacity: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   transform: translateX(-10px);
 }
 

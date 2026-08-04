@@ -98,7 +98,7 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
         <div 
           className="user-profile" 
           onClick={() => setShowProfileMenu(!showProfileMenu)}
-          style={{ cursor: 'pointer', position: 'relative' }}
+          style={{ cursor: 'pointer' }}
         >
           <img 
             src={user?.avatarUrl || "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=572ff7"} 
@@ -108,20 +108,20 @@ const Nav = ({ isExpanded, setIsExpanded }) => {
           <span className={`profile-name nav-transition ${isExpanded ? 'show' : 'hide'}`}>
             {user?.displayName || user?.username || 'User'}
           </span>
-          
-          {showProfileMenu && (
-            <div className="profile-popover">
-              <button className="popover-item" onClick={() => navigate('/profile')}>
-                <User size={16} />
-                <span>View Profile</span>
-              </button>
-              <button className="popover-item logout" onClick={handleLogout}>
-                <LogOut size={16} />
-                <span>Logout</span>
-              </button>
-            </div>
-          )}
         </div>
+        
+        {showProfileMenu && (
+          <div className="profile-popover">
+            <button className="popover-item" onClick={() => navigate('/profile')}>
+              <User size={16} />
+              <span>View Profile</span>
+            </button>
+            <button className="popover-item logout" onClick={handleLogout}>
+              <LogOut size={16} />
+              <span>Logout</span>
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );

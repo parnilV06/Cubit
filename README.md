@@ -218,7 +218,7 @@ Contributions will open after the initial public release.
 
 ## License
 
-License to be decided.
+GNU GPL v3.0
 
 ---
 
