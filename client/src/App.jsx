@@ -6,6 +6,8 @@ import Landing from './components/pages/landing.jsx';
 import Login from './components/pages/login.jsx';
 import Signup from './components/pages/signup.jsx';
 import Profile from './components/pages/profile.jsx';
+import Privacy from './components/pages/privacy.jsx';
+import Terms from './components/pages/terms.jsx';
 
 // App Layout & Pages
 import AppLayout from './components/layout/appLayout.jsx';
@@ -47,6 +49,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         
         {/* Protected Routes */}
         <Route 
