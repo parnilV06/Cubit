@@ -74,3 +74,13 @@ export const UI_COLOR_PALETTE = Object.freeze({
  * List of valid basic face identifiers
  */
 export const VALID_FACES = Object.freeze(['U', 'D', 'F', 'B', 'R', 'L']);
+
+/**
+ * List of valid whole-cube rotation axes (x, y, z)
+ */
+export const VALID_ROTATIONS = Object.freeze(['x', 'y', 'z', 'X', 'Y', 'Z']);
+
+/**
+ * List of valid 3x3 slice turn identifiers (M, E, S)
+ */
+export const VALID_SLICES = Object.freeze(['M', 'E', 'S', 'm', 'e', 's']);

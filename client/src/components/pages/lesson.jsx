@@ -1,102 +1,129 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, CheckCircle } from 'lucide-react';
+import {
+  ChevronLeft,
+  CheckCircle2,
+  Clock,
+  BookOpen,
+  Sparkles,
+  AlertTriangle,
+} from 'lucide-react';
 import { trainerAPI } from '../../services/api';
+import { MDXRenderer } from '../trainer/mdx';
+import { LessonNavigation } from '../trainer/navigation';
 import './appStyles.css';
-
-const stripFrontmatter = (mdText) => {
-  if (mdText.startsWith('---')) {
-    const parts = mdText.split('---');
-    if (parts.length >= 3) {
-      return parts.slice(2).join('---').trim();
-    }
-  }
-  return mdText.trim();
-};
-
-const renderMarkdown = (text) => {
-  if (!text) return null;
-  const blocks = text.split(/\n\n+/);
-  return blocks.map((block, idx) => {
-    const trimmed = block.trim();
-    if (!trimmed) return null;
-
-    if (trimmed.startsWith('# ')) {
-      return <h1 key={idx} style={{ color: '#fff', marginTop: '24px', marginBottom: '12px', fontFamily: 'Rajdhani, sans-serif', fontSize: '28px' }}>{trimmed.slice(2)}</h1>;
-    }
-    if (trimmed.startsWith('## ')) {
-      return <h2 key={idx} style={{ color: '#fff', marginTop: '20px', marginBottom: '10px', fontFamily: 'Rajdhani, sans-serif', fontSize: '22px' }}>{trimmed.slice(3)}</h2>;
-    }
-    if (trimmed.startsWith('### ')) {
-      return <h3 key={idx} style={{ color: '#fff', marginTop: '16px', marginBottom: '8px', fontFamily: 'Rajdhani, sans-serif', fontSize: '18px' }}>{trimmed.slice(4)}</h3>;
-    }
-
-    if (trimmed.startsWith('```')) {
-      const code = trimmed.replace(/```[a-zA-Z]*/, '').replace(/```$/, '').trim();
-      return (
-        <pre key={idx} style={{ background: '#0D0D11', border: '1px solid #2B2B35', padding: '16px', borderRadius: '8px', overflowX: 'auto', margin: '15px 0' }}>
-          <code style={{ fontFamily: 'monospace', color: '#572FF7', fontSize: '14px' }}>{code}</code>
-        </pre>
-      );
-    }
-
-    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      const items = trimmed.split(/\n[-*]\s+/).map(item => item.replace(/^[-*]\s+/, '').trim());
-      return (
-        <ul key={idx} style={{ paddingLeft: '20px', margin: '10px 0', color: '#A8A8B5', fontFamily: 'Rubik, sans-serif' }}>
-          {items.map((item, i) => <li key={i} style={{ marginBottom: '6px', lineHeight: '1.5' }}>{item}</li>)}
-        </ul>
-      );
-    }
-
-    return (
-      <p key={idx} style={{ color: '#A8A8B5', lineHeight: '1.6', fontFamily: 'Rubik, sans-serif', marginBottom: '15px' }}>
-        {trimmed}
-      </p>
-    );
-  });
-};
 
 export default function Lesson() {
   const { id } = useParams(); // URL Param :id is the slug of the lesson
   const navigate = useNavigate();
+  const pageRef = useRef(null);
 
   const [lesson, setLesson] = useState(null);
   const [content, setContent] = useState('');
+  const [allLessons, setAllLessons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [completing, setCompleting] = useState(false);
+  const [completionNotice, setCompletionNotice] = useState(null);
 
+  // Scroll to top whenever lesson changes
   useEffect(() => {
-    const fetchLesson = async () => {
+    if (pageRef.current) {
+      pageRef.current.scrollTop = 0;
+    }
+  }, [id]);
+
+  // Fetch lesson data and all published lessons for adjacent navigation
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLessonData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await trainerAPI.getLesson(id);
-        setLesson(response.data.lesson);
-        setContent(stripFrontmatter(response.data.content));
+        setCompletionNotice(null);
+
+        const [lessonRes, allRes] = await Promise.allSettled([
+          trainerAPI.getLesson(id),
+          trainerAPI.getLessons(),
+        ]);
+
+        if (!isMounted) return;
+
+        if (lessonRes.status === 'fulfilled' && lessonRes.value?.data) {
+          setLesson(lessonRes.value.data.lesson);
+          setContent(lessonRes.value.data.content || '');
+        } else {
+          const errMsg = lessonRes.reason?.response?.data?.message || lessonRes.reason?.message || 'Lesson not found.';
+          throw new Error(errMsg);
+        }
+
+        if (allRes.status === 'fulfilled' && allRes.value?.data) {
+          setAllLessons(allRes.value.data || []);
+        }
       } catch (err) {
-        console.error('Failed to load lesson details:', err);
-        setError(err.message || 'Failed to load lesson.');
+        if (isMounted) {
+          console.error('Failed to load lesson:', err);
+          setError(err.message || 'Failed to load lesson content.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+          // Ensure scroll top after content loads
+          requestAnimationFrame(() => {
+            if (pageRef.current) {
+              pageRef.current.scrollTop = 0;
+            }
+          });
+        }
       }
     };
 
-    fetchLesson();
+    fetchLessonData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
+  // Derive previous and next lessons
+  const { prevLesson, nextLesson } = useMemo(() => {
+    if (!allLessons || allLessons.length === 0 || !lesson) {
+      return { prevLesson: null, nextLesson: null };
+    }
+
+    const currentIndex = allLessons.findIndex((l) => l.slug === lesson.slug);
+    if (currentIndex === -1) {
+      return { prevLesson: null, nextLesson: null };
+    }
+
+    return {
+      prevLesson: currentIndex > 0 ? allLessons[currentIndex - 1] : null,
+      nextLesson: currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null,
+    };
+  }, [allLessons, lesson]);
+
   const handleComplete = async () => {
-    if (!lesson) return;
+    if (!lesson || completing) return;
     try {
       setCompleting(true);
-      await trainerAPI.completeLesson(lesson.slug);
-      setLesson(prev => prev ? { ...prev, completed: true } : null);
-      alert('Congratulations! Lesson completed!');
+      const res = await trainerAPI.completeLesson(lesson.slug);
+      setLesson((prev) => (prev ? { ...prev, completed: true } : null));
+
+      const awarded = res?.data?.awardedRating;
+      if (typeof awarded === 'number' && awarded > 0) {
+        setCompletionNotice(`Lesson completed! +${awarded.toFixed(2)} Trainer Rating awarded! 🎉`);
+      } else {
+        setCompletionNotice('Lesson completed! Great job! 🎉');
+      }
+
+      // Clear notice after 5 seconds
+      setTimeout(() => {
+        setCompletionNotice(null);
+      }, 5000);
     } catch (err) {
       console.error('Failed to mark lesson complete:', err);
-      alert('Error marking lesson as complete.');
+      alert('Error marking lesson as complete. Please try again.');
     } finally {
       setCompleting(false);
     }
@@ -104,65 +131,176 @@ export default function Lesson() {
 
   if (loading) {
     return (
-      <div className="dashboard-container" style={{ color: '#fff', padding: '40px' }}>
-        <p>Loading lesson...</p>
+      <div ref={pageRef} className="cubit-trainer-lesson-page">
+        <div className="cubit-trainer-lesson-content-wrapper" style={{ gap: '16px' }}>
+          <div style={{ height: '30px', width: '200px', backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '6px' }} />
+          <div style={{ height: '50px', width: '70%', backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '8px' }} />
+          <div style={{ height: '400px', width: '100%', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '16px', marginTop: '12px' }} />
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="dashboard-container" style={{ alignItems: 'flex-start', padding: '40px' }}>
-        <button onClick={() => navigate('/app/trainer')} style={{ color: '#572ff7', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
-          <ChevronLeft size={20} /> Back to Trainer
-        </button>
-        <div className="feature-panel" style={{ width: '100%', maxWidth: '800px', padding: '40px', marginTop: '20px', border: '1px solid red' }}>
-          <h2 style={{ color: '#fff' }}>Error</h2>
-          <p style={{ color: '#ff4d4d' }}>{error}</p>
+      <div ref={pageRef} className="cubit-trainer-lesson-page">
+        <div className="cubit-trainer-lesson-content-wrapper">
+          <button
+            onClick={() => navigate('/app/trainer')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'none',
+              border: 'none',
+              color: 'var(--brand-primary, #572ff7)',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              padding: '8px 0',
+              marginBottom: '20px',
+              alignSelf: 'flex-start',
+            }}
+          >
+            <ChevronLeft size={18} /> Back to Trainer
+          </button>
+
+          <div
+            style={{
+              width: '100%',
+              padding: '36px',
+              borderRadius: '16px',
+              backgroundColor: 'rgba(239, 68, 68, 0.05)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              textAlign: 'left',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#ef4444', marginBottom: '12px' }}>
+              <AlertTriangle size={24} />
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700' }}>Lesson Unavailable</h2>
+            </div>
+            <p style={{ color: 'var(--text-secondary, #a8a8b5)', lineHeight: '1.6', margin: 0 }}>
+              {error}
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="dashboard-container" style={{ alignItems: 'flex-start', padding: '40px' }}>
-      <button 
-        onClick={() => navigate('/app/trainer')}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          background: 'none',
-          border: 'none',
-          color: 'var(--brand-primary, #572ff7)',
-          fontFamily: 'Rubik, sans-serif',
-          fontSize: '16px',
-          cursor: 'pointer',
-          padding: '10px 0',
-          marginBottom: '20px'
-        }}
-      >
-        <ChevronLeft size={20} /> Back to Trainer
-      </button>
+    <div ref={pageRef} className="cubit-trainer-lesson-page">
+      <div className="cubit-trainer-lesson-content-wrapper">
+        {/* Top Back Breadcrumb */}
+        <button
+          onClick={() => navigate('/app/trainer')}
+          aria-label="Back to Trainer Dashboard"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'none',
+            border: 'none',
+            color: 'var(--brand-ter, #bc8be0)',
+            fontFamily: 'var(--font-main, sans-serif)',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            padding: '6px 0',
+            marginBottom: '16px',
+            alignSelf: 'flex-start',
+            transition: 'color 0.15s ease',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = '#ffffff'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--brand-ter, #bc8be0)'; }}
+        >
+          <ChevronLeft size={18} /> Back to Trainer
+        </button>
 
-      <div className="feature-panel" style={{ width: '100%', maxWidth: '800px', padding: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <span style={{ fontSize: '12px', color: '#572FF7', fontWeight: 'bold', textTransform: 'uppercase' }}>
-              {lesson?.category} &bull; {lesson?.difficulty}
-            </span>
-            <h1 style={{ fontFamily: 'Rajdhani, sans-serif', color: 'white', margin: '5px 0 10px 0', fontSize: '32px' }}>
+        {/* Main Lesson Article Container */}
+        <article className="cubit-trainer-lesson-article">
+        {/* Lesson Header */}
+        <header
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: '20px',
+            borderBottom: '1px solid var(--border-primary, #2b2b35)',
+            paddingBottom: '20px',
+            marginBottom: '20px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ textAlign: 'left', flex: 1, minWidth: '240px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '11px',
+                fontWeight: '700',
+                color: 'var(--brand-ter, #bc8be0)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                marginBottom: '8px',
+              }}
+            >
+              <BookOpen size={13} />
+              <span>{lesson?.category || 'Lesson'}</span>
+              <span>&bull;</span>
+              <span>{lesson?.difficulty || 'Beginner'}</span>
+            </div>
+
+            <h1
+              style={{
+                fontFamily: 'var(--font-heading, Rajdhani, sans-serif)',
+                color: '#ffffff',
+                margin: '0 0 10px 0',
+                fontSize: '32px',
+                fontWeight: '700',
+                lineHeight: '1.2',
+                letterSpacing: '0.01em',
+              }}
+            >
               {lesson?.title}
             </h1>
-            <span style={{ fontSize: '13px', color: '#A8A8B5' }}>
-              Estimated time: {lesson?.estimatedMinutes} mins
-            </span>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px',
+                fontSize: '13px',
+                color: 'var(--text-muted, #7a7a88)',
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Clock size={14} />
+                {lesson?.estimatedMinutes || 5} min read & practice
+              </span>
+            </div>
           </div>
-          
-          <div>
+
+          {/* Header Action Button */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
             {lesson?.completed ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34A853', fontWeight: 'bold', fontSize: '14px', background: '#34a85315', padding: '8px 16px', borderRadius: '20px' }}>
-                <CheckCircle size={18} />
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: '#22c55e',
+                  fontWeight: '700',
+                  fontSize: '13px',
+                  backgroundColor: 'rgba(34, 197, 94, 0.12)',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                }}
+              >
+                <CheckCircle2 size={16} />
                 Completed
               </div>
             ) : (
@@ -170,27 +308,70 @@ export default function Lesson() {
                 onClick={handleComplete}
                 disabled={completing}
                 style={{
-                  background: 'linear-gradient(135deg, #572FF7, #3b1cb3)',
-                  color: 'white',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'linear-gradient(135deg, var(--brand-primary, #572ff7), #3b1cb3)',
+                  color: '#ffffff',
                   border: 'none',
                   borderRadius: '20px',
-                  padding: '10px 20px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(87, 47, 247, 0.3)'
+                  padding: '9px 20px',
+                  fontSize: '13px',
+                  fontWeight: '700',
+                  cursor: completing ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 4px 14px rgba(87, 47, 247, 0.35)',
+                  opacity: completing ? 0.7 : 1,
+                  transition: 'all 0.15s ease',
                 }}
               >
+                <Sparkles size={14} />
                 {completing ? 'Completing...' : 'Mark as Complete'}
               </button>
             )}
           </div>
-        </div>
+        </header>
 
-        <div className="lesson-body-content" style={{ borderTop: '1px solid #2B2B35', paddingTop: '20px' }}>
-          {renderMarkdown(content)}
-        </div>
-      </div>
+        {/* Completion Success Toast Notification */}
+        {completionNotice && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              backgroundColor: 'rgba(34, 197, 94, 0.15)',
+              border: '1px solid rgba(34, 197, 94, 0.4)',
+              color: '#22c55e',
+              fontSize: '14px',
+              fontWeight: '600',
+              marginBottom: '20px',
+              textAlign: 'left',
+              animation: 'fadeIn 0.2s ease',
+            }}
+          >
+            <CheckCircle2 size={18} />
+            <span>{completionNotice}</span>
+          </div>
+        )}
+
+        {/* MDX Educational Content Body */}
+        <main className="lesson-body-content" style={{ width: '100%' }}>
+          <MDXRenderer content={content} />
+        </main>
+
+        {/* Bottom Navigation */}
+        <footer style={{ marginTop: '20px' }}>
+          <LessonNavigation
+            prevLesson={prevLesson}
+            nextLesson={nextLesson}
+            completed={lesson?.completed}
+            completing={completing}
+            onComplete={handleComplete}
+          />
+        </footer>
+      </article>
     </div>
+  </div>
   );
 }
