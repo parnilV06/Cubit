@@ -816,11 +816,13 @@
 .trainer-dashboard {
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 15px;
-  padding: 20px 40px;
+  gap: 20px;
+  padding: 20px 40px 60px 40px;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .trainer-header {
@@ -856,36 +858,99 @@
   background-color: var(--bg-card-sec, #17171c);
   border: 1px solid var(--border-primary);
   border-radius: 20px;
-  padding: 15px 25px;
+  padding: 18px 25px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trainer-section-card:hover {
+  border-color: rgba(87, 47, 247, 0.4);
 }
 
 .trainer-section-header {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+
+.trainer-section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .trainer-section-title {
   font-family: 'Rubik', sans-serif;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: white;
   margin: 0;
   text-align: left;
 }
 
-.trainer-section-subtitle {
+.trainer-module-badge {
   font-family: 'Rubik', sans-serif;
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 600;
+  color: #a8a8b5;
+  background-color: var(--bg-secondary, #0f0f13);
+  border: 1px solid var(--border-primary, #272730);
+  border-radius: 12px;
+  padding: 3px 10px;
   letter-spacing: 0.05em;
-  color: var(--text-secondary, #7a7a88);
-  margin: 0;
-  text-align: left;
+}
+
+.trainer-module-badge.completed {
+  color: #34a853;
+  border-color: rgba(52, 168, 83, 0.4);
+  background-color: rgba(52, 168, 83, 0.1);
+}
+
+.trainer-accordion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--bg-secondary, #0f0f13);
+  border: 1px solid var(--border-primary, #272730);
+  color: #a8a8b5;
+  transition: all 0.2s ease;
+}
+
+.trainer-section-header:hover .trainer-accordion-toggle {
+  color: white;
+  border-color: var(--brand-primary, #572ff7);
+  background-color: rgba(87, 47, 247, 0.15);
+}
+
+.trainer-accordion-body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  animation: fadeInAccordion 0.25s ease-out;
+}
+
+@keyframes fadeInAccordion {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 

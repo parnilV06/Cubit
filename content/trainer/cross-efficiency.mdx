@@ -1,0 +1,129 @@
+---
+title: Cross Efficiency
+description: Transition from the beginner Daisy method to direct bottom-layer cross solving in 8 moves or fewer.
+difficulty: INTERMEDIATE
+category: Speedcubing Fundamentals
+estimatedMinutes: 8
+order: 3
+---
+
+In the beginner method, you learned to construct the White Cross using the Daisy strategy: placing four white edges around the yellow center on top, matching their side colors one by one, and turning each face 180 degrees down.
+
+While the Daisy is simple to understand, it is highly inefficient for speedsolving:
+- It requires **12 to 18 total moves**.
+- It forces you to rotate the whole cube repeatedly.
+- It requires a 180-degree flip before you can begin the next step.
+
+In competitive speedcubing, you solve the cross **directly on the bottom face (`D`) in 8 moves or fewer**.
+
+> [!NOTE]
+> Mathematical analysis shows that **every possible 3x3 scramble can have its cross solved in 8 moves or fewer**. Over 99.9% of scrambles can be solved in 7 moves or fewer, and the average optimal cross requires only 5.8 moves.
+
+---
+
+## 1. The Four Principles of an Efficient Cross
+
+To reduce your cross move count from 15 moves down to 6 moves, follow four core principles:
+
+### Principle 1: Always Solve on the Bottom Face (`D`)
+Hold the White center on the **Bottom (`D`)** from the start of inspection through the entire solve:
+- **No Cube Flip**: You avoid wasting 1 to 2 seconds turning the cube upside down.
+- **Immediate Visibility**: The top layer (`U`) and middle layer remain clearly visible, allowing you to spot your first corner/edge pair while executing the cross.
+
+### Principle 2: Memorize Relative Color Order
+You do not need to look at center pieces to know where an edge belongs. The standard Western color scheme has fixed relationships:
+
+```
+          [ Top: Yellow ]
+ [ Left: Orange ] [ Front: Green ] [ Right: Red ] [ Back: Blue ]
+          [ Bottom: White ]
+```
+
+When White is on the bottom:
+- **Green** is opposite **Blue**.
+- **Red** is opposite **Orange**.
+- Looking at **Green** in front, **Red** is on the Right, and **Orange** is on the Left.
+
+### Principle 3: Solve Relativistically, Then Align (`D` Turn)
+You do not need each edge to match its side center immediately upon insertion. As long as the edges are placed in the correct **relative order** to each other, a single bottom-layer turn (`D`, `D'`, or `D2`) will align all four edges with their side centers simultaneously!
+
+### Principle 4: Zero Whole-Cube Rotations
+Never perform a `y` or `x` whole-cube rotation during the cross. Every edge on the cube can be placed using `U`, `D`, `L`, `R`, `F`, and `B` moves from a single stationary grip.
+
+---
+
+## 2. Worked Example: Direct Cross in 5 Moves
+
+Consider a scrambled cube where cross edges are scattered across the top and middle layers.
+
+Instead of building a daisy:
+1. Turn `D` to place the target slot beneath the first edge.
+2. Insert the edge with `R'`.
+3. Insert the next adjacent edge with `F`.
+4. Restore the bottom layer with `D'`.
+
+Watch how an optimal direct cross executes seamlessly on the bottom layer:
+
+<AlgorithmPlayer
+  moves="D R' F R D'"
+  speed={1}
+  title="Direct 5-Move Cross Insertion"
+  description="Observe how edges are inserted relative to each other before aligning with D'"
+/>
+
+---
+
+## 3. The 3 Basic Edge Insertion Cases
+
+Every cross edge falls into one of three fundamental scenarios:
+
+| Scenario | Location & Orientation | Direct Solution (White on Bottom) | Move Count |
+| :--- | :--- | :--- | :--- |
+| **Easy Insert** | White sticker on side face, matches center | Single face turn (`F2`, `R2`, `L2`, `B2`) or quarter turn (`F`, `R`) | 1 move |
+| **Middle-Layer Edge** | Edge in middle layer, white facing front/side | Move slot into position with `D`, turn side face down, restore `D'` | 2 to 3 moves |
+| **Flipped Edge on Top** | White sticker facing up on `U` face | Align above target side, execute `F' R U' R'` or `U R' F R` | 3 to 4 moves |
+
+---
+
+## 4. Comparing the Solved State
+
+When the cross is solved efficiently on the bottom, all four white edges form a solid cross on `D`, with side stickers matching the Front (Green), Right (Red), Back (Blue), and Left (Orange) centers:
+
+<CubeViewer
+  scramble="D2 R2 B2 L2 F2 U2"
+  title="Target: Aligned Bottom Cross"
+  description="Examine the bottom White cross with all four side colors matched to their centers"
+/>
+
+---
+
+## 5. Daily Cross Training Drills
+
+1. **Unlimited Inspection Cross**: Take as long as you need during inspection (1 to 2 minutes if necessary). Find all 4 edges and calculate the exact move sequence in advance. Close your eyes and execute the entire cross blindfolded.
+2. **Move-Count Constraint Drill**: Scramble the cube and find a cross solution in 7 moves or fewer. If your solution takes 9 moves, undo and find where you can combine moves or use `D` layer setup turns.
+3. **No-Rotation Rule**: Put a piece of tape or marker on your cube's front face. Solve the cross without ever turning the cube on the `y` or `x` axis.
+
+---
+
+## 6. Common Cross Mistakes
+
+- **Building on Top**: Solving the white cross on `U` out of habit. Force yourself to keep White on `D` from move one.
+- **Obsessive Center Matching**: Forcing each edge to match its side center before inserting. Insert pieces in correct relative order (Green next to Red, etc.), then align the whole cross with `D` at the end.
+- **Using 4 Setup Moves for 1 Edge**: Over-complicating inserts. If an edge takes more than 3 moves to insert, another edge should be placed first to simplify the sequence.
+
+---
+
+## 7. Key Takeaways
+
+- **Target under 8 moves**: Every cross can be solved in 8 moves or fewer; aim for an average of 6 moves.
+- **White stays on Bottom (`D`)**: Eliminates cube flips and allows instant transition to the next step.
+- **Relative ordering saves moves**: Solve edges relative to one another, then align all four with a single `D` or `D'` turn.
+- **Zero rotations**: Keep your grip stationary and use fingertricks.
+
+---
+
+<WhatNext
+  next="turning-and-finger-tricks"
+  related={["inspection", "make-the-white-cross"]}
+  explore={["lookahead", "reducing-pauses"]}
+/>

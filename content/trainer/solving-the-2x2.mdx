@@ -1,0 +1,167 @@
+---
+title: Solving the 2x2
+description: Transition your 3x3 solving skills to the 2x2 Pocket Cube: master first-layer construction, top-layer orientation, and corner permutation.
+difficulty: INTERMEDIATE
+category: Solving Other Cubes
+estimatedMinutes: 10
+order: 1
+---
+
+The **2x2x2 Pocket Cube** looks deceptively simple compared to a standard 3x3. With only eight corner pieces and no edges or fixed centers, it is the ideal puzzle to expand your twisty puzzle repertoire.
+
+Because every piece on a 2x2 is a corner, you already possess nearly all the necessary fingertricks and algorithms from your 3x3 training.
+
+```
+[ 3x3 Cube ]               [ 2x2 Pocket Cube ]
+• 8 Corners                 • 8 Corners ONLY
+• 12 Edges                  • 0 Edges
+• 6 Fixed Centers           • 0 Fixed Centers
+```
+
+> [!NOTE]
+> Since the 2x2 has no fixed center pieces to define face colors, you choose your own starting color orientation. By standard convention, start by solving the **White face** on the bottom layer.
+
+---
+
+## 1. The 3-Step Solving Roadmap
+
+We solve the 2x2 using a streamlined, beginner-friendly method:
+
+```
+[ Step 1: Solve First Layer (White) ]
+Match White stickers and align all four side colors.
+                 ↓
+[ Step 2: Orient Last Layer (Yellow Face) ]
+Use Sune or Anti-Sune to point all Yellow stickers upward.
+                 ↓
+[ Step 3: Permute Last Layer (PBL) ]
+Swap adjacent or diagonal corners to complete the puzzle!
+```
+
+---
+
+## 2. Step 1: Solving the First Layer
+
+Pick any corner with a White sticker and place it in the bottom-front-right position with White facing down.
+
+To insert the remaining three White corners:
+1. Locate a White corner in the top layer.
+2. Rotate the top layer (`U`) until that corner sits directly above its matching slot.
+3. Repeat the familiar **Sexy Move** (`R U R' U'`) until the corner drops into place with White pointing down and its side colors matching adjacent pieces.
+
+```notation
+R U R' U'
+```
+
+<AlgorithmPlayer
+  dimension="2x2"
+  algorithm="R U R' U'"
+  speed={1}
+  title="First Layer Corner Insertion"
+  description="Using the Sexy Move trigger to insert a corner into the bottom layer"
+/>
+
+---
+
+## 3. Step 2: Orienting the Last Layer (OLL)
+
+With the first layer solved and facing down (`D`), the top face (`U`) will contain between 0 and 4 Yellow stickers pointing up.
+
+Turn the cube so you are looking at the Yellow face. Use the classic **Sune** algorithm to orient the corners:
+
+```notation
+R U R' U R U2 R'
+```
+
+<AlgorithmPlayer
+  dimension="2x2"
+  algorithm="R U R' U R U2 R'"
+  speed={1}
+  title="2x2 Sune (OLL)"
+  description="Orienting the top-layer yellow corners"
+/>
+
+### Recognition Patterns:
+- **1 Yellow Corner Oriented (Fish / Sune)**: Place the solved yellow corner in the front-left position and execute Sune.
+- **2 Yellow Corners Oriented**: Rotate `U` until headlights (two yellow stickers facing the same direction) face the left or front, then execute Sune.
+- **0 Yellow Corners Oriented**: Execute Sune once to produce a 1-corner Sune state, position the solved corner in the front-left, and execute Sune again.
+
+---
+
+## 4. Step 3: Permuting the Last Layer (PBL)
+
+Once the entire top face is Yellow, inspect the side colors of the top layer. There are only two possible situations:
+
+### Case A: Adjacent Corner Swap (Headlights Found)
+If two adjacent corners have matching side colors, you have **Headlights**.
+1. Rotate `U` to align the headlights with their matching first-layer color on the **Back face (`B`)**.
+2. Execute the classic **T-Permutation**:
+
+```notation
+R U R' U' R' F R2 U' R' U' R U R' F'
+```
+
+<AlgorithmPlayer
+  dimension="2x2"
+  algorithm="R U R' U' R' F R2 U' R' U' R U R' F'"
+  speed={1.2}
+  title="Adjacent Corner Swap (T-Perm)"
+  description="Swaps the two front-layer corners to complete the cube"
+/>
+
+### Case B: Diagonal Corner Swap (No Headlights)
+If no two adjacent corners match on the top layer, you must swap diagonally opposite corners using the **Y-Permutation**:
+
+```notation
+F R U' R' U' R U R' F' R U R' U' R' F R F'
+```
+
+<AlgorithmPlayer
+  dimension="2x2"
+  algorithm="F R U' R' U' R U R' F' R U R' U' R' F R F'"
+  speed={1.2}
+  title="Diagonal Corner Swap (Y-Perm)"
+  description="Swaps diagonally opposite corners to solve the last layer"
+/>
+
+---
+
+## 5. 3D Inspection of the Solved 2x2
+
+Examine the completed 2x2 model below. Notice how every corner coordinates with all three adjacent faces:
+
+<CubeViewer
+  dimension="2x2"
+  scramble=""
+  title="Fully Solved 2x2 Cube"
+  description="Inspect all 6 solid faces of the solved 2x2"
+/>
+
+---
+
+## 6. Practice the Triggers
+
+Reinforce your 2x2 execution speed using the practice pad:
+
+<NotationTrainer
+  moves={["R", "U", "R'", "U'", "R", "U2", "R'"]}
+  title="2x2 Sune Practice Pad"
+  description="Drill the OLL corner orientation sequence"
+/>
+
+---
+
+## 7. Key Takeaways
+
+- **Corners Only**: The 2x2 consists entirely of 8 corner pieces.
+- **Relative Positioning**: Build the first layer using adjacent color matching rather than fixed centers.
+- **Algorithm Reuse**: Sune (`R U R' U R U2 R'`), T-Perm, and Y-Perm translate directly from your 3x3 knowledge.
+- **Fast Execution**: A beginner 2x2 solve requires only 3 distinct stages: First Layer, OLL, and PBL.
+
+---
+
+<WhatNext
+  next="solving-the-4x4"
+  related={["cube-types", "cube-notation"]}
+  explore={["cfop-what-is-cfop", "sexy-move"]}
+/>

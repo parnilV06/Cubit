@@ -1,0 +1,127 @@
+---
+title: Lookahead
+description: Discover the secret to sub-20 speedcubing: tracking upcoming pieces while your hands execute the current step on autopilot.
+difficulty: INTERMEDIATE
+category: Speedcubing Fundamentals
+estimatedMinutes: 7
+order: 5
+---
+
+Ask any sub-15 speedcuber what single skill separates average solvers from elite competitors, and the answer is almost always the same: **Lookahead**.
+
+Lookahead is the ability to actively scan the cube and track the *next* pieces with your eyes while your hands execute the *current* move sequence automatically on muscle memory.
+
+> [!NOTE]
+> When beginners solve a cube, their eyes stare directly at the piece they are currently moving. When speedcubers solve a cube, their eyes are already scanning for the next pair across the rest of the puzzle before the current piece has even reached its slot.
+
+---
+
+## 1. The Stop-and-Go Trap
+
+The most common hurdle for intermediate solvers is the **Stop-and-Go** pattern:
+
+```
+[ Execute Move 1–4 ] (0.8s fast burst)
+         ↓
+[ COMPLETE STOP: Stare blankly at cube, rotate 3 times searching for piece ] (3.2s pause)
+         ↓
+[ Execute Move 5–8 ] (0.8s fast burst)
+         ↓
+[ COMPLETE STOP: Search for next piece ] (3.0s pause)
+```
+
+In an 80-move solve, if you pause for 2.5 seconds between every 4-move step, you spend **over 35 seconds just staring at the cube with stationary hands!**
+
+Lookahead converts this jagged, stop-and-start pattern into a continuous, smooth flow:
+
+```
+[ Hands execute Step 1 on muscle memory ] ← (Simultaneously) → [ Eyes scan and locate Step 2 ]
+                                         ↓
+                       [ Immediate transition to Step 2 with 0s pause ]
+```
+
+---
+
+## 2. The Muscle Memory Prerequisite
+
+You cannot develop lookahead until your hands can execute triggers without conscious thought.
+
+If you have to think: *"Where does my right index finger go for `U'`?"*, 100% of your visual and cognitive attention is trapped on your hands.
+
+To free your eyes for lookahead:
+1. **Automate basic triggers**: Practice `R U R' U'` and `L' U' L U` until you can execute them while looking across the room or with your eyes closed.
+2. **Never look at the active slot**: Once you start inserting a piece into the Front-Right slot, stop looking at that slot! The piece will land correctly on its own. Look at the top and left layers instead.
+
+Watch how this standard insert executes automatically while your attention remains free to scan other faces:
+
+<AlgorithmPlayer
+  moves="U R U' R' U' F' U F"
+  speed={1}
+  title="Automated Insertion Trigger"
+  description="Observe how muscle memory completes the insertion while your vision remains free to track other pieces"
+/>
+
+---
+
+## 3. The Slow Turning Drill (The Ultimate Lookahead Tool)
+
+The single most effective exercise for mastering lookahead is the **Slow Turning Drill**:
+
+1. **Scramble the cube**.
+2. **Set a timer**, but intentionally turn at a slow, relaxed speed (around 2 turns per second).
+3. **The Rule**: You are **never allowed to stop turning**. If you hesitate or pause for even half a second, the drill fails.
+4. Because you are turning slowly, your brain has ample time to spot where pieces are moving and identify your next step before the current one finishes.
+
+### The Driving in Fog Metaphor
+
+Think of speedcubing like driving a car down a foggy winding road:
+- **Erratic Solver**: Accelerates to 100 km/h, cannot see what is ahead, slams the brakes to a full stop at every corner, then accelerates violently again.
+- **Smooth Flow Solver**: Drives at a steady 50 km/h, smoothly navigating every turn without ever touching the brakes. The steady driver arrives at the destination significantly faster and with zero stress.
+
+---
+
+## 4. Visual Tracking Practice
+
+Take a look at the cube state below. Locate one corner piece and track which edge piece belongs with it to form a matching pair:
+
+<CubeViewer
+  scramble="R U R' U' F R' F' R U2"
+  title="Visual Tracking Practice"
+  description="Scan the top and side layers to locate matching corner and edge pairs without moving the pieces"
+/>
+
+---
+
+## 5. Progression of Lookahead Mastery
+
+| Level | Lookahead Target | Typical Solve Milestone |
+| :--- | :--- | :--- |
+| **Level 1** | Inspection Cross $\to$ Spotting 1st Corner/Edge pair | Sub-45 seconds |
+| **Level 2** | Inserting Pair 1 $\to$ Tracking Pair 2 | Sub-30 seconds |
+| **Level 3** | Inserting Pair 2/3 $\to$ Tracking Pair 3/4 with zero pauses | Sub-20 seconds |
+| **Level 4** | Inserting Pair 4 $\to$ Predicting Last Layer cross/OLL case | Sub-12 seconds |
+
+---
+
+## 6. Common Lookahead Mistakes
+
+- **Turning Too Fast**: Turning at maximum TPS when you do not know where the next piece is located. This guarantees a jarring 3-second pause immediately afterward.
+- **Staring at the Moving Piece**: Watching your hands insert a piece into its slot instead of looking across the cube for the next target.
+- **Practicing Lookahead Before Algorithms Are Solid**: If you hesitate on algorithm steps, practice muscle memory first before attempting lookahead.
+
+---
+
+## 7. Key Takeaways
+
+- **Eyes track the future, hands execute the present**: Separate your visual attention from your physical turning.
+- **Continuous turning beats erratic bursts**: Eliminate pauses to cut 15 to 30 seconds off your solve times.
+- **Practice slow turning**: Train at a steady, unhurried pace with zero pauses until continuous lookahead becomes second nature.
+- **Never watch the slot you are inserting into**: Trust your hands to finish the insert while your eyes search the rest of the puzzle.
+
+---
+
+<WhatNext
+  next="reducing-pauses"
+  related={["turning-and-finger-tricks", "from-solving-to-speedsolving"]}
+  explore={["understanding-tps", "inspection"]}
+/>

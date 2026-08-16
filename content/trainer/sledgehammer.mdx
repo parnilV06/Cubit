@@ -1,0 +1,111 @@
+---
+title: Sledgehammer
+description: Master the powerful Sledgehammer trigger (R' F R F'), understand edge orientation control, and explore its mirror relationship with Hedgeslammer.
+difficulty: INTERMEDIATE
+category: Algorithms & Patterns
+estimatedMinutes: 5
+order: 2
+---
+
+Alongside the Sexy Move, the second essential 4-move trigger in speedcubing is the **Sledgehammer**: **`R' F R F'`**.
+
+While the Sexy Move operates entirely on the Right and Upper layers (`R` and `U`), the Sledgehammer turns the Right and Front layers (`R` and `F`). This front-face interaction makes it exceptionally powerful for flipping top-layer edges while inserting corner-edge pairs.
+
+> [!NOTE]
+> Speedcubers affectionately named the sequence "Sledgehammer" because the opening move (`R'`) pulls the right side down like swinging a hammer, followed by the punchy front-face snap (`F`).
+
+---
+
+## 1. Step-by-Step Movement Breakdown
+
+The Sledgehammer consists of four fast moves:
+
+```
+[ Move 1: R' ] → Pull Right face counter-clockwise (drops slot down)
+[ Move 2: F ]  → Push Front face clockwise (snaps front layer right)
+[ Move 3: R ]  → Push Right face clockwise (lifts slot back up)
+[ Move 4: F' ] → Push Front face counter-clockwise (restores Front face)
+```
+
+Observe how a single Sledgehammer transforms the front-right slot and top-layer edges:
+
+<AlgorithmPlayer
+  moves="R' F R F'"
+  speed={1}
+  title="The Sledgehammer Trigger: R' F R F'"
+  description="Watch the 4-move trigger flip front and top edges"
+/>
+
+---
+
+## 2. Sexy Move vs. Sledgehammer
+
+Understanding the difference between these two triggers unlocks advanced speedcubing control:
+
+| Feature | Sexy Move (`R U R' U'`) | Sledgehammer (`R' F R F'`) |
+| :--- | :--- | :--- |
+| **Active Layers** | Right (`R`) and Up (`U`) | Right (`R`) and Front (`F`) |
+| **Top Edge Orientation** | Preserves edge flip state | **Flips 2 top-layer edges** |
+| **Primary Use** | Fast cycling & basic inserts | **Edge orientation control (EO)** |
+| **Cyclic Order** | 6 repetitions return to solved | 6 repetitions return to solved |
+
+---
+
+## 3. The Inverse Trigger: Hedgeslammer (`F R' F' R`)
+
+Every algorithm has an exact mathematical inverse that undoes its transformations. The inverse of Sledgehammer is called the **Hedgeslammer**:
+
+```
+Sledgehammer:  R'  F   R   F'
+     Inverse:  F   R'  F'  R   (Hedgeslammer)
+```
+
+If you execute one Sledgehammer on a solved cube, executing one Hedgeslammer will immediately return the cube to 100% solved:
+
+<AlgorithmPlayer
+  moves="F R' F' R"
+  speed={1}
+  title="The Hedgeslammer Trigger: F R' F' R"
+  description="The exact inverse of Sledgehammer: restores the cube in 4 moves"
+/>
+
+---
+
+## 4. Fingertrick Execution
+
+To execute the Sledgehammer quickly without whole-hand regrips:
+1. **`R'`**: Pull the right face down using your right wrist and thumb.
+2. **`F`**: Push the top-right corner of the front face down and left using your right index finger.
+3. **`R`**: Push the right face up with your right wrist.
+4. **`F'`**: Push the front face up and right using your right thumb.
+
+<NotationTrainer
+  moves={["R'", "F", "R", "F'"]}
+  title="Sledgehammer Practice Pad"
+  description="Build muscle memory for the Sledgehammer sequence"
+/>
+
+---
+
+## 5. Where Does Sledgehammer Appear in Solving?
+
+- **F2L Edge Orientation**: Inserting an F2L pair with Sledgehammer (`R' F R F'`) instead of standard `U R U' R'` forces a Yellow Cross on top (saving a step in OLL!).
+- **OLL Case 33**: Solved directly as Sexy Move + Sledgehammer: `(R U R' U') (R' F R F')`.
+- **T-Permutation**: The second half of T-Perm incorporates a modified Sledgehammer sequence to permute corners.
+
+---
+
+## 6. Key Takeaways
+
+- **Notation**: `R' F R F'`.
+- **Flips top edges**: Changes top-layer edge orientation during pair insertion.
+- **Hedgeslammer is the inverse**: `F R' F' R` immediately restores one Sledgehammer.
+- **Cyclic Order = 6**: 6 repetitions from solved returns to a 100% solved cube.
+
+---
+
+<WhatNext
+  next="checkerboard"
+  related={["sexy-move", "cfop-f2l-cases"]}
+  explore={["snake", "cube-in-a-cube"]}
+/>

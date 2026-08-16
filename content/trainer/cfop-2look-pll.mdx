@@ -1,0 +1,132 @@
+---
+title: 2-Look PLL
+description: Permute all last-layer pieces in two systematic steps using only 6 algorithms to complete your solves.
+difficulty: INTERMEDIATE
+category: CFOP
+estimatedMinutes: 10
+order: 8
+---
+
+In the fourth and final stage of CFOP, your goal is **PLL (Permutation of the Last Layer)**: rearrange the last-layer corners and edges into their solved positions to complete the puzzle.
+
+Full PLL contains **21 unique cases**. While learning 21 algorithms is completely achievable, **2-Look PLL** lets you complete 100% of your CFOP solves right now using **only 6 algorithms**!
+
+```
+[ Solid Yellow Top Face (Completed OLL) ]
+                   ↓
+[ Stage 1: Corner Permutation (CP) ]
+Put all 4 corners into their correct positions (2 algorithms: T-Perm or Y-Perm)
+                   ↓
+[ Stage 2: Edge Permutation (EP) ]
+Cycle the remaining edges into place (4 algorithms: Ua, Ub, H, or Z)
+                   ↓
+[ SOLVED RUBIK'S CUBE! ]
+```
+
+> [!NOTE]
+> **Orientation vs. Permutation**: OLL turns all yellow stickers facing up. PLL moves the pieces horizontally around the perimeter without changing their orientation.
+
+---
+
+## 1. Stage 1: Corner Permutation (2 Cases)
+
+Scan the four sides of the top layer for **Headlights** (two corners on the same face sharing the same side color):
+
+```
+       [ Top View: Searching for Headlights ]
+           ┌──────────┐
+  Orange ──│ █  ░░  █ │── Orange (Headlights found!)
+           │ ░░ ░░ ░░ │
+           │ █  ░░  █ │
+           └──────────┘
+```
+
+### Case 1A: Headlights Found (Adjacent Corner Swap)
+If you see one pair of headlights:
+1. Place the headlights on the **Left** side of the cube.
+2. Execute the **T-Permutation**:
+
+<AlgorithmPlayer
+  moves="R U R' U' R' F R2 U' R' U' R U R' F'"
+  speed={1}
+  title="Stage 1: T-Permutation (Adjacent Swap)"
+  description="Swaps the two right-hand corners into place while preserving bottom layers"
+/>
+
+### Case 1B: No Headlights (Diagonal Corner Swap)
+If no side has matching corner stickers, two diagonally opposite corners must be swapped:
+1. Hold the cube from any angle.
+2. Execute the **Y-Permutation**: `F R U' R' U' R U R' F' R U R' U' R' F R F'`
+
+*Result of Stage 1: All four corners are now completely solved!*
+
+---
+
+## 2. Stage 2: Edge Permutation (4 Cases)
+
+With all four corners solved, look at the four edges around the perimeter:
+
+### Case 2A: Ua-Perm (3 Edges Counter-Clockwise)
+- **Recognition**: 1 full solid bar (solved face) in the **Back**. The remaining 3 edges need to cycle **counter-clockwise** (Front edge goes to Left).
+- **Algorithm**: `R U' R U R U R U' R' U' R2`
+
+### Case 2B: Ub-Perm (3 Edges Clockwise)
+- **Recognition**: 1 full solid bar (solved face) in the **Back**. The remaining 3 edges need to cycle **clockwise** (Front edge goes to Right).
+- **Algorithm**: `R2 U R U R' U' R' U' R' U R'`
+
+### Case 2C: H-Perm (Opposite Edges Swap)
+- **Recognition**: No solved face. Opposite colors need to swap across the center (Front swaps with Back; Left swaps with Right).
+- **Algorithm**: `M2 U M2 U2 M2 U M2`
+
+<AlgorithmPlayer
+  moves="M2 U M2 U2 M2 U M2"
+  speed={1}
+  title="Stage 2: H-Permutation (M-Slice Magic)"
+  description="Watch high-speed M2 double flicks swap opposite edge pairs across the cube"
+/>
+
+### Case 2D: Z-Perm (Adjacent Edges Swap)
+- **Recognition**: No solved face. Adjacent edges need to swap (Front swaps with Right; Back swaps with Left).
+- **Algorithm**: `M2 U M2 U M' U2 M2 U2 M'`
+
+---
+
+## 3. Practice the H-Perm Slice Sequence
+
+The `M2` double-flick (using ring and middle fingers of your left or right hand on the back-bottom edge) is the most satisfying fingertrick in cubing. Practice the H-Perm rhythm:
+
+<NotationTrainer
+  moves={["M2", "U", "M2", "U2", "M2", "U", "M2"]}
+  title="H-Perm M-Slice Dexterity Pad"
+  description="Master the 7-move H-Perm slice sequence"
+/>
+
+---
+
+## 4. 2-Look PLL Reference Table
+
+| Stage | Case | Recognition | Verified Algorithm |
+| :--- | :--- | :--- | :--- |
+| **1. CP** | **T-Perm** | Headlights on Left | `R U R' U' R' F R2 U' R' U' R U R' F'` |
+| **1. CP** | **Y-Perm** | No headlights anywhere | `F R U' R' U' R U R' F' R U R' U' R' F R F'` |
+| **2. EP** | **Ua-Perm** | Solved back bar, CCW cycle | `R U' R U R U R U' R' U' R2` |
+| **2. EP** | **Ub-Perm** | Solved back bar, CW cycle | `R2 U R U R' U' R' U' R' U R'` |
+| **2. EP** | **H-Perm** | 0 bars, opposite edge swaps | `M2 U M2 U2 M2 U M2` |
+| **2. EP** | **Z-Perm** | 0 bars, adjacent edge swaps | `M2 U M2 U M' U2 M2 U2 M'` |
+
+---
+
+## 5. Key Takeaways
+
+- **PLL completes the solve**: Rearranges the 8 last-layer pieces into their solved slots.
+- **2-Look uses only 6 algorithms**: 2 for corners (T & Y), 4 for edges (Ua, Ub, H, Z).
+- **Find headlights first**: Headlights on Left $\to$ T-Perm; No headlights $\to$ Y-Perm.
+- **Cycle edges to finish**: Check for a solved back bar (U-perms) or cross-swaps (H/Z perms).
+
+---
+
+<WhatNext
+  next="cfop-full-pll"
+  related={["cfop-2look-oll", "cfop-putting-it-together"]}
+  explore={["cfop-what-is-cfop", "turning-and-finger-tricks"]}
+/>

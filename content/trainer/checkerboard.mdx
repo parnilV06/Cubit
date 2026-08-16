@@ -1,0 +1,114 @@
+---
+title: Checkerboard
+description: Create the world's most famous Rubik's Cube pattern, understand the geometry of 180-degree axis turns, and explore its self-inverse property.
+difficulty: BEGINNER
+category: Algorithms & Patterns
+estimatedMinutes: 5
+order: 3
+---
+
+The **Checkerboard** is the most celebrated and instantly recognizable pattern in the history of twisty puzzles.
+
+On every single face, the four corner stickers and the center sticker display one color, while the four edge stickers display the exact opposite color (White alternates with Yellow, Green with Blue, and Red with Orange).
+
+> [!NOTE]
+> All patterns in this module start from a **fully solved cube**. If your cube is currently scrambled, solve it first or use the interactive 3D players below.
+
+---
+
+## 1. The Classic Algorithm: 6 Double Turns
+
+The standard Checkerboard algorithm applies 180° double turns across all three spatial dimensions:
+
+```
+[ X-Axis (Left & Right) ]  →  R2  L2
+[ Y-Axis (Up & Down) ]     →  U2  D2
+[ Z-Axis (Front & Back) ]  →  F2  B2
+```
+
+Watch the double turns transform the solved cube in real time:
+
+<AlgorithmPlayer
+  moves="R2 L2 U2 D2 F2 B2"
+  speed={1}
+  title="The Classic Checkerboard: R2 L2 U2 D2 F2 B2"
+  description="Watch 180-degree turns across all 3 spatial axes create the checkerboard pattern"
+/>
+
+---
+
+## 2. The 3-Move Slice Shortcut: `M2 E2 S2`
+
+If you are comfortable with slice turns (moving only the middle layer between outer faces), you can create the identical checkerboard in just **three moves**:
+
+```
+[ Move 1: M2 ] → Turn the vertical Middle slice 180° (between L and R)
+[ Move 2: E2 ] → Turn the horizontal Equator slice 180° (between U and D)
+[ Move 3: S2 ] → Turn the Standing front slice 180° (between F and B)
+```
+
+<AlgorithmPlayer
+  moves="M2 E2 S2"
+  speed={1}
+  title="Slice Checkerboard: M2 E2 S2"
+  description="Achieve the identical checkerboard pattern in 3 slice moves"
+/>
+
+---
+
+## 3. 3D Inspection of the Completed Pattern
+
+Examine the 3D model below. Notice how every face contains an alternating cross of contrasting opposite colors:
+
+<CubeViewer
+  scramble="R2 L2 U2 D2 F2 B2"
+  title="Completed 6-Face Checkerboard"
+  description="Rotate the 3D cube to inspect the alternating opposite colors on all 6 faces"
+/>
+
+---
+
+## 4. How to Restore the Cube
+
+One of the most elegant properties of the Checkerboard algorithm is that it is **self-inverse**.
+
+Because rotating any face by 180° twice brings it a full 360° back to its original orientation:
+$$\text{Move} \times 2 = 360^\circ = \text{Solved}$$
+
+To return your cube back to solved, simply execute the exact same algorithm a second time:
+```notation
+R2 L2 U2 D2 F2 B2
+```
+or with slice moves:
+```notation
+M2 E2 S2
+```
+
+---
+
+## 5. Practice the Double Turns
+
+Practice executing the 6 double turns smoothly using index and ring finger double flicks:
+
+<NotationTrainer
+  moves={["R2", "L2", "U2", "D2", "F2", "B2"]}
+  title="Checkerboard Execution Pad"
+  description="Drill 180-degree double turns across all three axes"
+/>
+
+---
+
+## 6. Key Takeaways
+
+- **Opposite Color Contrast**: Swaps edges with their opposite face colors across all 6 sides.
+- **Classic Algorithm**: `R2 L2 U2 D2 F2 B2` (6 moves).
+- **Slice Shortcut**: `M2 E2 S2` (3 moves).
+- **Self-Inverse**: Executing the sequence a second time immediately restores the solved cube.
+
+---
+
+<WhatNext
+  next="snake"
+  related={["sledgehammer", "sexy-move"]}
+  explore={["cube-in-a-cube", "more-fun-algorithms"]}
+/>

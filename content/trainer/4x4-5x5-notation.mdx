@@ -1,0 +1,124 @@
+---
+title: 4x4 & 5x5 Notation
+description: Master big-cube notation, including layer-depth prefixes, wide moves, and inner slices across 4x4 and 5x5 puzzles.
+difficulty: INTERMEDIATE
+category: Cube Notation
+estimatedMinutes: 7
+order: 5
+---
+
+As cubes get larger, so does the notation needed to control them.
+
+On a 4x4 or 5x5 cube, you have internal layers that do not exist on a 3x3. To write algorithms and scrambles for big cubes, speedcubers use **layer-depth prefixes** and **wide notation**.
+
+> [!NOTE]
+> All official World Cube Association (WCA) scrambles for 4x4 and 5x5 use this standardized notation system.
+
+---
+
+## 1. Outer Layers vs. Wide Turns on Big Cubes
+
+On any NxN puzzle, standard single-letter moves operate on only the **single outermost layer**:
+
+- **`R`**: Turns only the 1 outermost right layer.
+- **`U`**: Turns only the 1 outermost top layer.
+- **`F`**: Turns only the 1 outermost front layer.
+
+When you add a **`w`** suffix, it becomes a wide move turning multiple layers together:
+
+- **On a 4x4**: `Rw` turns the outer **2 layers** on the right side.
+- **On a 5x5**: `Rw` also turns the outer **2 layers** on the right side.
+
+```
+4x4 SINGLE MOVE (R):    Turns 1 of 4 layers (outer slice only)
+4x4 WIDE MOVE (Rw):     Turns 2 of 4 layers (outer half of cube)
+```
+
+Compare the 4x4 unfolded net below after executing a wide move sequence:
+
+<CubeViewer
+  dimension="4x4"
+  scramble="Rw U2 Rw'"
+  title="4x4 Wide Move State"
+  description="State of a 4x4 after executing Rw U2 Rw'"
+/>
+
+---
+
+## 2. Layer-Depth Prefixes on 5x5 Cubes
+
+On a 5x5 cube, there are 5 total layers across each axis. A standard wide turn (`Rw`) turns 2 layers, but what if you need to turn **3 layers**?
+
+To specify turning more than 2 layers, notation places a **number prefix** before the move letter:
+
+| Notation | Cube Size | Layers Turned | Description |
+| :--- | :--- | :--- | :--- |
+| **`R`** | 4x4 / 5x5 | 1 Layer | Outermost right layer only |
+| **`Rw`** | 4x4 / 5x5 | 2 Layers | Outer 2 right layers together |
+| **`3Rw`** | 5x5 | 3 Layers | Outer 3 right layers together (past the center slice) |
+| **`3Uw`** | 5x5 | 3 Layers | Outer 3 top layers together |
+| **`3Fw2`** | 5x5 | 3 Layers (180°) | Outer 3 front layers turned 180 degrees |
+
+> [!TIP]
+> The number prefix defines the **depth** of layers turned from that face. `3Rw` means: *"Turn 3 layers deep, starting from the Right face"*.
+
+Here is a 5x5 cube state showing a 3-layer depth turn:
+
+<CubeViewer
+  dimension="5x5"
+  scramble="3Rw U2 3Rw'"
+  title="5x5 Multi-Layer Depth State"
+  description="State of a 5x5 after executing 3Rw U2 3Rw'"
+/>
+
+---
+
+## 3. Interactive Big-Cube Practice
+
+Practice executing single and wide turns on a 4x4 grid using the interactive workbench below:
+
+<NotationTrainer
+  dimension="4x4"
+  moves={["R", "Rw", "Rw'", "Rw2", "U", "Uw", "Uw'", "Uw2", "F", "Fw"]}
+  title="4x4 Notation Practice Pad"
+  description="Test single-layer and double-layer turns on a 4x4 grid"
+/>
+
+---
+
+## 4. Reading Big-Cube Scrambles
+
+When you compete or practice 4x4 and 5x5 on Cubit, your scramble will look like this:
+
+```notation
+Rw2 B2 U2 Fw2 D' L2 B2 D Rw2 B' D' R' F' Rw' B U' Fw'
+```
+
+Notice how standard face turns (`B2`, `D'`, `L2`) are mixed with wide turns (`Rw2`, `Fw2`, `Rw'`).
+
+By recognizing that `w` means turning 2 layers deep, you can follow official big-cube scrambles with complete confidence.
+
+---
+
+## 5. Common Mistakes to Avoid
+
+- **Confusing `3Rw` with 3 Consecutive Turns**: `3Rw` does *not* mean turning `Rw` three times. It means turning **3 layers deep** in a single motion.
+- **Orientation on Even Cubes**: 4x4 cubes do not have fixed center pieces. When reading notation on a 4x4, ensure you maintain the standard White-Top, Green-Front orientation throughout.
+- **Mixing Up Notation Eras**: Older solving guides sometimes used lowercase letters like `2R` or `r` for inner slices. Modern WCA regulations use `Rw` and `3Rw` to ensure universal consistency.
+
+---
+
+## 6. Summary & Key Takeaways
+
+- **Single letters (`R`, `U`)**: Turn 1 outer layer on any size puzzle.
+- **Wide moves (`Rw`, `Uw`)**: Turn 2 outer layers simultaneously.
+- **Depth prefixes (`3Rw`)**: Turn 3 layers deep from the named face on 5x5+ puzzles.
+- **Universal across NxN**: Once you understand face letters, modifiers, and wide depth prefixes, you can read notation for any NxN cube in existence.
+
+---
+
+<WhatNext
+  next="understanding-the-beginner-method"
+  related={["wide-moves", "cube-types"]}
+  explore={["basic-face-notation", "prime-double-turns"]}
+/>

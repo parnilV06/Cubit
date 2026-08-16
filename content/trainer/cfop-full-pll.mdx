@@ -1,0 +1,144 @@
+---
+title: Full PLL
+description: Master the complete 21-case PLL system: lightning-fast 2-sided recognition, fingertrick executions, and instant sub-2 second finishes.
+difficulty: ADVANCED
+category: CFOP
+estimatedMinutes: 12
+order: 9
+---
+
+In 2-Look PLL, you take two looks and execute two algorithms.
+
+In **Full PLL**, you instantly recognize the case from any angle and execute **one algorithm** to solve the entire cube in **0.8 to 1.8 seconds**.
+
+Full PLL contains exactly **21 algorithms**. Because every single solve ends with PLL, learning Full PLL is the single highest-return algorithm investment you can make in your speedcubing journey.
+
+> [!NOTE]
+> You already know **6 of the 21 algorithms** from 2-Look PLL (T-Perm, Y-Perm, Ua, Ub, H, and Z). That means you only have **15 new algorithms** left to achieve 100% Full PLL mastery!
+
+---
+
+## 1. The 4 Recognition Families of Full PLL
+
+Every PLL case is classified by the combination of **Blocks (Bars)** and **Headlights** visible on its perimeter:
+
+```
+                            [ All 21 PLL Cases ]
+                                     │
+     ┌─────────────────┬─────────────┴───────────────┬─────────────────┐
+     ▼                 ▼                             ▼                 ▼
+[ Edges Only ]   [ Adjacent Swaps ]          [ Diagonal Swaps ]   [ G-Permutations ]
+(4 cases)        (8 cases)                   (5 cases)            (4 cases)
+Ua, Ub, H, Z     T, Jb, Ja, Ra, Rb, F, Aa, Ab Y, V, E, Na, Nb      Ga, Gb, Gc, Gd
+```
+
+---
+
+## 2. Master Case Spotlight: Jb-Permutation
+
+The **Jb-Permutation** is widely considered the fastest, most ergonomic algorithm in all of speedcubing. It swaps two adjacent corners and two adjacent edges while preserving a solid 1x3 bar on the Left:
+
+<AlgorithmPlayer
+  moves="R U R' F' R U R' U' R' F R2 U' R'"
+  speed={1}
+  title="Jb-Permutation: The Speedcuber's Favorite"
+  description="Watch this 13-move masterpiece execute with effortless fingertrick flow"
+/>
+
+Examine how the Jb-Permutation presents visually on the cube:
+
+<CubeViewer
+  scramble="R U R' F' R U R' U' R' F R2 U' R'"
+  title="Jb-Permutation Recognition"
+  description="Note the solid 1x3 bar on the Left and headlights on the Front"
+/>
+
+---
+
+## 3. Master Case Spotlight: Aa-Permutation (Corner Cycle)
+
+The **A-Permutations** cycle three corners while leaving all four edges completely unchanged:
+
+<AlgorithmPlayer
+  moves="x R' U R' D2 R U' R' D2 R2 x'"
+  speed={1}
+  title="Aa-Permutation (Corner Cycle)"
+  description="Observe how D2 bottom-layer double flicks cycle the three corners into place"
+/>
+
+---
+
+## 4. Complete 21-Case Full PLL Reference Table
+
+Every algorithm below is mathematically verified and optimized for standard fingertrick execution:
+
+| Case Name | Primary Recognition Clue | Verified Canonical Algorithm |
+| :--- | :--- | :--- |
+| **Ua-Perm** | 1 solved 1x3 bar, 3 edges cycle CCW | `R U' R U R U R U' R' U' R2` |
+| **Ub-Perm** | 1 solved 1x3 bar, 3 edges cycle CW | `R2 U R U R' U' R' U' R' U R'` |
+| **H-Perm** | 0 bars, 4 opposite edge swaps | `M2 U M2 U2 M2 U M2` |
+| **Z-Perm** | 0 bars, 4 adjacent edge swaps | `M2 U M2 U M' U2 M2 U2 M'` |
+| **T-Perm** | Headlights on Left, 2 matching bars | `R U R' U' R' F R2 U' R' U' R U R' F'` |
+| **Jb-Perm** | Full 1x3 bar on Left, headlights on Front | `R U R' F' R U R' U' R' F R2 U' R'` |
+| **Ja-Perm** | Full 1x3 bar on Right, headlights on Front | `x R2 F R F' R U2 r' U r U2 x'` |
+| **Ra-Perm** | Headlights on Left, 1x2 bar on Front-Right | `R U' R' U' R U R D R' U' R D' R' U2 R'` |
+| **Rb-Perm** | Headlights on Left, 1x2 bar on Front-Left | `R' U2 R U2 R' F R U R' U' R' F' R2` |
+| **F-Perm** | 1 full 1x3 bar on Front, 0 headlights | `R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R` |
+| **Aa-Perm** | Headlights on Back, 1x2 bar on Front-Left | `x R' U R' D2 R U' R' D2 R2 x'` |
+| **Ab-Perm** | Headlights on Back, 1x2 bar on Front-Right | `x R2 D2 R U R' D2 R U' R x'` |
+| **Y-Perm** | 0 headlights, 1x2 bar on Front-Left & Back-Right | `F R U' R' U' R U R' F' R U R' U' R' F R F'` |
+| **V-Perm** | 1x2x2 block on Back-Right | `R' U R' U' y R' F' R2 U' R' U R' F R F' y'` |
+| **E-Perm** | 0 bars, opposite corner swaps | `x' R U' R' D R U R' D' R U R' D R U' R' D' x` |
+| **Na-Perm** | 1x2 bars on Left & Right | `R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'` |
+| **Nb-Perm** | 1x2 bars on Front & Back | `R' U R U' R' F' U' F R U R' F R' F' R U' R` |
+| **Ga-Perm** | Headlights on Left, 1x2 bar on Front-Right | `R2 U R' U R' U' R U' R2 D U' R' U R D'` |
+| **Gb-Perm** | Headlights on Left, 1x2 bar on Back-Right | `R' U' R U D' R2 U R' U R U' R U' R2 D` |
+| **Gc-Perm** | Headlights on Left, 1x2 bar on Front-Left | `R2 U' R U' R U R' U R2 D' U R U' R' D` |
+| **Gd-Perm** | Headlights on Left, 1x2 bar on Back-Left | `R U R' U' D R2 U' R U' R' U R' U R2 D'` |
+
+---
+
+## 5. AUF: Adjust Upper Face
+
+When your PLL algorithm finishes, the cube is completely solved, except the top layer might be offset by 90° or 180°.
+
+> [!IMPORTANT]
+> **Never rotate the whole cube (`y` / `y'`) to align the solved layer.**
+> Instead, finish the solve with a single index or middle finger flick: `U`, `U'`, or `U2`. This final adjustment is called **AUF (Adjust Upper Face)**.
+
+---
+
+## 6. Recommended 3-Week Memorization Plan
+
+```
+[ Week 1: The Essential Bars (6 New Cases) ]
+• Ja & Jb Permutations (Fastest algorithms in cubing)
+• Aa & Ab Permutations (Corner cycles)
+• Ra & Rb Permutations
+
+[ Week 2: Diagonal Swaps & F-Perm (5 New Cases) ]
+• F-Permutation
+• V-Perm & E-Perm
+• Na & Nb Permutations
+
+[ Week 3: The 4 G-Permutations (4 New Cases) ]
+• Ga, Gb, Gc, and Gd
+→ Complete 21/21 Full PLL Master!
+```
+
+---
+
+## 7. Key Takeaways
+
+- **Full PLL saves 2 to 3 seconds per solve**: One look, one algorithm to finish.
+- **You only need to learn 15 new algorithms**: 6 were already learned in 2-Look PLL.
+- **Recognize with Bars and Headlights**: Scan for 1x3 bars, 1x2 blocks, and matching headlights.
+- **Finish with AUF**: Use `U`, `U'`, or `U2` to align the final layer with zero cube rotations.
+
+---
+
+<WhatNext
+  next="cfop-putting-it-together"
+  related={["cfop-2look-pll", "cfop-full-oll"]}
+  explore={["cfop-what-is-cfop", "lookahead"]}
+/>

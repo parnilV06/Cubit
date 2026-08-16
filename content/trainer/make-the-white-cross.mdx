@@ -1,0 +1,101 @@
+---
+title: Make the White Cross
+description: Build a correctly aligned White Cross by matching white edge pieces with their corresponding side centers.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 8
+order: 2
+---
+
+The first physical step in solving a Rubik's Cube is building the **White Cross**.
+
+However, you must not just create any white plus sign. You must create an **aligned White Cross**.
+
+> [!IMPORTANT]
+> A valid White Cross requires that all four white edge pieces match **both** the white center and their adjacent side centers (Green, Red, Blue, Orange).
+
+---
+
+## 1. Correct Cross vs. Incorrect Cross
+
+Take a close look at the difference between a solved cross and an incorrectly assembled cross:
+
+| Type | White Face | Side Center Alignment | Status |
+| :--- | :--- | :--- | :--- |
+| **Correct Cross** | 4 White Edges on White Center | Every edge side-color matches its center (e.g. White-Green matches Green) | **Ready for Step 2** |
+| **Fake Cross** | 4 White Edges on White Center | Side colors do not match centers (e.g. White-Green is on Red center) | **Broken (Must Fix)** |
+
+Here is what a correctly aligned White Cross looks like on the bottom layer:
+
+<CubeViewer
+  scramble="D2 R2 B2 L2 F2 U2"
+  title="Target: Aligned White Cross"
+  description="All 4 white edge pieces match the white face and their respective side center colors"
+/>
+
+---
+
+## 2. The Daisy Strategy (Beginner-Friendly Method)
+
+The easiest and most reliable way to construct a perfect White Cross is using the **Daisy Method**.
+
+Instead of trying to solve the cross directly on the bottom face, you first gather the four white edges around the **Yellow center** on top (creating a yellow-and-white "daisy" flower), and then send them down one by one.
+
+```
+Scrambled Cube → Build Daisy on Yellow Center → Match Side Centers → 180° Turn (F2) → Aligned White Cross
+```
+
+### Step A: Form the Daisy
+1. Hold the cube so the **Yellow center is on Top (`U`)** and the **White center is on Bottom (`D`)**.
+2. Locate the 4 edge pieces with white stickers.
+3. Bring each white edge up to the top face around the yellow center. No algorithms are needed:
+   - If a white edge is in the middle layer, a single turn (`R`, `L`, or `F`) brings it to the top.
+   - If a white edge is on the bottom face, turn that face 180 degrees (`F2` or `R2`) to bring it up.
+   - If an edge is flipped (white sticker facing the side rather than the top), turn `F'`, rotate the top layer with `U'`, and turn `R` to insert it.
+
+---
+
+## 3. Transferring the Daisy to the White Cross
+
+Once all four white petals surround the yellow center, transferring them to the bottom face is straightforward:
+
+1. **Pick one white edge** on the top layer (for example, the **White-Green** edge).
+2. Look at its **side color** (Green).
+3. **Turn the `U` layer** until that side color aligns directly over its matching side center (Green over Green).
+4. **Turn that face 180 degrees (`F2`)**. The White-Green edge moves to the bottom face, perfectly aligned!
+5. **Repeat** this exact process for the remaining three edges (Red, Blue, Orange).
+
+Use the practice pad below to practice aligning and turning edges down 180 degrees:
+
+<NotationTrainer
+  moves={["U", "U'", "F2", "R2", "B2", "L2"]}
+  title="Daisy-to-Cross Transfer Pad"
+  description="Align the top layer with U/U' and execute 180-degree double turns to plunge edges into the cross"
+/>
+
+---
+
+## 4. Common Mistakes to Avoid
+
+- **Ignoring Side Colors**: If you turn `F2` before matching the edge's side color with its center, your cross will be scrambled. Always match the side center first!
+- **Worrying About Corner Pieces**: During this step, ignore all corner pieces. Even if white corners end up on the top or bottom face, only focus on the 4 cross edges.
+- **Accidentally Flipping the Cube**: Keep the Yellow center on top and White on the bottom throughout the Daisy process.
+
+---
+
+## 5. Summary & Checklist
+
+Before moving to the next lesson, verify:
+- [x] There is a white cross on the bottom (`D`) face.
+- [x] The White-Green edge matches the Green center.
+- [x] The White-Red edge matches the Red center.
+- [x] The White-Blue edge matches the Blue center.
+- [x] The White-Orange edge matches the Orange center.
+
+---
+
+<WhatNext
+  next="solve-the-first-layer-corners"
+  related={["understanding-the-beginner-method", "basic-face-notation"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>

@@ -14,9 +14,9 @@ const getLessons = async (userId) => {
             { order: 'asc' }
         ],
         include: {
-            progress: {
+            progress: userId ? {
                 where: { userId }
-            }
+            } : false
         }
     });
 
@@ -31,8 +31,8 @@ const getLessons = async (userId) => {
         order: lesson.order,
         thumbnail: lesson.thumbnail,
         published: lesson.published,
-        completed: lesson.progress.length > 0 ? lesson.progress[0].completed : false,
-        completedAt: lesson.progress.length > 0 ? lesson.progress[0].completedAt : null
+        completed: lesson.progress && lesson.progress.length > 0 ? lesson.progress[0].completed : false,
+        completedAt: lesson.progress && lesson.progress.length > 0 ? lesson.progress[0].completedAt : null
     }));
 };
 
@@ -40,9 +40,9 @@ const getLesson = async (slug, userId) => {
     const lesson = await prisma.lesson.findUnique({
         where: { slug, published: true },
         include: {
-            progress: {
+            progress: userId ? {
                 where: { userId }
-            }
+            } : false
         }
     });
 
@@ -72,8 +72,8 @@ const getLesson = async (slug, userId) => {
         order: lesson.order,
         thumbnail: lesson.thumbnail,
         published: lesson.published,
-        completed: lesson.progress.length > 0 ? lesson.progress[0].completed : false,
-        completedAt: lesson.progress.length > 0 ? lesson.progress[0].completedAt : null
+        completed: lesson.progress && lesson.progress.length > 0 ? lesson.progress[0].completed : false,
+        completedAt: lesson.progress && lesson.progress.length > 0 ? lesson.progress[0].completedAt : null
     };
 
     return {

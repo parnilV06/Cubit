@@ -1,0 +1,151 @@
+---
+title: Solving the 4x4
+description: Master the 4x4 Revenge cube using the Reduction method: construct 2x2 center blocks, pair 24 wing edges, solve like a 3x3, and correct OLL and PLL parities.
+difficulty: INTERMEDIATE
+category: Solving Other Cubes
+estimatedMinutes: 15
+order: 2
+---
+
+The **4x4x4 Cube** (historically named *Rubik's Revenge*) introduces two major structural leaps from the 3x3: **movable center blocks** and **split edge wings**.
+
+Instead of inventing an entirely new method from scratch, speedcubers use the **Reduction Method**: transform the 4x4 into an equivalent 3x3, then solve it using your existing techniques.
+
+```
+[ 4x4 Cube Structure ]
+• 8 Corners      → Identical to 3x3 corners
+• 24 Edge Wings  → Must be paired into 12 composite edges
+• 24 Centers     → Must be built into 6 2x2 center blocks
+```
+
+> [!IMPORTANT]
+> A 4x4 has **no fixed central centers**. You are responsible for building centers in the correct relative color scheme: White opposite Yellow, Green opposite Blue, and Red opposite Orange.
+
+---
+
+## 1. The 4-Stage Reduction Roadmap
+
+```
+[ Stage 1: Build 6 Centers ]
+Group 4 center pieces per face into solid 2x2 center blocks.
+                 ↓
+[ Stage 2: Pair All 12 Edges ]
+Match the 24 edge wings into 12 composite edge pairs.
+                 ↓
+[ Stage 3: Solve as a 3x3 ]
+Treat 2x2 centers as single centers and paired edges as single edges!
+                 ↓
+[ Stage 4: Fix Parity (If Encountered) ]
+Resolve OLL or PLL parity using targeted big-cube algorithms.
+```
+
+---
+
+## 2. Stage 1: Building the 6 Centers
+
+To construct the 2x2 center blocks without disturbing already-solved faces:
+1. **Solve White Center**: Group two 1x2 bars of white center pieces on one face.
+2. **Solve Yellow Center**: On the opposite face, insert yellow bars using the half-turn insert technique: `Rw U2 Rw'`.
+3. **Solve the Lateral 4 Centers**: Remember the **BOY** color arrangement around the sides (with White on Top, reading clockwise: **Blue → Orange → Green → Red**).
+
+<CubeViewer
+  dimension="4x4"
+  scramble="Rw U2 Rw'"
+  title="4x4 Center Block Construction"
+  description="Inspect center piece grouping across adjacent faces"
+/>
+
+---
+
+## 3. Stage 2: Pairing the 12 Edges
+
+Each 4x4 edge consists of two individual **wings** sharing matching colors (for example, White-Red and White-Red).
+
+We pair them using the **Slice-Flip-Slice** technique:
+1. Position two matching wings in the front-left and front-right slots across different horizontal layers.
+2. **Slice**: Turn `Uw'` to connect the two wings into a pair.
+3. **Flip**: Execute the standard edge-flipping trigger `(R U R' F R' F' R)` to preserve the pair and replace it with an unsolved edge.
+4. **Restore Slice**: Turn `Uw` to restore all center blocks.
+
+```notation
+Uw' R U R' F R' F' R Uw
+```
+
+<AlgorithmPlayer
+  dimension="4x4"
+  algorithm="Uw' R U R' F R' F' R Uw"
+  speed={1}
+  title="Slice-Flip-Slice Edge Pairing"
+  description="Pairing two wing pieces into a unified 4x4 edge"
+/>
+
+---
+
+## 4. Stage 3: Solving as a Reduced 3x3
+
+Once all 6 centers are solid 2x2 blocks and all 12 edges are paired, the puzzle is functionally a 3x3!
+
+```
+Composite 2x2 Center  →  Acts as 1 Center
+Composite 1x2 Edge    →  Acts as 1 Edge
+Single Corner Piece   →  Acts as 1 Corner
+```
+
+Proceed through your standard 3x3 solving method (Cross, F2L, OLL, and PLL) using only outer-layer turns (`R`, `U`, `F`, `L`, `D`, `B`).
+
+---
+
+## 5. Stage 4: 4x4 Parity Explained
+
+Because an even-layered cube allows independent internal slice permutations, you may encounter two special states that are mathematically impossible on a standard 3x3:
+
+### Case 1: OLL Parity (Single Edge Flip)
+During top-layer orientation, you may find that **only 1 or 3 yellow edges are oriented** (a 3x3 always has 0, 2, or 4).
+
+Fix this single flipped composite edge with the standard OLL Parity algorithm:
+
+```notation
+Rw2 B2 U2 Lw U2 Rw' U2 Rw U2 F2 Rw2 F2 Lw' B2 Rw2
+```
+
+<AlgorithmPlayer
+  dimension="4x4"
+  algorithm="Rw2 B2 U2 Lw U2 Rw' U2 Rw U2 F2 Rw2 F2 Lw' B2 Rw2"
+  speed={1.2}
+  title="4x4 OLL Parity Algorithm"
+  description="Flips the front-top edge pair in place"
+/>
+
+### Case 2: PLL Parity (Opposite Edge Swap)
+During the final permutation step, you may find that **only two opposite edges need to swap** (or only two corners need to swap).
+
+Fix this with the 4x4 PLL Parity algorithm:
+
+```notation
+Rw2 R2 U2 Rw2 R2 Uw2 Rw2 R2 Uw2
+```
+
+<AlgorithmPlayer
+  dimension="4x4"
+  algorithm="Rw2 R2 U2 Rw2 R2 Uw2 Rw2 R2 Uw2"
+  speed={1.2}
+  title="4x4 PLL Parity Algorithm"
+  description="Swaps opposite edges on the top layer"
+/>
+
+---
+
+## 6. Key Takeaways
+
+- **Reduction Concept**: Reduce centers and edges first, then solve like a 3x3.
+- **Color Scheme Responsibility**: You must build centers in the correct order (White ↔ Yellow, Blue → Orange → Green → Red).
+- **Edge Pairing**: Use `Uw' (R U R' F R' F' R) Uw` to pair all 12 composite edges.
+- **Parity is Normal**: OLL parity flips a single edge; PLL parity swaps two opposite edges. Both have reliable, dedicated algorithms.
+
+---
+
+<WhatNext
+  next="solving-the-5x5"
+  related={["4x4-5x5-notation", "cfop-what-is-cfop"]}
+  explore={["guides-what-cube-to-buy", "sexy-move"]}
+/>

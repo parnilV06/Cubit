@@ -1,0 +1,134 @@
+---
+title: Fun Cube Patterns
+description: Discover the artistic side of cubing with classic patterns like the Checkerboard, Six Spots, and Cube in a Cube, and learn how algorithm triggers work.
+difficulty: BEGINNER
+category: Getting Started
+estimatedMinutes: 8
+order: 5
+---
+
+Before diving into solving methods and speedcubing drills, there is a playful side to the Rubik's Cube: **cube patterns**.
+
+A pattern is created by starting with a solved cube and executing a specific sequence of moves. Because every move on a Rubik's Cube is reversible, you can transform your cube into eye-catching geometric art and return it back to solved whenever you like.
+
+> [!NOTE]
+> All patterns in this lesson start from a **fully solved cube**. If your cube is currently scrambled, complete the solving modules first or use the interactive players below to experiment.
+
+---
+
+## 1. Patterns vs. Solving Algorithms
+
+In speedcubing, a sequence of turns is called an **algorithm**.
+
+- **Solving algorithms** take scattered pieces and assemble them into their correct layers.
+- **Pattern algorithms** rearrange a solved cube into symmetrical designs.
+
+Learning patterns is one of the best ways to get comfortable turning the faces and seeing how moves interact across the six faces.
+
+---
+
+## 2. The Classic Checkerboard
+
+The **Checkerboard** is the most iconic cube pattern. It alternates opposing colors across every face, swapping edge pieces across the X, Y, and Z axes.
+
+### Algorithm:
+```notation
+R2 L2 U2 D2 F2 B2
+```
+
+Use the interactive player below to watch the double turns transform the solved cube:
+
+<AlgorithmPlayer
+  algorithm="R2 L2 U2 D2 F2 B2"
+  title="The Checkerboard Pattern"
+  description="Applies 180-degree turns across all three spatial axes"
+/>
+
+### How to Restore:
+Because every move in this sequence is a 180° double turn, the algorithm is its own opposite. Simply execute `R2 L2 U2 D2 F2 B2` a second time to return the cube to solved.
+
+---
+
+## 3. Six Spots (Center Swap)
+
+The **Six Spots** pattern swaps the center piece on each face with the center of an adjacent face, creating a clean single-dot contrast on all six sides.
+
+### Algorithm:
+```notation
+U D' R L' F B' U D'
+```
+
+<AlgorithmPlayer
+  algorithm="U D' R L' F B' U D'"
+  title="Six Spots (Center Swap)"
+  description="Swaps all six center pieces while preserving edge and corner positions"
+/>
+
+### How to Restore:
+Execute the reverse sequence:
+```notation
+D U' B F' L R' D U'
+```
+
+---
+
+## 4. Cube in a Cube
+
+The **Cube in a Cube** pattern creates the optical illusion of a miniature 2x2 cube nested inside the corner of a 3x3.
+
+### Algorithm:
+```notation
+F L F U' R U F2 L2 U' L' B D' B' L2 U
+```
+
+<AlgorithmPlayer
+  algorithm="F L F U' R U F2 L2 U' L' B D' B' L2 U"
+  title="Cube in a Cube"
+  description="Rotates three edges and two corners to frame a 2x2 cube within the 3x3"
+/>
+
+### How to Restore:
+Execute the inverse sequence:
+```notation
+U' L2 B D B' L U L2 F2 U' R' U F' L' F'
+```
+
+---
+
+## 5. The Anaconda (Snake)
+
+The **Anaconda** pattern weaves a continuous trail of contrasting colors across the faces of the cube like a winding serpent.
+
+### Algorithm:
+```notation
+L U B' U' R L' B R' F B' D R D' F'
+```
+
+<AlgorithmPlayer
+  algorithm="L U B' U' R L' B R' F B' D R D' F'"
+  title="The Anaconda (Snake)"
+  description="Twists edge colors across adjacent faces in a continuous trail"
+/>
+
+### How to Restore:
+Execute the inverse sequence:
+```notation
+F D R' D' B F' R B' L R' U B U' L'
+```
+
+---
+
+## 6. Key Takeaways
+
+- **Algorithms are precise recipes**: Every letter corresponds to a specific 90° or 180° turn.
+- **Every pattern is reversible**: You can always return to a solved state by executing the reverse moves.
+- **Start from solved**: Patterns only work when starting from a fully solved cube.
+- **Next stop: Notation**: In the next module, you will learn the complete WCA notation system so you can read and execute any algorithm with ease.
+
+---
+
+<WhatNext
+  next="basic-face-notation"
+  related={["what-is-speedcubing", "meet-the-rubiks-cube"]}
+  explore={["cube-types", "a-brief-history-of-the-cube"]}
+/>

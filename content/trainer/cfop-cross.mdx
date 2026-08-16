@@ -1,0 +1,126 @@
+---
+title: Cross
+description: Master the CFOP bottom cross: 15-second inspection planning, zero-rotation execution, and seamless transition into your first F2L pair.
+difficulty: INTERMEDIATE
+category: CFOP
+estimatedMinutes: 8
+order: 2
+---
+
+In the beginner method, the cross was simply a safe starting point. In CFOP, the **Cross** is the strategic foundation of your entire speedsolve.
+
+A world-class CFOP cross must satisfy three strict criteria:
+1. **Solved directly on the bottom face (`D`)**.
+2. **Executed in 8 moves or fewer** (average ~6 moves) with zero whole-cube rotations.
+3. **Transition instantly into the first F2L pair** without pausing to search.
+
+> [!NOTE]
+> Elite CFOP solvers execute the entire cross blindfolded during the first 1.5 to 2.5 seconds of the solve because they planned every single move during the 15-second inspection window.
+
+---
+
+## 1. The CFOP Cross Workflow
+
+```
+[ Step 1: 15-Second Inspection ]
+Locate all 4 white edges. Calculate a direct 5 to 7 move solution in your head.
+                 ↓
+[ Step 2: Hands on Timer ]
+Set your grip for the first move before starting the clock.
+                 ↓
+[ Step 3: Blindfolded Execution ]
+Execute the planned cross sequence on muscle memory at 3 to 5 TPS.
+                 ↓
+[ Step 4: Lookahead to F2L ]
+While hands turn the cross moves, eyes track the first corner and edge pair on top!
+```
+
+---
+
+## 2. Memorizing the Fixed Center Ring
+
+When solving the cross on the bottom face (`D`), you never look underneath the puzzle. Instead, you rely on the fixed spatial relationships of the side centers:
+
+```
+                  [ Top: Yellow ]
+ [ Left: Orange ]  [ Front: Green ]  [ Right: Red ]  [ Back: Blue ]
+                 [ Bottom: White ]
+```
+
+- **Opposite Pairs**: Green is opposite Blue; Red is opposite Orange.
+- **Clockwise Order Around White Face**: Looking down at the White face (with Green on top), the colors proceed clockwise: **Green $\to$ Red $\to$ Blue $\to$ Orange**.
+
+Because this relative order is fixed, you do not need each edge to match its side center upon insertion. You can insert all four edges in their correct relative positions and finish with a single `D` or `D'` turn to align the entire ring at once.
+
+---
+
+## 3. Worked Example: 5-Move Optimal Cross
+
+Examine how four scattered cross edges are inserted relative to each other and aligned seamlessly on the bottom layer:
+
+<AlgorithmPlayer
+  moves="D R' F R D'"
+  speed={1}
+  title="Optimal 5-Move CFOP Cross"
+  description="Observe how D sets up the slot, R' and F insert two edges, and D' aligns all four"
+/>
+
+---
+
+## 4. The 3 Core CFOP Cross Techniques
+
+### Technique 1: Preserving Placed Edges
+When you turn a face (`R` or `F`) to insert an edge, you may temporarily lift an already-placed cross edge. Always restore the affected layer immediately (e.g., `R' F R`).
+
+### Technique 2: Using the `D` Face as a Turntable
+Instead of using awkward moves to reach an empty bottom slot, rotate the bottom layer with your ring finger (`D` or `D'`) to bring the target slot directly underneath the incoming edge, insert the edge, and rotate `D` back.
+
+### Technique 3: Opposite Insertion
+If you have the White-Green and White-Blue edges ready to insert, you do not need them next to each other; insert them on opposite sides of the bottom layer, and they will automatically align when the other two edges are placed.
+
+---
+
+## 5. Completed CFOP Cross Target State
+
+When your cross is complete, the bottom face (`D`) displays a solid white cross, with each edge matching its Front, Right, Back, and Left center stickers:
+
+<CubeViewer
+  scramble="D2 R2 B2 L2 F2 U2"
+  title="CFOP Aligned Bottom Cross"
+  description="Examine the completed bottom cross with all 4 edges matched to side centers"
+/>
+
+---
+
+## 6. The Cross-to-F2L Transition
+
+The hallmark of an advanced CFOP speedcuber is eliminating the pause between the Cross and the first F2L pair:
+
+1. **Do not look at the cross pieces while turning**: Since you planned the cross during inspection, your hands do not need visual guidance.
+2. **Watch the top layer (`U`)**: While your fingers execute the cross moves, scan for any white corner and its matching color edge.
+3. **Instant First Insert**: The millisecond the final cross move completes, your eyes have already locked onto your first F2L pair.
+
+---
+
+## 7. Common CFOP Cross Mistakes
+
+- **Solving on Top and Flipping (`z2`)**: Wastes 1.5 seconds and completely destroys your vision of upcoming F2L pieces. Keep White on `D` from the very start.
+- **Rotating the Entire Cube (`y` / `y'`) During Cross**: Every cross can be solved from a single orientation using fingertricks.
+- **Starting the Timer Before Having a Complete Plan**: If you only plan 2 edges, you will freeze on the 3rd edge while the timer runs. Inspect until all 4 edges are planned.
+
+---
+
+## 8. Key Takeaways
+
+- **White stays on Bottom (`D`)**: Keeps the top two layers visible for F2L lookahead.
+- **Plan the entire cross during inspection**: Aim for 6 moves on average; never exceed 8 moves.
+- **Solve relatively, then align**: Insert edges relative to their neighbors and use `D` turns to finish.
+- **Look ahead to Pair 1**: Track your first corner and edge while executing the cross.
+
+---
+
+<WhatNext
+  next="cfop-f2l-introduction"
+  related={["cfop-what-is-cfop", "cross-efficiency"]}
+  explore={["inspection", "turning-and-finger-tricks"]}
+/>

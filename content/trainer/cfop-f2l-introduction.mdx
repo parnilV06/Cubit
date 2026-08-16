@@ -1,0 +1,142 @@
+---
+title: F2L Introduction
+description: Discover the core engine of CFOP: pairing corners and edges to solve the first two layers simultaneously.
+difficulty: INTERMEDIATE
+category: CFOP
+estimatedMinutes: 9
+order: 3
+---
+
+In the beginner method, solving the first two layers required two separate, repetitive steps:
+1. Locate and insert four bottom-layer corners one by one.
+2. Locate and insert four middle-layer edges using an 8-move algorithm for each piece.
+
+This approach requires 8 separate search cycles and between **45 and 60 total moves**.
+
+In CFOP, **F2L (First Two Layers)** combines these steps. You locate a corner and its matching edge, join them into a unified **2x1 block (a pair)** in the top layer, and slide both pieces into their target slot together in **3 to 4 moves**.
+
+> [!NOTE]
+> F2L is the single most important phase of speedcubing. It accounts for over **55% of the total moves** in a CFOP solve. Mastering intuitive F2L will cut 30 to 45 seconds off your times faster than any algorithm memorization.
+
+---
+
+## 1. Anatomy of an F2L Slot
+
+Once the White Cross is solved on the bottom face (`D`), four vertical corner-edge columns remain open. These columns are called **Slots**:
+
+```
+                 [ Top: Yellow Face ]
+   ┌───────────────────────────────────────────────┐
+   │ Back-Left Slot (BL)   │ Back-Right Slot (BR)  │
+   │ (Orange - Blue)       │ (Red - Blue)          │
+   ├───────────────────────┼───────────────────────┤
+   │ Front-Left Slot (FL)  │ Front-Right Slot (FR) │
+   │ (Orange - Green)      │ (Green - Red)         │
+   └───────────────────────────────────────────────┘
+                [ Bottom: White Cross ]
+```
+
+Each slot requires exactly two pieces to be solved:
+1. **The Corner**: Contains 3 colors (White + 2 side colors, e.g., White-Green-Red).
+2. **The Edge**: Contains 2 side colors matching the corner (e.g., Green-Red).
+
+---
+
+## 2. The 3-Step Intuitive F2L Process
+
+Every F2L pair follows the exact same 3-step lifecycle:
+
+```
+[ Step 1: Identify ]
+Spot an unsolved corner with White and its matching edge on the cube.
+         ↓
+[ Step 2: Pair on Top Layer (U) ]
+Position the pieces on the U layer so their colors line up into a 2x1 block.
+         ↓
+[ Step 3: Insert into Slot ]
+Slide the paired block into its target slot using a 3-move or 4-move trigger.
+```
+
+---
+
+## 3. The Two Fundamental Insertion Triggers
+
+When a corner and edge are already paired together on the top layer, inserting them into their slot requires only one simple trigger:
+
+### Right Slot Insert (Front-Right Slot): `U R U' R'`
+When the pair is positioned on top of the Front-Left face with the white sticker facing right:
+1. `U`: Prepares the pair above the insertion track.
+2. `R`: Opens the Front-Right slot up to the top layer.
+3. `U'`: Slides the pair into the open slot.
+4. `R'`: Closes the slot back down to the bottom layer.
+
+<AlgorithmPlayer
+  moves="U R U' R'"
+  speed={1}
+  title="Right F2L Pair Insertion: U R U' R'"
+  description="Watch the paired block slide smoothly into the Front-Right slot"
+/>
+
+### Left Slot Insert (Front-Left Slot): `U' L' U L`
+When the pair is positioned on top of the Front-Right face with the white sticker facing left:
+1. `U'`: Prepares the pair above the left track.
+2. `L'`: Opens the Front-Left slot up to the top layer.
+3. `U`: Slides the pair into the open slot.
+4. `L`: Closes the slot back down to the bottom layer.
+
+---
+
+## 4. Visualizing the Target Slot
+
+Examine the 3D cube model below. Notice how solving the cross on the bottom leaves the four vertical corner-edge slots ready to receive paired blocks:
+
+<CubeViewer
+  scramble="R U R' U' R U R' U'"
+  title="Open F2L Slot Structure"
+  description="Examine the Front-Right slot with the bottom cross intact"
+/>
+
+---
+
+## 5. Practice the Fundamental Insertion Triggers
+
+Practice executing both the Right Insert (`U R U' R'`) and Left Insert (`U' L' U L`) until your fingers can perform them without looking:
+
+<NotationTrainer
+  moves={["U", "R", "U'", "R'", "U'", "L'", "U", "L"]}
+  title="F2L Insertion Dexterity Pad"
+  description="Drill Right and Left F2L pair insertions from your home grip"
+/>
+
+---
+
+## 6. The Golden Rule of Intuitive F2L
+
+> [!IMPORTANT]
+> **Never break an already-solved cross edge or F2L slot without immediately restoring it.**
+> Whenever you make an `R` move to bring a slot to the top layer, you must make a corresponding `R'` move after pairing or inserting to protect your solved pieces.
+
+---
+
+## 7. Common F2L Beginner Pitfalls
+
+- **Pairing the Wrong Pieces**: Grabbing a White-Green-Red corner with a Green-Orange edge. Always check that the two side colors match exactly.
+- **Inserting into the Wrong Slot**: Putting the Green-Red pair into the Orange-Green slot. Always align the pair over its correct target slot before inserting.
+- **Memorizing 41 Formulas on Day One**: F2L is intuitive geometry. Understand *how* pieces move before memorizing specific speedcubing algorithms.
+
+---
+
+## 8. Key Takeaways
+
+- **F2L solves corners and middle edges together**: Cuts move count and eliminates 4 entire solving steps.
+- **Four vertical slots**: Front-Right, Front-Left, Back-Right, Back-Left.
+- **Three-step lifecycle**: Identify $\to$ Pair on top $\to$ Insert into slot.
+- **Master the two basic inserts**: Right Insert (`U R U' R'`) and Left Insert (`U' L' U L`).
+
+---
+
+<WhatNext
+  next="cfop-f2l-cases"
+  related={["cfop-cross", "cfop-what-is-cfop"]}
+  explore={["turning-and-finger-tricks", "lookahead"]}
+/>

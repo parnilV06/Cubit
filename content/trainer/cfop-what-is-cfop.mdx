@@ -1,0 +1,127 @@
+---
+title: What is CFOP?
+description: Understand the complete CFOP speedsolving pipeline and discover how Cross, F2L, OLL, and PLL systematically cut your move count in half.
+difficulty: INTERMEDIATE
+category: CFOP
+estimatedMinutes: 7
+order: 1
+---
+
+When you learned the beginner method in Module 03, you solved the cube layer by layer across seven separate steps. While that method is easy to understand, it requires between 100 and 130 moves per solve and forces frequent pauses.
+
+**CFOP** (also known as the *Fridrich Method*, named after speedcubing pioneer Jessica Fridrich) is the world's most widely used speedsolving method. It reorganizes the solve into four highly streamlined, powerful stages.
+
+> [!NOTE]
+> Over 90% of current world-class speedcubers use CFOP or a direct variant. CFOP reduces the average move count from 120+ moves down to **50 to 60 moves**, while allowing continuous fingertrick flow and lookahead.
+
+---
+
+## 1. The Four Stages of CFOP
+
+CFOP is an acronym representing the four sequential stages of every solve:
+
+```
+[ Stage 1: C — Cross ]
+Solve the 4 bottom-layer cross edges directly on the D face.
+                 ↓ (Average: 6 moves)
+[ Stage 2: F — F2L (First Two Layers) ]
+Simultaneously pair and insert 4 corner-edge pairs into their slots.
+                 ↓ (Average: 28 to 32 moves)
+[ Stage 3: O — OLL (Orientation of the Last Layer) ]
+Orient all 8 top-layer pieces so the entire top face turns yellow.
+                 ↓ (Average: 9 to 11 moves)
+[ Stage 4: P — PLL (Permutation of the Last Layer) ]
+Permute (rearrange) the top-layer pieces into their solved positions.
+                 ↓ (Average: 12 to 14 moves)
+[ Solved Cube: ~55 Total Moves ]
+```
+
+---
+
+## 2. Beginner Method vs. CFOP: The Structural Shift
+
+The key breakthrough of CFOP is solving multiple pieces simultaneously rather than one piece at a time:
+
+| Solve Stage | Beginner Layer-by-Layer | CFOP Method | Moves Saved |
+| :--- | :--- | :--- | :--- |
+| **First Step** | Daisy on top $\to$ 180° flip to White Cross (15 moves) | Direct Cross on Bottom face (`D`) (6 moves) | **~9 moves** |
+| **First Two Layers** | 4 First-layer corners (16 moves) + 4 Middle edges (32 moves) = 48 moves | 4 F2L Pairs solved together (30 moves) | **~18 moves** |
+| **Last Layer Orientation** | Yellow cross (6 moves) + Yellow corners orientation (16+ moves) = 22+ moves | Single OLL algorithm (9 moves) | **~13 moves** |
+| **Last Layer Permutation** | Yellow corners position (14 moves) + Yellow edges position (16 moves) = 30 moves | Single PLL algorithm (12 moves) | **~18 moves** |
+| **Total Solve** | **115 to 135 moves** | **50 to 58 moves** | **~60 moves saved!** |
+
+---
+
+## 3. The 4-Stage Visual Walkthrough
+
+### Stage 1: Cross (`C`)
+Solve four white cross edges directly onto the bottom (`D`) face while matching their adjacent side centers.
+
+### Stage 2: First Two Layers (`F2L`)
+Instead of placing a corner and then using an 8-move algorithm for the middle edge, you locate the corner and edge together on the top layer, pair them into a 2x1 block, and insert both pieces into their target slot in 3 to 4 moves.
+
+### Stage 3: Orientation of the Last Layer (`OLL`)
+In the beginner method, making the yellow face yellow required repeating algorithms multiple times. In CFOP, you identify the top-layer pattern and execute one dedicated algorithm that orients all yellow stickers up simultaneously.
+
+### Stage 4: Permutation of the Last Layer (`PLL`)
+With the top face completely yellow, the final step rearranges the four corners and four edges around the perimeter of the top layer to complete the solve.
+
+Observe how an algorithm from the final CFOP step (the standard T-Permutation) rearranges the last layer pieces in a single fluid sequence:
+
+<AlgorithmPlayer
+  moves="R U R' U' R' F R2 U' R' U' R U R' F'"
+  speed={1}
+  title="CFOP Last Layer: T-Permutation"
+  description="Watch how a single CFOP PLL algorithm permutes corners and edges simultaneously"
+/>
+
+---
+
+## 4. The Two-Phase Learning Roadmap
+
+You do not need to memorize hundreds of algorithms to start using CFOP. The speedcubing community follows a proven progressive pathway:
+
+```
+[ Phase 1: Intermediate CFOP (Recommended Starting Point) ]
+• Cross: Intuitive direct bottom cross (0 algorithms)
+• F2L: Intuitive pairing and insertion (0 memorized algorithms)
+• 2-Look OLL: 2 quick stages (9 total algorithms)
+• 2-Look PLL: 2 quick stages (6 total algorithms)
+→ Total Memorization: Only 15 algorithms!
+→ Target Time: Sub-30 to Sub-25 seconds
+
+                    ↓ (Build speed and fluency)
+
+[ Phase 2: Full CFOP (Advanced Speedcubing) ]
+• Advanced Cross: Blindfolded inspection planning + F2L preview
+• Full F2L: 41 optimal case solutions + multi-slotting
+• Full OLL: 57 1-look algorithms
+• Full PLL: 21 1-look algorithms
+→ Total Memorization: 78 algorithms
+→ Target Time: Sub-15 to Sub-10 seconds
+```
+
+---
+
+## 5. Common CFOP Misconceptions
+
+- **"CFOP is just memorizing algorithms"**: F2L (which represents over 55% of the solve) is largely intuitive. You build pairs using geometric logic rather than rote memorization.
+- **"I must learn all 78 algorithms right now"**: Trying to learn full OLL before mastering intuitive F2L is the #1 reason beginners quit. Start with 2-Look OLL and 2-Look PLL.
+- **"My times will drop immediately on day one"**: When you first switch from the beginner method to intuitive F2L, your times will temporarily increase while your brain builds new neural pathways. Within 1 to 2 weeks of practice, your times will drop dramatically past your previous personal bests.
+
+---
+
+## 6. Key Takeaways
+
+- **CFOP stands for Cross, F2L, OLL, and PLL**.
+- **Move count drops by more than 50%**: From ~120 moves down to ~55 moves.
+- **F2L solves corners and middle edges together**: Replaces two separate steps with intuitive pair building.
+- **Progress through 2-Look first**: Master 2-Look OLL and 2-Look PLL (15 algorithms) before attempting full algorithm sets.
+
+---
+
+<WhatNext
+  next="cfop-cross"
+  related={["from-solving-to-speedsolving", "cross-efficiency"]}
+  explore={["turning-and-finger-tricks", "lookahead"]}
+/>

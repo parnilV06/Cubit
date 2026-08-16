@@ -1,0 +1,107 @@
+---
+title: Sexy Move
+description: Master the world's most famous 4-move trigger (R U R' U'), explore its 6-repetition cycle, and discover why it powers countless speedcubing algorithms.
+difficulty: BEGINNER
+category: Algorithms & Patterns
+estimatedMinutes: 5
+order: 1
+---
+
+Among thousands of speedcubing algorithms, one 4-move sequence stands above all others: **`R U R' U'`**.
+
+Known universally in the cubing community as the **Sexy Move**, this short sequence is the foundational building block for beginner layer-by-layer solving, advanced CFOP triggers, and aesthetic cube transformations.
+
+> [!NOTE]
+> The playful name "Sexy Move" was popularized in the early 2000s speedcubing community (notably by speedcuber Leyan Lo) because the sequence flows so smoothly and effortlessly off the fingers with zero whole-hand regrips.
+
+---
+
+## 1. The 4 Moves Step-by-Step
+
+The Sexy Move consists of four complementary quarter turns:
+
+```
+[ Move 1: R ]  → Turn Right face clockwise 90° (lifts Front-Right slot)
+[ Move 2: U ]  → Turn Upper face clockwise 90° (pushes top layer left)
+[ Move 3: R' ] → Turn Right face counter-clockwise 90° (restores Right face)
+[ Move 4: U' ] → Turn Upper face counter-clockwise 90° (pulls top layer right)
+```
+
+Observe how a single execution transforms the top-right corner and edge:
+
+<AlgorithmPlayer
+  moves="R U R' U'"
+  speed={1}
+  title="The Sexy Move (1 Repetition)"
+  description="Watch the 4-move trigger displace the front-right corner and edge"
+/>
+
+---
+
+## 2. The 6-Cycle Return: Mathematical Perfection
+
+Every permutation on a Rubik's Cube belongs to a mathematical group. Because the cube has finite states, repeating any fixed sequence will eventually return the cube to its starting state.
+
+For the Sexy Move, the cycle length (order) is exactly **6**:
+
+```
+[ Starting State: Solved Cube ]
+       ↓ (1 Repetition: Displaces 2 corners and 2 edges)
+       ↓ (2 Repetitions: Scrambles top-layer orientations)
+       ↓ (3 Repetitions: Swaps 2 pairs of corners and 2 edges)
+       ↓ (4 Repetitions: Permutation continues)
+       ↓ (5 Repetitions: Inverse state of 1 repetition)
+       ↓ (6 Repetitions: 100% Fully Solved!)
+```
+
+Watch all six repetitions return the cube to solved:
+
+<AlgorithmPlayer
+  moves="R U R' U' R U R' U' R U R' U' R U R' U' R U R' U' R U R' U'"
+  speed={1.5}
+  title="6x Sexy Move Complete Cycle"
+  description="Watch 6 continuous repetitions restore the cube to a fully solved state"
+/>
+
+---
+
+## 3. Practice the Fingertricks
+
+To execute the Sexy Move at high speed (under 0.5 seconds), use modern fingertricks:
+1. **`R`**: Rotate the right wrist slightly upward.
+2. **`U`**: Flick the top-back-right corner with your right index finger.
+3. **`R'`**: Pull the right face downward with your right wrist.
+4. **`U'`**: Flick the top-back-left corner with your left index finger (or push with your right index finger).
+
+<NotationTrainer
+  moves={["R", "U", "R'", "U'"]}
+  title="Sexy Move Speed Pad"
+  description="Drill the 4-move sequence until your fingers move automatically"
+/>
+
+---
+
+## 4. Where Does the Sexy Move Appear?
+
+The Sexy Move is everywhere in speedcubing:
+- **Beginner Method**: Used to insert first-layer corners and orient last-layer corners.
+- **Yellow Cross (OLL 45)**: Wrapped inside `F` moves: `F (R U R' U') F'`.
+- **T-Permutation (PLL)**: Opens the first 4 moves: `(R U R' U') R' F R2 U' R' U' R U R' F'`.
+- **F2L Extraction**: Used to pull trapped corners or edges out of slots to the top layer.
+
+---
+
+## 5. Key Takeaways
+
+- **Notation**: `R U R' U'`.
+- **Cyclic Order = 6**: Performing the Sexy Move 6 times from solved returns the cube to 100% solved.
+- **Zero Regrips**: Requires only wrist rotation and index finger flicks.
+- **Foundational Trigger**: Forms the core engine of beginner and advanced methods alike.
+
+---
+
+<WhatNext
+  next="sledgehammer"
+  related={["cfop-putting-it-together", "turning-and-finger-tricks"]}
+  explore={["checkerboard", "cube-in-a-cube"]}
+/>

@@ -32,6 +32,7 @@ const SPEED_OPTIONS = [
 
 export function AlgorithmPlayer({
   algorithm = '',
+  moves = '',
   dimension = '3x3',
   initialState,
   initialScramble = '',
@@ -69,15 +70,16 @@ export function AlgorithmPlayer({
   }, [initialState, initialScramble, dimension]);
 
   // 2. Parse algorithm tokens safely
+  const effectiveAlg = algorithm || moves || '';
   const parsedMoves = useMemo(() => {
-    if (!algorithm || typeof algorithm !== 'string') return [];
+    if (!effectiveAlg || typeof effectiveAlg !== 'string') return [];
     try {
-      return parseScramble(algorithm);
+      return parseScramble(effectiveAlg);
     } catch (err) {
       console.warn('AlgorithmPlayer move parsing error:', err);
       return [];
     }
-  }, [algorithm]);
+  }, [effectiveAlg]);
 
   const totalSteps = parsedMoves.length;
 
@@ -102,7 +104,7 @@ export function AlgorithmPlayer({
   useEffect(() => {
     setCurrentStep(0);
     setIsPlaying(autoPlay);
-  }, [algorithm, baseStartingState, autoPlay]);
+  }, [effectiveAlg, baseStartingState, autoPlay]);
 
   // Notify parent of step change
   useEffect(() => {
