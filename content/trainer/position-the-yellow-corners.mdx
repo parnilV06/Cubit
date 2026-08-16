@@ -1,0 +1,94 @@
+---
+title: Position the Yellow Corners
+description: Move all four yellow corners into their correct spatial locations using the Niklas algorithm.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 7
+order: 7
+---
+
+You now have a fully aligned Yellow Cross matching all side centers.
+
+The next step is to place the **four yellow corner pieces into their correct spatial positions**.
+
+> [!IMPORTANT]
+> **Position vs. Orientation**: A corner is **correctly positioned** if its 3 colors match the 3 surrounding center pieces, **even if the yellow sticker is facing sideways**. Do not worry if the corner is twisted; orientation is solved in the next step!
+
+---
+
+## 1. What a Correctly Positioned Corner Looks Like
+
+Look at each of the 4 top corners. A corner between the **Yellow, Green, and Red** centers is correctly positioned if it contains **Yellow, Green, and Red stickers**—regardless of which direction the yellow sticker points:
+
+```
+[ Correct Position (Untwisted) ]  →  Yellow on Top, Green on Front, Red on Right
+[ Correct Position (Twisted) ]    →  Red on Top, Yellow on Front, Green on Right  (STILL VALID!)
+[ Wrong Position ]                →  Contains Blue/Orange stickers (Belongs elsewhere)
+```
+
+---
+
+## 2. Inspecting the 4 Corners
+
+Check how many corners are currently in their correct positions:
+
+1. **All 4 corners are in position**: You are ready for the final step! Skip directly to Lesson 8.
+2. **Exactly 1 corner is in position**: Hold the cube so the correct corner is in the **Front-Right-Up (`UFR`) position**.
+3. **0 corners are in position**: Hold the cube in any orientation and apply the algorithm below once. This will immediately place 1 corner in its correct position.
+
+---
+
+## 3. The Corner Cycling Algorithm (Niklas)
+
+To cycle the remaining three corners while keeping the front-right corner locked in place, use the **Niklas algorithm**:
+
+```notation
+U R U' L' U R' U' L
+```
+
+Watch how this sequence cycles the three unsolved corners in a triangle:
+
+<AlgorithmPlayer
+  algorithm="U R U' L' U R' U' L"
+  title="The Niklas Algorithm (U R U' L' U R' U' L)"
+  description="Cycles the top-left, back-left, and back-right corners while preserving the front-right corner"
+/>
+
+> [!TIP]
+> **The Easy Rhythm**: Notice the alternating pattern:
+> 1. Turn `U`, lift the right side (`R`)
+> 2. Turn `U'`, lift the left side (`L'`)
+> 3. Turn `U`, restore the right side (`R'`)
+> 4. Turn `U'`, restore the left side (`L`)
+
+---
+
+## 4. How to Execute the Step
+
+1. Identify the **one corner** that is in the correct slot.
+2. Hold the cube so this corner is in the **front-right (`UFR`)** position.
+3. Execute **`U R U' L' U R' U' L`**.
+4. Check the other 3 corners:
+   - If all 4 are now in their correct positions, proceed to Lesson 8.
+   - If they are still not in place, execute **`U R U' L' U R' U' L`** a second time from the exact same position. All 4 corners are now guaranteed to be in their correct slots!
+
+<NotationTrainer
+  moves={["U", "U'", "R", "R'", "L", "L'"]}
+  title="Niklas Practice Pad"
+  description="Practice the alternating 8-move sequence until comfortable"
+/>
+
+---
+
+## 5. Summary & Checklist
+
+- [x] The aligned Yellow Cross and bottom two layers (F2L) remain intact.
+- [x] All 4 top corners sit between their 3 matching centers (even if some corners are twisted).
+
+---
+
+<WhatNext
+  next="orient-the-yellow-corners"
+  related={["solve-the-yellow-edges", "solve-the-first-layer-corners"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>

@@ -374,10 +374,311 @@ test('Group 8: 2D Visualizer Net Mapper Contract', () => {
   assert.strictEqual(netData.netLayout.F[0][0].hexColor, '#22C55E');
 });
 
+// ====================================================
+// CATEGORY C — TRAINER V1 NOTATION & EXTENSION TESTS
+// ====================================================
+
+test('Group 9: Trainer V1 Parser Extension (Rotations & Slices)', () => {
+  // Rotations
+  assert.deepStrictEqual(parseMoveToken('x'), { raw: 'x', type: 'rotation', axis: 'x', amount: 1 });
+  assert.deepStrictEqual(parseMoveToken("x'"), { raw: "x'", type: 'rotation', axis: 'x', amount: -1 });
+  assert.deepStrictEqual(parseMoveToken('x2'), { raw: 'x2', type: 'rotation', axis: 'x', amount: 2 });
+  assert.deepStrictEqual(parseMoveToken('y'), { raw: 'y', type: 'rotation', axis: 'y', amount: 1 });
+  assert.deepStrictEqual(parseMoveToken("y'"), { raw: "y'", type: 'rotation', axis: 'y', amount: -1 });
+  assert.deepStrictEqual(parseMoveToken('y2'), { raw: 'y2', type: 'rotation', axis: 'y', amount: 2 });
+  assert.deepStrictEqual(parseMoveToken('z'), { raw: 'z', type: 'rotation', axis: 'z', amount: 1 });
+  assert.deepStrictEqual(parseMoveToken("z'"), { raw: "z'", type: 'rotation', axis: 'z', amount: -1 });
+  assert.deepStrictEqual(parseMoveToken('z2'), { raw: 'z2', type: 'rotation', axis: 'z', amount: 2 });
+
+  // Slices
+  assert.deepStrictEqual(parseMoveToken('M'), { raw: 'M', type: 'slice', slice: 'M', amount: 1 });
+  assert.deepStrictEqual(parseMoveToken("M'"), { raw: "M'", type: 'slice', slice: 'M', amount: -1 });
+  assert.deepStrictEqual(parseMoveToken('M2'), { raw: 'M2', type: 'slice', slice: 'M', amount: 2 });
+  assert.deepStrictEqual(parseMoveToken('E'), { raw: 'E', type: 'slice', slice: 'E', amount: 1 });
+  assert.deepStrictEqual(parseMoveToken("E'"), { raw: "E'", type: 'slice', slice: 'E', amount: -1 });
+  assert.deepStrictEqual(parseMoveToken('E2'), { raw: 'E2', type: 'slice', slice: 'E', amount: 2 });
+  assert.deepStrictEqual(parseMoveToken('S'), { raw: 'S', type: 'slice', slice: 'S', amount: 1 });
+  assert.deepStrictEqual(parseMoveToken("S'"), { raw: "S'", type: 'slice', slice: 'S', amount: -1 });
+  assert.deepStrictEqual(parseMoveToken('S2'), { raw: 'S2', type: 'slice', slice: 'S', amount: 2 });
+
+  // Mixed Algorithm Parsing
+  const parsed = parseScramble("R U R' U' x M2 U M2 U2 M2 U M2 y'");
+  assert.strictEqual(parsed.length, 13);
+  assert.strictEqual(parsed[4].type, 'rotation');
+  assert.strictEqual(parsed[4].axis, 'x');
+  assert.strictEqual(parsed[5].type, 'slice');
+  assert.strictEqual(parsed[5].slice, 'M');
+  assert.strictEqual(parsed[12].type, 'rotation');
+  assert.strictEqual(parsed[12].axis, 'y');
+  assert.strictEqual(parsed[12].amount, -1);
+
+  // Invalid Token Error Handling
+  assert.throws(() => parseMoveToken('3x')); // prefix not allowed on rotation
+  assert.throws(() => parseMoveToken('Mw')); // wide not allowed on slice
+  assert.throws(() => parseMoveToken('INVALID_TOKEN'));
+});
+
+test('Group 10: Whole-Cube Rotations Invariants (x4, y4, z4 = Identity & Inverses)', () => {
+  ['2x2', '3x3', '4x4', '5x5'].forEach((puzzle) => {
+    ['x', 'y', 'z'].forEach((axis) => {
+      const solved = createSolvedCube(puzzle);
+      const solvedJson = JSON.stringify(solved);
+
+      // Four quarter rotations = Identity
+      let cube = solved;
+      for (let i = 0; i < 4; i++) {
+        cube = applyMove(cube, { type: 'rotation', axis, amount: 1 });
+      }
+      assert.strictEqual(JSON.stringify(cube), solvedJson, `${puzzle} ${axis}^4 should equal identity`);
+
+      // Rotation + Inverse = Identity
+      cube = applyMove(solved, { type: 'rotation', axis, amount: 1 });
+      cube = applyMove(cube, { type: 'rotation', axis, amount: -1 });
+      assert.strictEqual(JSON.stringify(cube), solvedJson, `${puzzle} ${axis} * ${axis}' should equal identity`);
+
+      // Double rotation twice = Identity
+      cube = applyMove(solved, { type: 'rotation', axis, amount: 2 });
+      cube = applyMove(cube, { type: 'rotation', axis, amount: 2 });
+      assert.strictEqual(JSON.stringify(cube), solvedJson, `${puzzle} ${axis}2 * ${axis}2 should equal identity`);
+    });
+  });
+});
+
+test('Group 11: 3x3 Slice Moves Invariants (M4, E4, S4 = Identity & Inverses)', () => {
+  ['M', 'E', 'S'].forEach((slice) => {
+    const solved = createSolvedCube('3x3');
+    const solvedJson = JSON.stringify(solved);
+
+    // Four quarter slices = Identity
+    let cube = solved;
+    for (let i = 0; i < 4; i++) {
+      cube = applyMove(cube, { type: 'slice', slice, amount: 1 });
+    }
+    assert.strictEqual(JSON.stringify(cube), solvedJson, `3x3 ${slice}^4 should equal identity`);
+
+    // Slice + Inverse = Identity
+    cube = applyMove(solved, { type: 'slice', slice, amount: 1 });
+    cube = applyMove(cube, { type: 'slice', slice, amount: -1 });
+    assert.strictEqual(JSON.stringify(cube), solvedJson, `3x3 ${slice} * ${slice}' should equal identity`);
+
+    // Double slice twice = Identity
+    cube = applyMove(solved, { type: 'slice', slice, amount: 2 });
+    cube = applyMove(cube, { type: 'slice', slice, amount: 2 });
+    assert.strictEqual(JSON.stringify(cube), solvedJson, `3x3 ${slice}2 * ${slice}2 should equal identity`);
+  });
+
+  // Slice move on non-3x3 cube must throw clear descriptive error
+  const cube2 = createSolvedCube('2x2');
+  assert.throws(() => applyMove(cube2, { type: 'slice', slice: 'M', amount: 1 }));
+  const cube4 = createSolvedCube('4x4');
+  assert.throws(() => applyMove(cube4, { type: 'slice', slice: 'E', amount: 1 }));
+});
+
+test('Group 12: Physical Correctness for Whole-Cube Rotations (x, y, z)', () => {
+  // Create unique labeled debug cube U00..B22
+  function makeUniqueCube() {
+    const cube = { dimension: 3 };
+    ['U', 'D', 'F', 'B', 'R', 'L'].forEach((f) => {
+      cube[f] = createMatrix(3, (r, c) => `${f}${r}${c}`);
+    });
+    return cube;
+  }
+
+  // --- Verify 'x' rotation (rotates around +X axis in R direction) ---
+  // Looking at R face: F goes to U, U goes to B, B goes to D, D goes to F.
+  // R face rotates clockwise, L face rotates counter-clockwise.
+  const afterX = applyMove(makeUniqueCube(), 'x');
+
+  // R face rotated clockwise: (r, c) -> (c, 2-r)
+  assert.strictEqual(afterX.R[0][0], 'R20');
+  assert.strictEqual(afterX.R[0][2], 'R00');
+  assert.strictEqual(afterX.R[2][2], 'R02');
+  assert.strictEqual(afterX.R[1][1], 'R11');
+
+  // L face rotated counter-clockwise: (r, c) -> (2-c, r)
+  assert.strictEqual(afterX.L[0][0], 'L02');
+  assert.strictEqual(afterX.L[0][2], 'L22');
+  assert.strictEqual(afterX.L[2][2], 'L20');
+  assert.strictEqual(afterX.L[1][1], 'L11');
+
+  // F moved to U:
+  assert.strictEqual(afterX.U[0][0], 'F00');
+  assert.strictEqual(afterX.U[1][1], 'F11');
+  assert.strictEqual(afterX.U[2][2], 'F22');
+
+  // U moved to B (inverted in row & col due to back face orientation):
+  assert.strictEqual(afterX.B[1][1], 'U11');
+  assert.strictEqual(afterX.B[0][0], 'U22');
+  assert.strictEqual(afterX.B[2][2], 'U00');
+
+  // B moved to D:
+  assert.strictEqual(afterX.D[1][1], 'B11');
+  assert.strictEqual(afterX.D[0][0], 'B22');
+  assert.strictEqual(afterX.D[2][2], 'B00');
+
+  // D moved to F:
+  assert.strictEqual(afterX.F[1][1], 'D11');
+  assert.strictEqual(afterX.F[0][0], 'D00');
+  assert.strictEqual(afterX.F[2][2], 'D22');
+
+  // --- Verify 'y' rotation (rotates around +Y axis in U direction) ---
+  // Looking at U face: F goes to L, L goes to B, B goes to R, R goes to F.
+  // U face rotates clockwise, D face rotates counter-clockwise.
+  const afterY = applyMove(makeUniqueCube(), 'y');
+
+  // U face rotated clockwise:
+  assert.strictEqual(afterY.U[0][0], 'U20');
+  assert.strictEqual(afterY.U[0][2], 'U00');
+  assert.strictEqual(afterY.U[2][2], 'U02');
+  assert.strictEqual(afterY.U[1][1], 'U11');
+
+  // D face rotated counter-clockwise:
+  assert.strictEqual(afterY.D[0][0], 'D02');
+  assert.strictEqual(afterY.D[0][2], 'D22');
+  assert.strictEqual(afterY.D[2][2], 'D20');
+  assert.strictEqual(afterY.D[1][1], 'D11');
+
+  // Centers moved according to y: R -> F -> L -> B -> R
+  assert.strictEqual(afterY.F[1][1], 'R11');
+  assert.strictEqual(afterY.L[1][1], 'F11');
+  assert.strictEqual(afterY.B[1][1], 'L11');
+  assert.strictEqual(afterY.R[1][1], 'B11');
+
+  // --- Verify 'z' rotation (rotates around +Z axis in F direction) ---
+  // Looking at F face: U goes to R, R goes to D, D goes to L, L goes to U.
+  // F face rotates clockwise, B face rotates counter-clockwise.
+  const afterZ = applyMove(makeUniqueCube(), 'z');
+
+  assert.strictEqual(afterZ.F[1][1], 'F11');
+  assert.strictEqual(afterZ.F[0][0], 'F20');
+  assert.strictEqual(afterZ.B[1][1], 'B11');
+  assert.strictEqual(afterZ.B[0][0], 'B02');
+
+  assert.strictEqual(afterZ.R[1][1], 'U11');
+  assert.strictEqual(afterZ.D[1][1], 'R11');
+  assert.strictEqual(afterZ.L[1][1], 'D11');
+  assert.strictEqual(afterZ.U[1][1], 'L11');
+});
+
+test('Group 13: Physical Correctness for Slice Moves (M, E, S)', () => {
+  function makeUniqueCube() {
+    const cube = { dimension: 3 };
+    ['U', 'D', 'F', 'B', 'R', 'L'].forEach((f) => {
+      cube[f] = createMatrix(3, (r, c) => `${f}${r}${c}`);
+    });
+    return cube;
+  }
+
+  // --- Verify 'M' slice (follows L direction) ---
+  // R and L outer faces MUST be completely untouched!
+  // Corners MUST be completely untouched!
+  const afterM = applyMove(makeUniqueCube(), 'M');
+
+  // R and L unchanged
+  assert.strictEqual(afterM.R[0][0], 'R00');
+  assert.strictEqual(afterM.R[1][1], 'R11');
+  assert.strictEqual(afterM.L[0][0], 'L00');
+  assert.strictEqual(afterM.L[1][1], 'L11');
+
+  // Corners on U, D, F, B unchanged
+  assert.strictEqual(afterM.U[0][0], 'U00');
+  assert.strictEqual(afterM.U[0][2], 'U02');
+  assert.strictEqual(afterM.F[0][0], 'F00');
+  assert.strictEqual(afterM.F[2][2], 'F22');
+
+  // M slice centers permute: U -> F -> D -> B -> U
+  assert.strictEqual(afterM.F[1][1], 'U11'); // Top goes to front
+  assert.strictEqual(afterM.D[1][1], 'F11'); // Front goes to bottom
+  assert.strictEqual(afterM.B[1][1], 'D11'); // Bottom goes to back
+  assert.strictEqual(afterM.U[1][1], 'B11'); // Back goes to top
+
+  // --- Verify 'E' slice (follows D direction) ---
+  // U and D outer faces MUST be completely untouched!
+  const afterE = applyMove(makeUniqueCube(), 'E');
+
+  assert.strictEqual(afterE.U[0][0], 'U00');
+  assert.strictEqual(afterE.U[1][1], 'U11');
+  assert.strictEqual(afterE.D[0][0], 'D00');
+  assert.strictEqual(afterE.D[1][1], 'D11');
+
+  // E slice centers permute: F -> R -> B -> L -> F
+  assert.strictEqual(afterE.R[1][1], 'F11');
+  assert.strictEqual(afterE.B[1][1], 'R11');
+  assert.strictEqual(afterE.L[1][1], 'B11');
+  assert.strictEqual(afterE.F[1][1], 'L11');
+
+  // --- Verify 'S' slice (follows F direction) ---
+  // F and B outer faces MUST be completely untouched!
+  const afterS = applyMove(makeUniqueCube(), 'S');
+
+  assert.strictEqual(afterS.F[0][0], 'F00');
+  assert.strictEqual(afterS.F[1][1], 'F11');
+  assert.strictEqual(afterS.B[0][0], 'B00');
+  assert.strictEqual(afterS.B[1][1], 'B11');
+
+  // S slice centers permute: U -> R -> D -> L -> U
+  assert.strictEqual(afterS.R[1][1], 'U11');
+  assert.strictEqual(afterS.D[1][1], 'R11');
+  assert.strictEqual(afterS.L[1][1], 'D11');
+  assert.strictEqual(afterS.U[1][1], 'L11');
+});
+
+test('Group 14: Algorithm Mathematical Equivalences (x = R M\' L\', y = U E\' D\', z = F S B\')', () => {
+  // Test x == R M' L'
+  const stateX = applyScramble('x', '3x3');
+  const stateRML = applyScramble("R M' L'", '3x3');
+  assert.strictEqual(JSON.stringify(stateX), JSON.stringify(stateRML), "x should match R M' L'");
+
+  // Test y == U E' D'
+  const stateY = applyScramble('y', '3x3');
+  const stateUED = applyScramble("U E' D'", '3x3');
+  assert.strictEqual(JSON.stringify(stateY), JSON.stringify(stateUED), "y should match U E' D'");
+
+  // Test z == F S B'
+  const stateZ = applyScramble('z', '3x3');
+  const stateFSB = applyScramble("F S B'", '3x3');
+  assert.strictEqual(JSON.stringify(stateZ), JSON.stringify(stateFSB), "z should match F S B'");
+});
+
+test('Group 15: Speedcubing Algorithms Cyclic Invariants', () => {
+  const solved = createSolvedCube('3x3');
+  const solvedJson = JSON.stringify(solved);
+
+  // 1. Sexy Move x 6 = Identity
+  let sexyCube = solved;
+  for (let i = 0; i < 6; i++) {
+    sexyCube = applyScramble("R U R' U'", sexyCube);
+  }
+  assert.strictEqual(JSON.stringify(sexyCube), solvedJson, 'Sexy move (R U R\' U\') applied 6 times must restore solved state');
+
+  // 2. H-Permutation x 2 = Identity
+  const hPerm = 'M2 U M2 U2 M2 U M2';
+  let hCube = applyScramble(hPerm, '3x3');
+  // Confirm center colors are still conserved
+  assert.strictEqual(validateCubeState(hCube).isValid, true);
+  // Apply second time to return to solved
+  hCube = applyScramble(hPerm, hCube);
+  assert.strictEqual(JSON.stringify(hCube), solvedJson, 'H-Perm (M2 U M2 U2 M2 U M2) applied 2 times must restore solved state');
+
+  // 3. T-Permutation x 2 = Identity
+  const tPerm = "R U R' U' R' F R2 U' R' U' R U R' F'";
+  let tCube = applyScramble(tPerm, '3x3');
+  assert.strictEqual(validateCubeState(tCube).isValid, true);
+  tCube = applyScramble(tPerm, tCube);
+  assert.strictEqual(JSON.stringify(tCube), solvedJson, 'T-Perm applied 2 times must restore solved state');
+
+  // 4. Sune + Anti-Sune = Identity
+  const sune = "R U R' U R U2 R'";
+  const antiSune = "R U2 R' U' R U' R'";
+  const suneCombo = applyScramble(`${sune} ${antiSune}`, '3x3');
+  assert.strictEqual(JSON.stringify(suneCombo), solvedJson, 'Sune followed by Anti-Sune must restore solved state');
+});
+
 // Final Summary
 console.log(`\n${BOLD}Test Summary:${RESET} Passed ${passedTests}/${totalTests} tests.`);
 if (passedTests !== totalTests) {
   process.exit(1);
 } else {
-  console.log(`${GREEN}${BOLD}All Cube Engine tests (Category A & B) passed successfully!${RESET}\n`);
+  console.log(`${GREEN}${BOLD}All Cube Engine tests (Category A, B & C) passed successfully!${RESET}\n`);
 }
+

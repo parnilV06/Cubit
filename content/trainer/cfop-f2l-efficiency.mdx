@@ -1,0 +1,133 @@
+---
+title: F2L Efficiency
+description: Eliminate cube rotations, master back-slot insertions, reduce pauses, and unlock effortless F2L lookahead.
+difficulty: ADVANCED
+category: CFOP
+estimatedMinutes: 9
+order: 5
+---
+
+Once you understand how to solve all 41 F2L cases, your next goal is **efficiency**.
+
+An average beginner solves F2L in 45 to 55 moves with 4 to 6 whole-cube rotations and constant pauses. An advanced CFOP speedcuber solves the exact same four pairs in **26 to 30 moves with 0 to 1 rotations and zero pauses**.
+
+Improving your F2L efficiency relies on three core principles:
+1. **Zero-Rotation Solving (Rotationless F2L)**.
+2. **Back-Slot Priority (Solve the back slots first)**.
+3. **Continuous Lookahead (Track the next pair while inserting the current one)**.
+
+> [!NOTE]
+> A solver who turns at **3 TPS with zero pauses** will finish F2L in **10 seconds**. A solver who turns at **6 TPS but pauses for 1.5 seconds between every pair** will take **16 seconds**. Fluidity always beats raw turning speed.
+
+---
+
+## 1. The Cost of Whole-Cube Rotations (`y` / `y'`)
+
+Every time you perform a whole-cube rotation (`y` or `y'`):
+- You spend **0.4 to 0.6 seconds** shifting your grip.
+- You change your visual frame of reference, forcing your brain to re-scan all remaining pieces.
+- You lose track of the pieces you were tracking during lookahead.
+
+To eliminate rotations, learn to insert pairs directly into back slots using your fingers without repositioning the puzzle.
+
+---
+
+## 2. Solving into Back Slots
+
+Always solve the **Back-Right (BR)** and **Back-Left (BL)** slots before solving the front slots.
+
+```
+Why Back Slots First?
+1. Keeps the front two slots open and completely visible.
+2. Eliminates blind spots (you don't have to crane your neck to check back slots).
+3. The remaining two pairs will be in the front, where recognition is instant!
+```
+
+### Back-Right Slot Insert: `R' U' R`
+When the paired block is positioned at the back right, open the slot from the rear, slide the pair in, and close:
+
+<AlgorithmPlayer
+  moves="R' U' R"
+  speed={1}
+  title="Back-Right Pair Insertion: R' U' R"
+  description="Observe how the pair slides directly into the back-right slot with zero rotation"
+/>
+
+### Back-Left Slot Insert: `L U L'`
+When inserting into the back-left slot:
+
+<AlgorithmPlayer
+  moves="L U L'"
+  speed={1}
+  title="Back-Left Pair Insertion: L U L'"
+  description="Observe the left-hand mirror insertion into the back-left slot"
+/>
+
+---
+
+## 3. Practice Back-Slot Fingertricks
+
+Practice executing back-slot insertions smoothly with your right and left hands:
+
+<NotationTrainer
+  moves={["R'", "U'", "R", "L", "U", "L'"]}
+  title="Back-Slot Insertion Pad"
+  description="Build muscle memory for rotationless back-slot insertions"
+/>
+
+---
+
+## 4. Using Empty Slots as Workspaces
+
+When pairing two pieces in the top layer, you often need to hide a corner temporarily with an `R` move before turning `U`.
+
+- **Early in F2L**: When 3 or 4 slots are empty, you can use any empty slot as a "trash can" without worrying about breaking solved pieces.
+- **Late in F2L**: When only 1 slot remains unsolved, you must only use that specific open slot for hiding pieces, ensuring you restore it with `R'` before inserting.
+
+---
+
+## 5. The F2L Lookahead Loop
+
+As established in Module 04, lookahead is the ability to track your next pair while your hands are executing the current pair on muscle memory:
+
+```
+[ Pair 1 Execution ]
+Hands execute Pair 1 trigger automatically
+Eyes scan top layer to locate Pair 2 corner and edge
+                 ↓ (Zero Pause Transition)
+[ Pair 2 Execution ]
+Hands execute Pair 2 trigger automatically
+Eyes scan top layer to locate Pair 3 corner and edge
+                 ↓ (Zero Pause Transition)
+[ Pair 3 Execution ]
+Hands execute Pair 3 trigger automatically
+Eyes locate final Pair 4
+                 ↓ (Zero Pause Transition)
+[ Pair 4 Execution ]
+Hands execute Pair 4; Eyes predict top-layer Yellow OLL state!
+```
+
+---
+
+## 6. Practical Drills for F2L Mastery
+
+1. **Slow Turning / Metronome Drill**: Set a metronome to 60 BPM (1 turn per second). Solve all 4 F2L pairs without stopping the metronome or pausing for a single beat.
+2. **Blindfold Pair Insert**: Locate a pair, plan its entire 6-to-8 move solution in your head, close your eyes, and execute the solution. Open your eyes and verify the pair is solved.
+3. **Back-Slot Only Challenge**: Force yourself to solve the two back slots first on every practice solve for one week.
+
+---
+
+## 7. Key Takeaways
+
+- **Eliminate cube rotations**: Learn rotationless front and back slot insertions.
+- **Solve back slots first**: Keeps front slots open, visible, and free of blind spots.
+- **Master back inserts**: `R' U' R` for Back-Right and `L U L'` for Back-Left.
+- **Pacing over TPS**: Constant fluid turning at 3 TPS crushes fast turning with pauses.
+
+---
+
+<WhatNext
+  next="cfop-2look-oll"
+  related={["cfop-f2l-cases", "lookahead"]}
+  explore={["reducing-pauses", "understanding-tps"]}
+/>

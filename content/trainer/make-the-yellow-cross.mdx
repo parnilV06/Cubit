@@ -1,0 +1,96 @@
+---
+title: Make the Yellow Cross
+description: Orient all four top-layer yellow edge pieces to form a Yellow Cross on the top face.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 8
+order: 5
+---
+
+With the first two layers (F2L) completely solved, you now turn your attention to the **final layer (Yellow face)**.
+
+The first goal on the last layer is creating a **Yellow Cross** (a yellow plus sign) on the top face.
+
+> [!IMPORTANT]
+> During this step, **ignore all yellow corner pieces**. Focus exclusively on the 4 yellow edge pieces. Even if the corners are yellow, treat the top face strictly as a Dot, L-Shape, Line, or Cross based only on its edges.
+
+---
+
+## 1. The 4 Yellow Edge States
+
+Look down at the top yellow face. You will see one of four possible edge patterns:
+
+```
+  1. DOT               2. L-SHAPE               3. LINE              4. CROSS
+  . . .                 . Y .                    . . .                . Y .
+  . Y .                 Y Y .                    Y Y Y                Y Y Y
+  . . .                 . . .                    . . .                . Y .
+(0 Edges)             (2 Adjacent)             (2 Opposite)         (4 Edges - Solved!)
+```
+
+The algorithm below advances you through this exact pipeline:
+$$\text{Dot} \longrightarrow \text{L-Shape} \longrightarrow \text{Line} \longrightarrow \text{Yellow Cross}$$
+
+---
+
+## 2. The Yellow Cross Algorithm
+
+The entire progression uses a single intuitive 6-move sequence:
+
+```notation
+F R U R' U' F'
+```
+
+Notice that this is simply:
+1. Turn the Front face clockwise: **`F`**
+2. Execute the Right Trigger: **`R U R' U'`**
+3. Restore the Front face counter-clockwise: **`F'`**
+
+<AlgorithmPlayer
+  algorithm="F R U R' U' F'"
+  title="Yellow Cross: F (R U R' U') F'"
+  description="Turns Front, executes the Right Trigger, and restores Front to flip top edges upward"
+/>
+
+---
+
+## 3. How to Hold the Cube for Each State
+
+Before performing `F R U R' U' F'`, you must hold the cube in the correct orientation:
+
+| Current Pattern | How to Hold the Cube | Next Result |
+| :--- | :--- | :--- |
+| **Dot** | Hold the cube facing any side with Yellow on Top | Advances to **L-Shape** |
+| **L-Shape (Hook)** | Hold so the two yellow edges point **Top and Left** (12 o'clock and 9 o'clock) | Advances to **Line** |
+| **Line** | Hold so the yellow line runs **Horizontally** (left-to-right) | Advances to **Yellow Cross** |
+| **Cross** | All 4 yellow edges face upward | **Step Complete!** Move to Lesson 6 |
+
+> [!WARNING]
+> If you hold the **Line vertically** instead of horizontally, the algorithm will break the line and return you to an L-shape! Always ensure the line runs from left to right.
+
+---
+
+## 4. Practice the Algorithm
+
+Use the interactive practice pad below to practice the `F R U R' U' F'` sequence:
+
+<NotationTrainer
+  moves={["F", "R", "U", "R'", "U'", "F'"]}
+  title="Yellow Cross Practice Pad"
+  description="Practice the 6-move sequence to form the yellow cross"
+/>
+
+---
+
+## 5. Summary & Checklist
+
+- [x] There is a solid yellow cross (plus sign) on the top face.
+- [x] The first two layers (F2L) on the bottom remain completely intact.
+
+---
+
+<WhatNext
+  next="solve-the-yellow-edges"
+  related={["solve-the-middle-layer", "solve-the-first-layer-corners"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>

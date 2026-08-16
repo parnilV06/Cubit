@@ -1,0 +1,148 @@
+---
+title: F2L Cases
+description: Master the 3 core F2L case archetypes and learn intuitive pairing logic for all 41 standard configurations.
+difficulty: INTERMEDIATE
+category: CFOP
+estimatedMinutes: 12
+order: 4
+---
+
+When speedcubers talk about "Full F2L," they are referring to a catalog of **41 possible piece arrangements** for a single corner-edge slot.
+
+Looking at 41 separate algorithm formulas can seem overwhelming. But here is the secret that every advanced speedcuber knows: **you do not need to memorize 41 algorithms.**
+
+Every single F2L case reduces to **three fundamental archetypes** based on where the pieces are located and which colors are facing up. Once you understand the geometric logic of these three archetypes, you can solve all 41 cases intuitively!
+
+> [!NOTE]
+> In CFOP, we always use an **unsolved slot** to hide a piece temporarily, reposition the matching piece on the top layer (`U`), join them into a 2x1 block, and insert the pair.
+
+---
+
+## 1. The 3 Fundamental F2L Case Archetypes
+
+```
+                          [ All 41 F2L Cases ]
+                                   │
+     ┌─────────────────────────────┼─────────────────────────────┐
+     ▼                             ▼                             ▼
+[ Archetype 1 ]             [ Archetype 2 ]             [ Archetype 3 ]
+Free / Connected Pairs      Separated Pieces on U       Pieces Trapped in Slots
+(Already paired on U)       (Different, Same, or White) (Corner or Edge stuck)
+```
+
+---
+
+## 2. Archetype 1: Free / Connected Pairs
+
+In this archetype, the corner and edge are already touching on the top layer (`U`).
+
+### Case 1A: Connected Correctly (Ready for Insert)
+The corner and edge form a matching 2x1 block with colors aligned.
+- **Solution**: Move pair over slot, execute Right Insert `U (R U' R')` or Left Insert `U' (L' U L)`.
+- **Move Count**: 3 to 4 moves.
+
+### Case 1B: Connected Inverted (Mismatched Pair)
+The corner and edge are touching on top, but the colors clash or the edge is backwards.
+- **Solution**: Lift an open slot with `R`, break the pair with `U` or `U2`, restore the slot with `R'`, then solve as Archetype 2.
+
+---
+
+## 3. Archetype 2: Separated Pieces on the Top Layer
+
+Both the corner and edge are on the top layer (`U`), but not touching. This is the most common archetype. Look at the **top sticker of the corner** and the **top sticker of the edge**:
+
+### Case 2A: Different Top Colors (Corner side white, top colors contrast)
+The corner has White on its side, and the top stickers of the corner and edge are **different colors** (e.g. Green on corner top, Red on edge top).
+
+```
+Goal: When you insert the corner with (R U' R'), the edge will automatically join it!
+• Step 1: Position the edge so that lifting the slot joins them directly.
+• Step 2: Execute (R U' R') to insert both pieces simultaneously.
+```
+
+### Case 2B: Same Top Colors (Corner side white, top colors match)
+The corner has White on its side, and the top stickers of both pieces are the **same color** (e.g. Red on corner top, Red on edge top).
+
+```
+Goal: Pair the pieces side-by-side into a 2x1 block, then insert.
+• Step 1: Hide the corner in an empty slot using (R U R') or (F' U' F).
+• Step 2: Turn U to place the edge next to the hidden corner's landing spot.
+• Step 3: Restore the corner with R' to form the 2x1 block on the top layer.
+• Step 4: Insert the newly formed pair with (U R U' R').
+```
+
+### Case 2C: White Sticker Facing Up (`U`)
+The corner has its White sticker pointing directly toward the ceiling (`U`).
+
+When White faces up, match the edge to its side center first. Then use the corner to "sweep" over the edge:
+
+<AlgorithmPlayer
+  moves="R U2 R' U' R U R'"
+  speed={1}
+  title="White-Facing-Up F2L Solution"
+  description="Watch how R U2 R' repositions the corner to pair with the edge before inserting"
+/>
+
+---
+
+## 4. Archetype 3: Pieces Trapped in Slots
+
+If a corner or edge is stuck in the middle layer or bottom layer:
+
+1. **Stuck in the target slot**: Use the 4-move trigger (Sexy Move: `R U R' U'`) to extract both pieces to the top layer (`U`).
+2. **Stuck in a different slot**: Use `R U R'` or `L' U' L` to extract the trapped piece to `U` while immediately restoring that slot.
+3. Once both pieces are on the top layer, identify whether they fall into **Archetype 1** or **Archetype 2** and solve!
+
+---
+
+## 5. Alternative Trigger: The Sledgehammer (`R' F R F'`)
+
+In addition to standard inserts, speedcubers frequently use the **Sledgehammer** trigger (`R' F R F'`) to insert pairs while orienting top-layer yellow edges:
+
+<AlgorithmPlayer
+  moves="R' F R F'"
+  speed={1}
+  title="The Sledgehammer Insert: R' F R F'"
+  description="Observe how this 4-move trigger inserts a pair while flipping top edges"
+/>
+
+---
+
+## 6. Comprehensive F2L Case Summary Table
+
+| Archetype | Top Color Setup | Core Strategy | Example Algorithm |
+| :--- | :--- | :--- | :--- |
+| **1. Free Pair** | Colors match in 2x1 block | Direct 3-move insert | `U (R U' R')` |
+| **2A. Separated** | Different top colors | Position edge opposite, insert directly | `R U' R'` |
+| **2B. Separated** | Same top colors | Hide corner in slot, join on `U`, insert | `R U R' U' (R U' R')` |
+| **2C. White Up** | White sticker on `U` | Match edge center, sweep corner over edge | `R U2 R' U' (R U R')` |
+| **3. Trapped** | Piece in middle/bottom slot | Extract with trigger to `U` layer | `R U R' U'` |
+
+---
+
+## 7. Interactive Case Recognition Practice
+
+Examine the 3D model below. Locate the top-layer corner and edge pieces and determine which of the three archetypes applies:
+
+<CubeViewer
+  scramble="R U R' U' R U R' U' R U R' U'"
+  title="F2L Case Recognition"
+  description="Examine corner and edge positions on U to classify the case archetype"
+/>
+
+---
+
+## 8. Key Takeaways
+
+- **41 cases reduce to 3 archetypes**: Free Pairs, Separated on `U`, and Trapped in Slots.
+- **Look at the top colors**: Different top colors insert directly; same top colors pair side-by-side; white-up sweeps over the matched edge.
+- **Extract trapped pieces first**: Use `R U R' U'` to bring stuck pieces to the top layer.
+- **Understand the geometry**: Do not memorize isolated letters; understand *how* hiding and pairing works.
+
+---
+
+<WhatNext
+  next="cfop-f2l-efficiency"
+  related={["cfop-f2l-introduction", "cfop-cross"]}
+  explore={["turning-and-finger-tricks", "lookahead"]}
+/>

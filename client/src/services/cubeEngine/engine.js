@@ -17,9 +17,11 @@ import {
   CANONICAL_FACES,
   STICKER_COLORS,
   VALID_FACES,
+  VALID_ROTATIONS,
+  VALID_SLICES,
 } from './constants.js';
 import { createMatrix } from './matrix.js';
-import { parseScramble } from './parser.js';
+import { parseScramble, parseMoveToken } from './parser.js';
 
 /**
  * Resolves puzzle dimension N from puzzle type string ('2x2', '3x3', '4x4', '5x5') or number.
@@ -198,24 +200,91 @@ export function turnLayer(cubeState, face, k = 0) {
 }
 
 /**
- * Applies a single parsed move operation (e.g. { face: 'R', amount: 2, depth: 1 }) to a cube state.
+ * Applies a single parsed move operation (or raw move token string) to a cube state.
+ * Supports face turns, wide moves, whole-cube rotations (x, y, z), and slice turns (M, E, S).
  * 
  * @param {Object} cubeState 
- * @param {{ face: string, amount: number, depth: number }} moveObj 
+ * @param {{ face?: string, amount?: number, depth?: number, type?: string, axis?: string, slice?: string } | string} moveObj 
  * @returns {Object} New cube state
  */
 export function applyMove(cubeState, moveObj) {
-  const { face, amount, depth = 1 } = moveObj;
-  
-  if (!VALID_FACES.includes(face)) {
-    throw new Error(`Cannot apply move: invalid face "${face}"`);
+  if (!cubeState || !cubeState.dimension) {
+    throw new Error('Invalid cubeState provided to applyMove.');
   }
 
+  // Allow passing raw move string token (e.g. "R", "x'", "M2")
+  const parsedMove = typeof moveObj === 'string' ? parseMoveToken(moveObj) : moveObj;
+  if (!parsedMove || typeof parsedMove !== 'object') {
+    throw new Error('Invalid moveObj provided to applyMove.');
+  }
+
+  const N = cubeState.dimension;
   let currentState = cubeState;
-  
-  // Normalize turn count (e.g. amount = -1 -> 3 quarter turns clockwise)
+  const amount = parsedMove.amount !== undefined ? parsedMove.amount : 1;
   const quarterTurnCount = ((amount % 4) + 4) % 4;
-  const actualDepth = Math.min(depth, cubeState.dimension);
+
+  // Case 1: Whole-cube rotation (x, y, z)
+  if (
+    parsedMove.type === 'rotation' ||
+    parsedMove.axis ||
+    (parsedMove.face && ['x', 'y', 'z', 'X', 'Y', 'Z'].includes(parsedMove.face))
+  ) {
+    const axis = (parsedMove.axis || parsedMove.face).toLowerCase();
+    let baseFace;
+    if (axis === 'x') {
+      baseFace = 'R'; // x rotates around +X axis (follows R direction)
+    } else if (axis === 'y') {
+      baseFace = 'U'; // y rotates around +Y axis (follows U direction)
+    } else if (axis === 'z') {
+      baseFace = 'F'; // z rotates around +Z axis (follows F direction)
+    } else {
+      throw new Error(`Invalid rotation axis "${axis}". Supported axes are x, y, z.`);
+    }
+
+    for (let step = 0; step < quarterTurnCount; step++) {
+      for (let k = 0; k < N; k++) {
+        currentState = turnLayer(currentState, baseFace, k);
+      }
+    }
+    return currentState;
+  }
+
+  // Case 2: Slice move (M, E, S) — restricted to 3x3 per standard convention
+  if (
+    parsedMove.type === 'slice' ||
+    parsedMove.slice ||
+    (parsedMove.face && ['M', 'E', 'S', 'm', 'e', 's'].includes(parsedMove.face))
+  ) {
+    const slice = (parsedMove.slice || parsedMove.face).toUpperCase();
+    if (N !== 3) {
+      throw new Error(`Slice moves (${slice}) are only supported on 3x3 cubes (received dimension ${N}).`);
+    }
+
+    let baseFace;
+    if (slice === 'M') {
+      baseFace = 'L'; // M follows L direction
+    } else if (slice === 'E') {
+      baseFace = 'D'; // E follows D direction
+    } else if (slice === 'S') {
+      baseFace = 'F'; // S follows F direction
+    } else {
+      throw new Error(`Invalid slice "${slice}". Supported slices are M, E, S.`);
+    }
+
+    for (let step = 0; step < quarterTurnCount; step++) {
+      currentState = turnLayer(currentState, baseFace, 1);
+    }
+    return currentState;
+  }
+
+  // Case 3: Standard face turn / wide move (U, D, F, B, R, L)
+  const face = parsedMove.face ? parsedMove.face.toUpperCase() : null;
+  if (!face || !VALID_FACES.includes(face)) {
+    throw new Error(`Cannot apply move: invalid face "${parsedMove.face || parsedMove.raw}"`);
+  }
+
+  const depth = parsedMove.depth !== undefined ? parsedMove.depth : 1;
+  const actualDepth = Math.min(depth, N);
 
   for (let step = 0; step < quarterTurnCount; step++) {
     for (let k = 0; k < actualDepth; k++) {
@@ -226,16 +295,22 @@ export function applyMove(cubeState, moveObj) {
   return currentState;
 }
 
+
 /**
- * Applies a scramble string or parsed move array to a solved cube state (or new solved cube of puzzleType).
+ * Applies a scramble string or parsed move array to a solved cube state (or new solved cube of puzzleType, or provided existing cube state).
  * Single public entry point for scramble application.
  * 
  * @param {string | Object[]} scrambleInput - Scramble string (e.g. "R U2 F'") or parsed moves array
- * @param {string | number} [puzzleTypeOrDimension='3x3'] - Puzzle type (e.g. '3x3')
+ * @param {string | number | Object} [puzzleTypeOrState='3x3'] - Puzzle type (e.g. '3x3'), dimension, or existing cube state
  * @returns {Object} Scrambled cube state
  */
-export function applyScramble(scrambleInput, puzzleTypeOrDimension = DEFAULT_PUZZLE_TYPE) {
-  const initialState = createSolvedCube(puzzleTypeOrDimension);
+export function applyScramble(scrambleInput, puzzleTypeOrState = DEFAULT_PUZZLE_TYPE) {
+  let initialState;
+  if (puzzleTypeOrState && typeof puzzleTypeOrState === 'object' && puzzleTypeOrState.dimension && puzzleTypeOrState.U) {
+    initialState = puzzleTypeOrState;
+  } else {
+    initialState = createSolvedCube(puzzleTypeOrState);
+  }
 
   let moves = [];
   if (typeof scrambleInput === 'string') {
@@ -253,6 +328,7 @@ export function applyScramble(scrambleInput, puzzleTypeOrDimension = DEFAULT_PUZ
 
   return currentState;
 }
+
 
 /**
  * Validates sticker color conservation for an NxN cube state.

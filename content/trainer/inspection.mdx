@@ -1,0 +1,128 @@
+---
+title: Inspection
+description: Master the 15-second pre-solve inspection period to scan piece positions, plan your cross, and eliminate starting hesitation.
+difficulty: INTERMEDIATE
+category: Speedcubing Fundamentals
+estimatedMinutes: 7
+order: 2
+---
+
+In casual solving, you scramble the cube, start a timer, and immediately begin hunting for pieces while the clock runs. This guarantees a slow, hesitant start with 5 to 10 seconds of wasted time on the very first step.
+
+In speedcubing, every solve begins with **Inspection**: a dedicated 15-second pre-solve window where you examine the cube, locate target pieces, and plan your opening moves before starting the timer.
+
+> [!NOTE]
+> Under official World Cube Association (WCA) regulations (Article A3), competitors receive up to 15 seconds of inspection. The judge alerts at 8 seconds and 12 seconds. Starting the solve between 15.00s and 17.00s adds a +2 second penalty, while exceeding 17.00s results in a DNF (Did Not Finish). In Cubit's Timer, you can enable WCA-style inspection countdowns to practice under realistic competition conditions.
+
+---
+
+## 1. The 15-Second Inspection Breakdown
+
+Fifteen seconds is plenty of time to fully solve the cross in your head. To use inspection effectively, divide the time into three structured phases:
+
+```
+[ Phase 1: Scan (0 – 4 Seconds) ]
+Find the White center and identify the locations and orientations of all 4 white edges.
+            ↓
+[ Phase 2: Plan (5 – 10 Seconds) ]
+Mentally simulate the move sequence to place each edge into its correct slot.
+            ↓
+[ Phase 3: Grip & Execute (11 – 15 Seconds) ]
+Set your hands into the starting home grip. Place the cube down, start timer, and turn immediately.
+```
+
+---
+
+## 2. Phase 1: Rapid 3D Scanning (0 to 4 Seconds)
+
+When you pick up the cube, do not look at stickers randomly. Follow a structured scan:
+
+1. **Locate White Center**: Place the White center on the bottom (`D`) face or facing you.
+2. **Find the 4 Cross Edges**: Spot the White-Green, White-Red, White-Blue, and White-Orange edge pieces.
+3. **Check Edge Orientations**:
+   - Is the white sticker facing up, down, or sideways?
+   - Are any edges already solved or one turn away from their target slot?
+
+Take a look at this scrambled state. Rotate the 3D model to locate all four cross edges before reading further:
+
+<CubeViewer
+  scramble="R' U2 F2 D2 B2 L' F2 U2 R2"
+  title="3D Inspection Practice"
+  description="Rotate the cube to locate the 4 white edge pieces across all faces"
+/>
+
+---
+
+## 3. Phase 2: Planning the Solution (5 to 10 Seconds)
+
+Once you locate the four edges, mentally simulate how moving one edge affects the others.
+
+### Step-by-Step Mental Simulation Example
+
+Suppose inspection reveals the following setup:
+- **White-Green edge** is at `U` face, green matching the front center.
+- **White-Red edge** is at the right layer, needing an `R2` turn.
+- **White-Blue edge** is one turn from alignment at the back.
+
+Instead of turning the physical cube, trace the moves in your mind:
+1. `F2` places the White-Green edge on the bottom.
+2. `R2` places the White-Red edge on the bottom.
+3. `B2` places the White-Blue edge on the bottom.
+
+By stringing these moves together mentally (`F2 R2 B2`), you enter the solve knowing the exact first 3 moves with zero hesitation.
+
+---
+
+## 4. Phase 3: Grip, Start, and Flow (11 to 15 Seconds)
+
+During the final 4 seconds of inspection:
+
+1. **Position Your Hands**: Place your fingers in the exact positions needed to execute the first move.
+2. **Do Not Over-Inspect**: Once your cross sequence is planned, stop scanning. Staring too long causes mental overload and second-guessing.
+3. **Commit and Execute**: Place your hands on the timer (or keyboard spacebar). The instant the timer starts, execute your planned cross moves at full rhythm without pausing to check each piece.
+
+Use the practice pad below to practice inputting a planned 4-move cross sequence cleanly:
+
+<NotationTrainer
+  moves={["D", "D'", "R2", "F", "F'", "L2", "B2"]}
+  title="Planned Cross Execution Pad"
+  description="Execute your planned cross sequence fluidly without hesitation"
+/>
+
+---
+
+## 5. Inspection Habit Comparison
+
+| Habit | Beginner Solver | Speedcuber |
+| :--- | :--- | :--- |
+| **Timer Start** | Starts timer immediately without looking | Takes 8 to 12 seconds to inspect before touching timer |
+| **First Move** | Searches 3 to 5 seconds after timer starts | First move occurs within 0.1 seconds of timer start |
+| **Planning Depth** | Looks for 1 piece at a time during solve | Plans 3 to 4 cross edges completely in advance |
+| **Visual Focus** | Stares at moving hands | Eyes already looking for the first corner/edge pair |
+| **Average Cross Time** | 8 to 15 seconds | 1.5 to 3.0 seconds |
+
+---
+
+## 6. Common Inspection Mistakes
+
+- **Aimless Staring**: Looking at colors without calculating specific move sequences. Always ask: *"What 3 to 6 moves solve these edges?"*
+- **Planning Too Far Ahead Too Early**: Do not try to plan the entire First Two Layers (F2L) yet. Master planning 2 edges, then 3 edges, then the full 4-edge cross.
+- **Turning the Cube During Inspection**: In official competitions, turning a layer during inspection results in an immediate penalty or DNF. Keep turns purely mental.
+- **Dropping the Plan on Timer Start**: Forgetting your planned moves the moment the timer starts. Trust your inspection and execute decisively.
+
+---
+
+## 7. Key Takeaways
+
+- **Use the full 15 seconds**: Never start a timed solve without inspecting.
+- **Follow the 3 phases**: Scan piece locations (0–4s), Plan the cross sequence (5–10s), Set grip and execute (11–15s).
+- **Eliminate start hesitation**: Your first move should begin the millisecond the timer starts.
+- **Progressive planning**: Start by planning 2 cross edges, then build up to planning the complete cross.
+
+---
+
+<WhatNext
+  next="cross-efficiency"
+  related={["from-solving-to-speedsolving", "make-the-white-cross"]}
+  explore={["turning-and-finger-tricks", "lookahead"]}
+/>

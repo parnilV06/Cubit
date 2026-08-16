@@ -1,0 +1,125 @@
+---
+title: Solving the 5x5
+description: Scale the Reduction method to the 5x5 Professor Cube: build 3x3 center blocks around fixed centers, group 3-piece edge triplets (tredges), and master wing parity.
+difficulty: INTERMEDIATE
+category: Solving Other Cubes
+estimatedMinutes: 15
+order: 3
+---
+
+The **5x5x5 Cube** (known as the *Professor's Cube*) represents the summit of the classic NxN twisty puzzle series.
+
+While its 98 outer pieces may look intimidating, solving the 5x5 relies on the exact same core philosophy as the 4x4: **the Reduction Method**. By grouping centers into solid 3x3 blocks and edges into matching 3-piece triplets, the entire puzzle reduces to a standard 3x3.
+
+```
+[ 5x5 Cube Structure ]
+• 8 Corners      → Standard 3x3 corners
+• 36 Edge Pieces → 12 triplets ("tredges": 1 center edge + 2 outer wings)
+• 54 Centers     → 6 3x3 center blocks (9 center pieces per face)
+```
+
+> [!NOTE]
+> Because 5 is an **odd number**, the central center piece on each face is physically anchored to the core. Unlike the 4x4, the 5x5 has **fixed face colors**, eliminating color scheme ambiguity!
+
+---
+
+## 1. Comparing 2x2, 4x4, and 5x5 Puzzles
+
+Understanding how dimensions dictate puzzle behavior gives you mastery over any NxN cube:
+
+| Feature | 2x2 Pocket Cube | 4x4 Revenge Cube | 5x5 Professor Cube |
+| :--- | :--- | :--- | :--- |
+| **Piece Count** | 8 Corners | 56 Pieces | 98 Pieces |
+| **Centers** | None | 24 (Movable 2x2 blocks) | 54 (3x3 blocks with **fixed core**) |
+| **Edges** | None | 24 Wings (12 pairs) | 36 Pieces (12 triplets / "tredges") |
+| **Solving Method** | Direct Corner Solving | Reduction → 3x3 | Reduction → 3x3 |
+| **Parity States** | None | OLL & PLL Parity | **Wing Parity ONLY** (No PLL Parity) |
+
+---
+
+## 2. Step 1: Building the 3x3 Center Blocks
+
+On a 5x5, each face contains 9 center pieces: 1 fixed center, 4 plus-centers (`+`), and 4 corner-centers (`x`).
+
+To build each 3x3 center block efficiently:
+1. **Center 1x3 Bar**: Connect two plus-centers onto the fixed core center.
+2. **Two Outer 1x3 Bars**: Group one plus-center between two corner-centers.
+3. **Assemble**: Insert the two outer bars alongside the center bar using multi-layer depth turns like `3Rw U2 3Rw'`.
+
+<CubeViewer
+  dimension="5x5"
+  scramble="3Rw U2 3Rw'"
+  title="5x5 Multi-Layer Center Structure"
+  description="Inspect 3x3 center block formation on a 5x5 puzzle"
+/>
+
+---
+
+## 3. Step 2: Edge Grouping (Building "Tredges")
+
+Every complete 5x5 edge consists of three pieces:
+- **1 Central Edge Piece**: Has fixed orientation.
+- **2 Outer Wing Pieces**: Flank the central edge on the left and right.
+
+We group these triplets using the **Free-Slice Method**:
+1. Keep the middle slices free to move without disrupting solved centers.
+2. Align matching wing pieces in the side slots.
+3. Slice `Uw'` or `Dw'`, insert the wing with the flipping trigger `(R U R' F R' F' R)`, and restore the slice with `Uw` or `Dw`.
+
+```notation
+Uw' R U R' F R' F' R Uw
+```
+
+<AlgorithmPlayer
+  dimension="5x5"
+  algorithm="Uw' R U R' F R' F' R Uw"
+  speed={1}
+  title="5x5 Edge Triplet Grouping"
+  description="Forming a 3-piece composite edge on a 5x5 cube"
+/>
+
+---
+
+## 4. Step 3: Solving as a Reduced 3x3
+
+With all 6 3x3 center blocks complete and all 12 composite edge triplets assembled:
+
+```
+3x3 Center Block  →  Acts as 1 Center
+3-Piece Tredge    →  Acts as 1 Edge
+Corner Piece      →  Acts as 1 Corner
+```
+
+Solve the cube using standard 3x3 methods (Cross, F2L, OLL, PLL) using only outer-layer turns.
+
+---
+
+## 5. Step 4: 5x5 Parity (Wing Flip)
+
+Because the 5x5 has a fixed center and odd geometry, **it is impossible to have PLL parity**.
+
+The only parity that can occur on a 5x5 is **Wing Parity (Last Two Edges)**, where a single outer wing piece in an edge triplet is flipped while the central edge is correct.
+
+Fix this case with the big-cube wing flip algorithm:
+
+```notation
+Rw2 B2 U2 Lw U2 Rw' U2 Rw U2 F2 Rw2 F2 Lw' B2 Rw2
+```
+
+---
+
+## 6. Key Takeaways
+
+- **Fixed Centers Return**: 5x5 centers have permanent core colors, removing color scheme guesswork.
+- **Center Construction**: Build 1 center 1x3 bar and 2 side 1x3 bars per face.
+- **Edge Triplets (Tredges)**: Group 1 central edge and 2 outer wings into a composite edge.
+- **No PLL Parity**: Odd-layered cubes only experience wing parity, never 4x4-style two-edge swaps.
+- **Universal Big-Cube Scaling**: The Reduction Method learned on 4x4 and 5x5 scales to 6x6, 7x7, and beyond!
+
+---
+
+<WhatNext
+  next="sexy-move"
+  related={["solving-the-4x4", "4x4-5x5-notation"]}
+  explore={["checkerboard", "cube-in-a-cube"]}
+/>

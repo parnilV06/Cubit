@@ -11,6 +11,9 @@ export {
   STICKER_COLORS,
   CANONICAL_FACES,
   UI_COLOR_PALETTE,
+  VALID_FACES,
+  VALID_ROTATIONS,
+  VALID_SLICES,
 } from './constants.js';
 
 export {

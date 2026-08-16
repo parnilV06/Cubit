@@ -1,0 +1,124 @@
+---
+title: Understanding TPS
+description: Understand Turns Per Second (TPS), calculate your execution speed, and learn why move efficiency beats raw turning speed.
+difficulty: INTERMEDIATE
+category: Speedcubing Fundamentals
+estimatedMinutes: 5
+order: 7
+---
+
+In speedcubing discussions, you will frequently hear competitors ask: *"What was your TPS on that solve?"*
+
+**TPS** stands for **Turns Per Second**. It is the standard velocity metric used across speedcubing to measure how fast a solver executes moves on the puzzle.
+
+Understanding what TPS is, how it is calculated, and its relationship to move efficiency is essential for analyzing your solves and breaking through time plateaus.
+
+> [!NOTE]
+> TPS measures pure mechanical execution rate. While elite speedcubers can burst above 10 to 12 TPS during last-layer algorithms, their overall solve time is defined by how few moves they use and how continuously they turn throughout the entire solve.
+
+---
+
+## 1. How TPS is Calculated
+
+TPS is calculated by dividing your total move count by your total solve time in seconds:
+
+$$\text{TPS} = \frac{\text{Total Move Count}}{\text{Solve Time in Seconds}}$$
+
+### Move Metric Standards in Speedcubing
+
+When counting moves, cubing software and analysis tools use three primary metrics:
+
+1. **HTM (Half-Turn Metric)**: Any face turn counts as 1 move (e.g. `R`, `R'`, and `R2` all count as 1 move). Slice turns (`M`) count as 2 moves (`R L'`).
+2. **STM (Slice-Turn Metric)**: Single face turns, double turns, and single slice turns (`M`, `E`, `S`) each count as 1 move.
+3. **ETM (Execution-Turn Metric)**: Counts every single physical action, including double turns (`U2` = 2 finger flicks) and whole-cube rotations (`y` = 1 movement). This is the most accurate reflection of physical hand workload.
+
+### Practical Calculation Example
+
+If you complete a solve with **56 moves (STM)** in **16.0 seconds**:
+
+$$\text{TPS} = \frac{56 \text{ moves}}{16.0 \text{ s}} = 3.5 \text{ TPS}$$
+
+---
+
+## 2. The TPS Trap: Why Higher TPS Does Not Mean Faster Solves
+
+The biggest misconception among beginners is believing that turning faster is the only way to get faster times.
+
+Consider this direct comparison between two solvers:
+
+| Solver | Solving Method | Move Count | Turning Speed (TPS) | Total Solve Time |
+| :--- | :--- | :--- | :--- | :--- |
+| **Solver A (High TPS, Low Efficiency)** | Beginner Layer-by-Layer | 110 moves | **5.5 TPS** | **20.0 seconds** |
+| **Solver B (Moderate TPS, High Efficiency)** | CFOP Method | 50 moves | **3.5 TPS** | **14.3 seconds** |
+
+Solver B turns **36% slower** than Solver A, yet finishes **5.7 seconds faster** because their method requires less than half the moves!
+
+Move efficiency is a force multiplier on TPS. Increasing your turning speed without improving your efficiency produces diminishing returns, hand fatigue, and frequent lockups.
+
+---
+
+## 3. Real-World TPS Benchmarks by Solve Phase
+
+TPS is never constant throughout a solve. It naturally fluctuates depending on the cognitive load of each phase:
+
+```
+[ Phase 1: Cross ]
+• Typical TPS: 2.0 to 4.5 TPS
+• Focus: Executing planned inspection moves accurately.
+
+[ Phase 2: First Two Layers (F2L) ]
+• Typical TPS: 3.5 to 6.5 TPS
+• Focus: Controlled turning to maintain unbroken lookahead.
+
+[ Phase 3: Last Layer (OLL & PLL) ]
+• Typical TPS: 6.0 to 12.0+ TPS
+• Focus: Explosive muscle-memory algorithm execution.
+```
+
+### High-TPS Algorithm Demonstration: The Sune
+
+Because the **Sune** algorithm (`R U R' U R U2 R'`) consists entirely of right-hand and top-layer fingertricks from a stationary grip, solvers can execute it at 8 to 10+ TPS with minimal effort:
+
+<AlgorithmPlayer
+  moves="R U R' U R U2 R'"
+  speed={1.2}
+  title="High-TPS Sune Execution"
+  description="Observe how optimal fingertricks allow this 7-move sequence to execute in under a second"
+/>
+
+---
+
+## 4. Practice Calibrating Your Turning Speed
+
+Use the trainer below to practice executing the Sune trigger at steady, accurate speeds:
+
+<NotationTrainer
+  moves={["R", "U", "R'", "U", "R", "U2", "R'"]}
+  title="TPS Calibration Pad"
+  description="Focus on clean, accurate 90-degree stops before increasing your execution tempo"
+/>
+
+---
+
+## 5. How to Track and Analyze Your TPS
+
+1. **Use the Cubit Timer**: Record timed sessions to track your overall solve durations and consistency.
+2. **Practice Reconstruction**: Periodically count the moves in a recorded solve to calculate your true TPS.
+3. **Diagnose Bottlenecks**: If your overall TPS is low despite fast algorithm execution, your solve is suffering from search pauses or inefficient cross solutions.
+
+---
+
+## 6. Key Takeaways
+
+- **TPS measures turns per second**: Calculated as $\text{Move Count} \div \text{Time}$.
+- **Efficiency multiplied by TPS equals speed**: Halving your move count cuts your time in half without needing faster hands.
+- **TPS varies by phase**: Cross and F2L require controlled turning for lookahead; Last Layer allows maximum algorithm bursts.
+- **You are ready for CFOP**: Now that you understand speedcubing fundamentals, the next step is learning the **CFOP method**: the world-standard speedcubing system that cuts move count down to ~55 moves.
+
+---
+
+<WhatNext
+  next="cfop-what-is-cfop"
+  related={["reducing-pauses", "lookahead"]}
+  explore={["from-solving-to-speedsolving", "cross-efficiency"]}
+/>

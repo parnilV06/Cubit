@@ -1,0 +1,129 @@
+---
+title: More Fun Algorithms
+description: Explore a curated gallery of iconic cube transformations: Six Spots (Center Swap), The Wire Cross, Vertical Stripes, and the legendary 20-move God's Number Superflip.
+difficulty: BEGINNER
+category: Algorithms & Patterns
+estimatedMinutes: 7
+order: 6
+---
+
+Beyond the classic Checkerboard and Cube in a Cube, the Rubik's Cube offers a rich playground of geometric patterns, optical illusions, and famous mathematical positions.
+
+Here is a curated gallery of the most captivating algorithms to expand your repertoire.
+
+> [!NOTE]
+> All patterns below start from a **fully solved cube**. Each pattern includes both its creation algorithm and its exact restoration sequence.
+
+---
+
+## 1. Six Spots (Center Swap)
+
+The **Six Spots** pattern swaps every center piece with the center of an adjacent face, creating a clean single-dot contrast on all six sides while leaving all 8 corners and 12 edges untouched.
+
+### Algorithm (8 moves):
+```notation
+U D' R L' F B' U D'
+```
+
+<AlgorithmPlayer
+  moves="U D' R L' F B' U D'"
+  speed={1}
+  title="Six Spots (Center Swap)"
+  description="Swaps all six center tiles while keeping all 20 outer pieces in place"
+/>
+
+Examine the single-dot contrast in 3D:
+
+<CubeViewer
+  scramble="U D' R L' F B' U D'"
+  title="Six Spots 3D Inspection"
+  description="Rotate the 3D cube to inspect single-dot contrasts across all 6 faces"
+/>
+
+### How to Restore:
+```notation
+D U' B F' L R' D U'
+```
+
+---
+
+## 2. The Wire Cross
+
+The **Wire** pattern creates a sharp plus-sign grid of contrasting colors framing every face in just 8 swift turns.
+
+### Algorithm (8 moves):
+```notation
+R L U D' F B' R L
+```
+
+<AlgorithmPlayer
+  moves="R L U D' F B' R L"
+  speed={1}
+  title="The Wire Cross Pattern"
+  description="Creates a clean cross grid on all faces in just 8 moves"
+/>
+
+### How to Restore:
+```notation
+L' R' B F' D U' L' R'
+```
+
+---
+
+## 3. Vertical Stripes
+
+The **Vertical Stripes** pattern transforms all four lateral faces into clean two-tone vertical columns.
+
+### Algorithm (17 moves):
+```notation
+F U F R L2 B D' R D2 L D' B R2 L F U F
+```
+
+### How to Restore:
+Execute the inverse sequence:
+```notation
+F' U' F' L' R2 B' D L' D2 R' D B' L2 R' F' U' F'
+```
+
+---
+
+## 4. The Legendary Superflip (God's Number)
+
+In 1995, mathematician Michael Reid proved that the **Superflip** is one of the furthest possible states from solved on a Rubik's Cube. In 2010, a supercomputer proof established that any 3x3 position can be solved in 20 moves or fewer ("God's Number"), with the Superflip serving as the premier 20-move maximum distance state.
+
+In this state:
+- All 8 corners are in their **correct position and orientation**.
+- All 6 centers are **completely solved**.
+- **Every single one of the 12 edges is flipped in place!**
+
+### Algorithm (20 moves):
+```notation
+U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2
+```
+
+<AlgorithmPlayer
+  moves="U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2"
+  speed={1.2}
+  title="The 20-Move Superflip (God's Number State)"
+  description="Flips all 12 edge pieces in place while leaving all corners and centers solved"
+/>
+
+### How to Restore:
+Because the Superflip is **self-inverse**, executing the exact same 20-move algorithm a second time returns the cube to 100% solved!
+
+---
+
+## 5. Key Takeaways
+
+- **Six Spots (`U D' R L' F B' U D'`)**: 8-move center swap.
+- **Wire Cross (`R L U D' F B' R L`)**: 8-move perimeter framing.
+- **Superflip (20 moves)**: The premier 20-move God's Number state where all 12 edges are flipped in place.
+- **Reversibility**: Every pattern can be returned to solved using its inverse sequence or by repeating self-inverse algorithms.
+
+---
+
+<WhatNext
+  next="what-cube-should-you-buy"
+  related={["cube-in-a-cube", "checkerboard"]}
+  explore={["cfop-cross", "cfop-f2l-cases"]}
+/>

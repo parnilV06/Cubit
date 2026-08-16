@@ -1,0 +1,107 @@
+---
+title: Meet the Rubik's Cube
+description: Discover the classic 3x3 Rubik's Cube, explore its six faces and colors, and understand how centers, edges, and corners work together.
+difficulty: BEGINNER
+category: Getting Started
+estimatedMinutes: 5
+order: 1
+---
+
+The Rubik's Cube is the world's most famous three-dimensional puzzle. Before learning how to solve it, you need to understand what this object actually is and how its pieces behave.
+
+When you look at a scrambled cube, it can seem like complete chaos. But every cube follows strict mechanical rules. Once you understand the structure, the puzzle becomes approachable.
+
+> [!NOTE]
+> Standard speedcubing uses the Western color scheme: **White is opposite Yellow**, **Green is opposite Blue**, and **Red is opposite Orange**.
+
+---
+
+## 1. The Six Faces and Colors
+
+A classic 3x3 Rubik's Cube has six flat sides called **faces**. Each face has its own color when solved:
+
+| Face Name | Position | Standard Color | Opposite Face |
+| :--- | :--- | :--- | :--- |
+| **Up** | Top | White | Down (Yellow) |
+| **Down** | Bottom | Yellow | Up (White) |
+| **Front** | Facing You | Green | Back (Blue) |
+| **Back** | Facing Away | Blue | Front (Green) |
+| **Right** | Right Side | Red | Left (Orange) |
+| **Left** | Left Side | Orange | Right (Red) |
+
+Here is the standard solved cube unfolded into a 2D net. Look closely at how the center colors define each face:
+
+<CubeViewer
+  dimension="3x3"
+  showReset={true}
+  title="Standard 3x3 Cube Net"
+  description="Examine the six faces and their relative color positions"
+/>
+
+---
+
+## 2. The Three Fundamental Piece Types
+
+A 3x3 cube may look like 54 individual colored stickers, but it is actually made of **26 physical pieces** moving around a central core.
+
+Every piece on the cube belongs to one of three distinct categories:
+
+| Piece Type | Total on Cube | Visible Colors | Placement | Key Mechanical Rule |
+| :--- | :--- | :--- | :--- | :--- |
+| **Center** | 6 pieces | 1 color | Middle of each face | Mechanically fixed to core; defines face color. |
+| **Edge** | 12 pieces | 2 colors | Between two corners | Connects 2 faces; can only occupy edge slots. |
+| **Corner** | 8 pieces | 3 colors | Outer 8 vertices | Connects 3 faces; can only occupy corner slots. |
+
+### 1. Center Pieces (6 Total)
+- **Colors:** 1 visible color.
+- **Location:** The exact middle of each face.
+- **Behavior:** Centers are mechanically attached to the internal core. They rotate in place, but they **never change position relative to each other**.
+- **Rule:** The color of the center piece tells you what color that entire face must be when solved.
+
+### 2. Edge Pieces (12 Total)
+- **Colors:** 2 visible colors.
+- **Location:** Between two corners on the edges of each layer.
+- **Behavior:** Edges travel around the cube during turns, but an edge piece can **only ever go into an edge slot**. It can never become a corner.
+
+### 3. Corner Pieces (8 Total)
+- **Colors:** 3 visible colors.
+- **Location:** At the eight outer vertices of the cube.
+- **Behavior:** Corners move between corner positions. A corner piece can **only ever go into a corner slot**.
+
+---
+
+## 3. Pieces vs. Stickers
+
+The most common beginner trap is thinking about a Rubik's Cube as 54 independent colored squares.
+
+A cube is not solved by moving individual colors. It is solved by placing **entire physical pieces** into their correct slots:
+
+- When you move a white-green edge piece, both the white sticker and the green sticker move together.
+- You cannot separate the red, white, and blue colors of a corner piece. They are permanently molded into a single plastic block.
+
+> [!TIP]
+> Always think in **pieces**, not stickers. When searching for where a piece belongs, look at all of its colors, not just one.
+
+---
+
+## 4. Common Beginner Pitfalls
+
+- **Attempting to solve face by face**: Beginners often try to solve one full color (like all white), then try to solve red next. This destroys the white face. Cubes are solved **layer by layer**, placing pieces where all of their colors match their neighboring centers.
+- **Forgetting center positions**: If you are solving the white cross, a white-red edge piece must line up with both the white center and the red center.
+
+---
+
+## 5. Key Takeaways
+
+- **26 moving pieces**: 6 centers, 12 edges, 8 corners.
+- **Centers are fixed**: The center piece defines the color of that entire face.
+- **Pieces have fixed slots**: Corners only fit in corner slots; edges only fit in edge slots.
+- **Solve in 3D**: You are moving complete multi-colored pieces into their correct places.
+
+---
+
+<WhatNext
+  next="cube-types"
+  related={["a-brief-history-of-the-cube", "fun-cube-patterns"]}
+  explore={["what-is-speedcubing", "basic-face-notation"]}
+/>

@@ -1,0 +1,104 @@
+---
+title: Solve the Middle Layer
+description: Insert the four middle-layer edge pieces to complete the First Two Layers (F2L) of the cube.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 10
+order: 4
+---
+
+With the first layer completed on the bottom, the next goal is solving the **four middle-layer edge pieces**.
+
+When this step is finished, the bottom two layers of the cube—often called **F2L (First Two Layers)** in speedcubing—will be 100% solved.
+
+> [!NOTE]
+> Middle-layer edges are pieces that **contain NO yellow stickers** (e.g., Green-Red, Red-Blue, Blue-Orange, Orange-Green).
+
+---
+
+## 1. Finding and Aligning a Middle-Layer Edge
+
+1. Hold the cube with **White on the Bottom (`D`)** and **Yellow on the Top (`U`)**.
+2. Scan the top layer for an edge piece that **does NOT have yellow** on either of its two faces.
+3. Look at the sticker facing you on that edge (the front color).
+4. **Turn the `U` layer** until that front color aligns with its matching side center, creating a vertical **"T" shape** on that face.
+
+```
+      [ Y ]           ← Yellow Center on Top
+    [ G ] [ G ]       ← Top Edge Front Color matches Center
+        [ G ]         ← Creates an upside-down "T" shape
+```
+
+---
+
+## 2. Determining Insertion Direction: Right vs. Left
+
+Look at the **top sticker** of the aligned edge piece to see whether it needs to move to the right or to the left:
+
+- If the top color matches the **Right center** $\to$ **Right Insertion**.
+- If the top color matches the **Left center** $\to$ **Left Insertion**.
+
+### Case 1: Right Insertion Algorithm
+When the edge needs to move into the **Front-Right** slot:
+
+```notation
+U R U' R' U' F' U F
+```
+
+<AlgorithmPlayer
+  algorithm="U R U' R' U' F' U F"
+  title="Right Insertion (U R U' R' U' F' U F)"
+  description="Moves the top edge away, pairs it with the corner using the right trigger, and inserts it into the front-right slot"
+/>
+
+---
+
+### Case 2: Left Insertion Algorithm
+When the edge needs to move into the **Front-Left** slot:
+
+```notation
+U' L' U L U F U' F'
+```
+
+<AlgorithmPlayer
+  algorithm="U' L' U L U F U' F'"
+  title="Left Insertion (U' L' U L U F U' F')"
+  description="Moves the top edge away, pairs it with the corner using the left trigger, and inserts it into the front-left slot"
+/>
+
+> [!TIP]
+> **The Intuitive Pattern**: Notice how both algorithms start by moving the top edge **away** from its destination (`U` for right insert, `U'` for left insert), applying the trigger on the target side, and reconnecting the white pair with the front face.
+
+---
+
+## 3. Handling Trapped or Backwards Edges
+
+What if an edge piece is already in the middle layer, but it is either in the wrong slot or flipped backwards?
+
+1. Hold the cube so the trapped edge is in the **front-right middle slot**.
+2. Execute the **Right Insertion algorithm (`U R U' R' U' F' U F`)** once using any dummy yellow edge from the top layer.
+3. This pushes the trapped edge out into the top layer.
+4. Now align its front color into a "T" and insert it properly!
+
+<NotationTrainer
+  moves={["U", "U'", "R", "R'", "L", "L'", "F", "F'"]}
+  title="Middle Layer Practice Pad"
+  description="Practice both insertion sequences to build muscle memory"
+/>
+
+---
+
+## 4. Summary & Milestone Check
+
+Repeat this process for all 4 middle-layer edges:
+- [x] All 4 middle-layer edges (Green-Red, Red-Blue, Blue-Orange, Orange-Green) are correctly placed.
+- [x] The bottom two layers (F2L) are completely solved across all four side faces.
+- [x] The white face on the bottom remains completely solved.
+
+---
+
+<WhatNext
+  next="make-the-yellow-cross"
+  related={["solve-the-first-layer-corners", "make-the-white-cross"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>

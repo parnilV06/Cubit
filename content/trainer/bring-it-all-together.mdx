@@ -1,0 +1,86 @@
+---
+title: Bring It All Together
+description: Review the complete 7-step beginner method, master the full algorithm cheat sheet, and complete full unassisted solves.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 10
+order: 9
+---
+
+Congratulations! You now know every single step and algorithm required to solve the 3x3 Rubik's Cube from any scramble.
+
+This lesson provides your **complete solving checklist** and **master algorithm reference sheet** to help you transition from guided lessons to independent, unassisted solves.
+
+---
+
+## 1. Master Algorithm Cheat Sheet
+
+Here are all the algorithms used in the beginner method in one unified table:
+
+| Step | Goal | Algorithm | Notes / Mnemonic |
+| :--- | :--- | :--- | :--- |
+| **1. White Cross** | Plunge matched edge to bottom | **`F2`** (or `R2`, `L2`, `B2`) | Match side color with center first |
+| **2. First Layer** | Insert corner into bottom-right | **`R U R' U'`** | Repeat 1x, 3x, or 5x |
+| **3. Middle Layer (Right)** | Insert top edge to Front-Right | **`U R U' R' U' F' U F`** | Push away $\to$ Right trigger $\to$ Connect |
+| **3. Middle Layer (Left)** | Insert top edge to Front-Left | **`U' L' U L U F U' F'`** | Push away $\to$ Left trigger $\to$ Connect |
+| **4. Yellow Cross** | Orient top yellow edges | **`F R U R' U' F'`** | Dot $\to$ L-shape (12 & 9) $\to$ Horizontal Line |
+| **5. Yellow Edges** | Align side colors of cross | **`R U R' U R U2 R' U`** | Sune: Hold matched edges at Back & Right |
+| **6. Position Corners** | Cycle top corners into slots | **`U R U' L' U R' U' L`** | Niklas: Hold correct corner in Front-Right |
+| **7. Orient Corners** | Twist final corners in place | **`R U R' U'`** (2x or 4x) | White on Top; turn **ONLY `D`** between corners! |
+
+---
+
+## 2. The 7-Step Solve Walkthrough
+
+```
+[ Step 1: White Cross ]
+Gather 4 white edges on yellow center (Daisy) → Align side colors → Turn 180° (F2)
+
+[ Step 2: First-Layer Corners ]
+Place corner above target slot (UFR) → Execute Right Trigger (R U R' U') until white faces down
+
+[ Step 3: Middle-Layer Edges ]
+Match top edge to front center ("T" shape) → Use Right Insert or Left Insert
+
+[ Step 4: Yellow Cross ]
+Identify Dot, L-Shape, or Line → Apply F (R U R' U') F' until cross forms
+
+[ Step 5: Align Yellow Edges ]
+Match 2 edges at Back and Right → Execute Sune: R U R' U R U2 R' U
+
+[ Step 6: Position Yellow Corners ]
+Place 1 correct corner at Front-Right → Execute Niklas: U R U' L' U R' U' L
+
+[ Step 7: Orient Yellow Corners ]
+Flip cube (White Top, Yellow Bottom) → Unsolved corner at DFR → R U R' U' (2x/4x) → Turn D → Repeat!
+```
+
+---
+
+## 3. The Solved Cube
+
+When all 7 milestones are executed, every face will be complete and uniform:
+
+<CubeViewer dimension="3x3" showReset={true} />
+
+---
+
+## 4. How to Practice for Speed and Confidence
+
+1. **Practice Step-by-Step**: If you get stuck on Step 4 or 5, don't worry about speed. Solve up to that step several times until recognition becomes immediate.
+2. **Wean Off the Cheat Sheet**: Try solving without looking at this sheet, checking it only if you forget an algorithm.
+3. **Use the Cubit Timer**: Head over to the **Timer** section to record your first official timed solves!
+
+---
+
+## 5. What's Next?
+
+Now that you can solve the Rubik's Cube reliably, you are ready to explore **Module 04: Speedcubing Fundamentals**: learning efficient fingertricks, inspection planning, and how to reduce your solve times from minutes to seconds.
+
+---
+
+<WhatNext
+  next="from-solving-to-speedsolving"
+  related={["orient-the-yellow-corners", "position-the-yellow-corners"]}
+  explore={["what-is-speedcubing", "fun-cube-patterns"]}
+/>

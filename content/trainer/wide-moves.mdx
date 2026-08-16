@@ -1,0 +1,112 @@
+---
+title: Wide Moves
+description: Learn double-layer wide moves (Rw, Uw, Fw), understand how they differ from single face turns, and see how they are used in algorithms.
+difficulty: INTERMEDIATE
+category: Cube Notation
+estimatedMinutes: 6
+order: 4
+---
+
+Standard notation moves like `R` and `U` turn a single outer layer.
+
+In intermediate and advanced algorithms, you will often turn **two layers simultaneously**. These are called **wide moves**.
+
+> [!NOTE]
+> In official WCA notation, wide moves are designated with a lowercase **`w`** suffix (such as **`Rw`**, **`Uw`**, **`Fw`**). In informal community algorithm sheets, you may also see them written as single lowercase letters (such as **`r`**, **`u`**, **`f`**). Cubit supports both formats.
+
+---
+
+## 1. Single Face Turns vs. Wide Turns
+
+A wide move grips the outer face and the adjacent middle slice layer together, turning both layers as a single unit:
+
+- **Single Face Turn (`R`)**: Turns only the 1 outer right layer.
+- **Wide Move (`Rw`)**: Turns the outer right layer **plus the middle slice layer** together (2 layers deep).
+
+```
+SINGLE TURN (R):        Turns 1 outer layer
+WIDE TURN (Rw):         Turns 2 outer layers simultaneously
+```
+
+| Wide Move | Informal / Alternate | Layers Turned | Direction (viewed from face) |
+| :--- | :--- | :--- | :--- |
+| **`Rw`** | `r` | Right + Middle slice | Clockwise (upwards) |
+| **`Lw`** | `l` | Left + Middle slice | Clockwise (downwards) |
+| **`Uw`** | `u` | Up + Middle slice | Clockwise (to the left) |
+| **`Dw`** | `d` | Down + Middle slice | Clockwise (to the right) |
+| **`Fw`** | `f` | Front + Standing slice | Clockwise |
+| **`Bw`** | `b` | Back + Standing slice | Clockwise |
+
+---
+
+## 2. Wide Prime and Double Turns
+
+Just like standard turns, wide moves support prime (`'`) and double (`2`) modifiers:
+
+- **`Rw'` (Rw-Prime)**: Turns the right two layers 90 degrees counter-clockwise (pulls both downwards towards you).
+- **`Rw2` (Rw-Double)**: Turns the right two layers 180 degrees.
+- **`Uw'` (Uw-Prime)**: Turns the top two layers 90 degrees counter-clockwise (rotates both to the right).
+- **`Uw2` (Uw-Double)**: Turns the top two layers 180 degrees.
+
+> [!TIP]
+> **Mechanics Note**: Turning `Rw` on a 3x3 produces the exact same physical piece permutation as holding the left face stationary and turning `L'` followed by an `x` whole-cube rotation (`Rw = L' x`).
+
+---
+
+## 3. Interactive Wide Moves Practice
+
+Use the interactive trainer below to practice wide turns. Compare how `R` turns only the rightmost column, whereas `Rw` turns both the right column and the middle column:
+
+<NotationTrainer
+  moves={["R", "Rw", "Rw'", "Rw2", "U", "Uw", "Uw'", "Uw2", "F", "Fw", "Fw'", "Fw2"]}
+  title="Wide Moves Practice Pad"
+  description="Execute single-layer and double-layer turns to observe the difference in real time"
+/>
+
+---
+
+## 4. Wide Moves in Speedcubing Algorithms
+
+Wide moves are widely used in speedcubing for two key reasons:
+
+1. **Ergonomic Finger Tricks**: It is often faster and smoother to turn two layers with your fingers than to do a single turn and a separate whole-cube rotation.
+2. **Orienting the Last Layer (OLL)**: Many essential last-layer algorithms begin with wide moves to orient edges and corners simultaneously.
+
+A premier example is the **Fat Sune** (a wide variation of the Sune algorithm used in CFOP):
+
+```notation
+Rw U R' U' Rw' F R F'
+```
+
+Watch how the opening `Rw` and returning `Rw'` execute with the Algorithm Player below:
+
+<AlgorithmPlayer
+  algorithm="Rw U R' U' Rw' F R F'"
+  title="The Fat Sune (Rw U R' U' Rw' F R F')"
+  description="An essential CFOP OLL algorithm demonstrating wide moves and their inverses"
+/>
+
+---
+
+## 5. Common Mistakes to Avoid
+
+- **Confusing Slice Moves with Wide Moves**: A slice move (`M`) turns *only* the inner middle layer while keeping both outer layers still. A wide move (`Rw`) turns the outer face *plus* the middle layer together.
+- **Grabbing Too Many Layers on 3x3**: A wide move on a 3x3 turns exactly 2 layers. Turning all 3 layers is a whole-cube rotation (`x`), not a wide move.
+- **Forgetting the Inverse on Wide Prime Moves**: When executing `Rw'`, remember to turn *both* layers counter-clockwise (downwards), not just the outer face.
+
+---
+
+## 6. Summary & Key Takeaways
+
+- **`Rw`, `Uw`, `Fw`, `Lw`, `Dw`, `Bw`**: Turn the outer face and the adjacent layer together (2 layers deep).
+- **WCA standard is `w`**: `Rw` is the official standard; lowercase `r` is common in community guides.
+- **Modifiers apply normally**: `Rw'` is 90° counter-clockwise; `Rw2` is 180°.
+- **Bridge to big cubes**: Wide moves are a fundamental building block for larger puzzles like the 4x4 and 5x5.
+
+---
+
+<WhatNext
+  next="4x4-5x5-notation"
+  related={["prime-double-turns", "whole-cube-rotations"]}
+  explore={["basic-face-notation", "fun-cube-patterns"]}
+/>

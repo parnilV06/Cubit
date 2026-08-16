@@ -1,0 +1,124 @@
+---
+title: Prime & Double Turns
+description: Master counter-clockwise (prime) and 180-degree (double) moves, understand move cancellation, and execute fundamental triggers.
+difficulty: BEGINNER
+category: Cube Notation
+estimatedMinutes: 5
+order: 2
+---
+
+In the previous lesson, you learned that single letters like `R` and `U` turn a face 90 degrees clockwise.
+
+However, speedcubing algorithms rarely use clockwise turns alone. To reverse a move or make larger adjustments, notation uses two essential modifiers: **Prime (`'`)** and **Double (`2`)** turns.
+
+> [!NOTE]
+> The apostrophe (`'`) is pronounced **"prime"**. For example, `R'` is spoken aloud as **"R-Prime"** and `U'` as **"U-Prime"**.
+
+---
+
+## 1. Prime Turns (Counter-Clockwise)
+
+An apostrophe after a face letter indicates a **90-degree counter-clockwise turn**, viewed directly from that face.
+
+Because you look at the cube from the front, prime turns move in the opposite visual direction of standard turns:
+
+| Move | Pronunciation | Direction (from front viewpoint) | Inverse of |
+| :--- | :--- | :--- | :--- |
+| **`R'`** | *R-Prime* | Pulls the right layer **downwards** (towards you) | `R` |
+| **`L'`** | *L-Prime* | Pushes the left layer **upwards** (away from you) | `L` |
+| **`U'`** | *U-Prime* | Rotates the top layer **to the right** | `U` |
+| **`D'`** | *D-Prime* | Rotates the bottom layer **to the left** | `D` |
+| **`F'`** | *F-Prime* | Rotates the front layer **counter-clockwise** | `F` |
+| **`B'`** | *B-Prime* | Rotates the back layer **counter-clockwise** | `B` |
+
+### The Inverse Rule:
+A standard move and its prime counterpart are exact opposites. Performing a move followed immediately by its prime returns the cube to its original state:
+
+```
+R + R' = Solved (No change)
+U + U' = Solved (No change)
+```
+
+Test this yourself using the interactive sandbox below. Click `R` then `R'`, or `U` then `U'`:
+
+<NotationTrainer
+  moves={["R", "R'", "U", "U'", "F", "F'", "L", "L'", "D", "D'", "B", "B'"]}
+  title="Clockwise vs. Prime Sandbox"
+  description="Click any turn and its prime counterpart to observe inverse cancellation"
+/>
+
+---
+
+## 2. Double Turns (180 Degrees)
+
+A number **`2`** after a face letter represents a **180-degree double turn** (two quarter turns of the same face).
+
+- **`R2`**: Turn the Right face 180 degrees.
+- **`U2`**: Turn the Top face 180 degrees.
+- **`F2`**: Turn the Front face 180 degrees.
+- **`L2`**: Turn the Left face 180 degrees.
+- **`D2`**: Turn the Down face 180 degrees.
+- **`B2`**: Turn the Back face 180 degrees.
+
+> [!TIP]
+> **Direction Independence**: Because turning a face 180 degrees clockwise or 180 degrees counter-clockwise places the pieces in the exact same physical position, `R2` and `R2'` are identical. You will almost always see it written simply as `R2`.
+
+### Double Turn Cancellation:
+Executing any double turn twice completes a full 360-degree rotation, returning that face to its starting state:
+
+```
+R2 + R2 = Solved
+U2 + U2 = Solved
+```
+
+<NotationTrainer
+  moves={["R2", "U2", "F2", "L2", "D2", "B2"]}
+  title="Double Turns Practice"
+  description="Execute 180-degree turns and verify that applying them twice restores the state"
+/>
+
+---
+
+## 3. Combining Modifiers in Algorithms
+
+Real speedcubing algorithms combine standard turns, prime turns, and double turns in rapid sequence.
+
+One of the most famous algorithms in speedcubing is the **Sune** (pronounced *soon-eh*). It is used to orient the top yellow corners and contains standard, prime, and double turns:
+
+```notation
+R U R' U R U2 R'
+```
+
+Watch how each move executes in sequence using the interactive player below:
+
+<AlgorithmPlayer
+  algorithm="R U R' U R U2 R'"
+  title="The Sune (R U R' U R U2 R')"
+  description="A classic 7-move algorithm combining standard, prime, and double turns"
+/>
+
+---
+
+## 4. Common Beginner Mistakes
+
+- **Confusing Opposing Prime Directions**: Remember that `R'` moves downwards, but `L'` moves upwards. Always visualize looking directly at the face in question.
+- **Over-Rotating Double Turns**: A double turn is exactly 180 degrees (two clicks). Stopping at 90 degrees or turning 270 degrees will scramble your progress.
+- **Modifier Scope**: The modifier applies only to the letter immediately before it. In `R U2`, only `U` is turned 180 degrees; `R` is turned 90 degrees clockwise.
+
+---
+
+## 5. Summary & Key Takeaways
+
+- **Standard letter (`R`)**: 90° clockwise turn.
+- **Prime (`R'`)**: 90° counter-clockwise turn (inverse of standard).
+- **Double (`R2`)**: 180° turn (direction-independent).
+- **Inverses cancel**: `R R'` returns to the previous state; `R2 R2` returns to the previous state.
+- **Full rotation**: 4 quarter turns (`R R R R`) or 2 double turns (`R2 R2`) equal a full 360° rotation.
+
+---
+
+<WhatNext
+  next="whole-cube-rotations"
+  related={["basic-face-notation"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>

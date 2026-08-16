@@ -1,0 +1,96 @@
+---
+title: Snake
+description: Weave a continuous, winding serpent ribbon of color across the cube faces using the 14-move Snake (Anaconda) pattern.
+difficulty: BEGINNER
+category: Algorithms & Patterns
+estimatedMinutes: 5
+order: 4
+---
+
+The **Snake** pattern (often called the **Anaconda**) is one of the most mesmerizing aesthetic transformations possible on a 3x3 cube.
+
+Instead of creating isolated blocks or symmetric checkerboards, the algorithm weaves a continuous, unbroken single-tile path of contrasting colors that winds gracefully across all six faces of the cube.
+
+> [!NOTE]
+> Ensure your cube is **fully solved** before applying the algorithm. Hold the cube with White on Top and Green on Front for matching color orientation.
+
+---
+
+## 1. The 14-Move Snake Algorithm
+
+Execute the following 14-move sequence from a solved cube:
+
+```notation
+L U B' U' R L' B R' F B' D R D' F'
+```
+
+Watch how each turn threads the contrasting ribbon through adjacent faces:
+
+<AlgorithmPlayer
+  moves="L U B' U' R L' B R' F B' D R D' F'"
+  speed={1}
+  title="The Snake (Anaconda) Pattern"
+  description="Twists edge and corner colors into a continuous winding ribbon"
+/>
+
+---
+
+## 2. 3D Inspection: Tracing the Snake
+
+Rotate the 3D model below to trace the unbroken trail. Notice how the ribbon turns corners at 90-degree angles and reconnects back into itself across the perimeter:
+
+<CubeViewer
+  scramble="L U B' U' R L' B R' F B' D R D' F'"
+  title="3D Snake Inspection"
+  description="Rotate the cube to trace the unbroken snake path across all 6 faces"
+/>
+
+---
+
+## 3. How to Restore the Cube
+
+Because the Snake algorithm contains a mixture of clockwise and counter-clockwise quarter turns, it is not self-inverse. 
+
+To restore your cube back to a fully solved state, execute the exact **inverse sequence** (the moves performed in reverse order with opposite turn directions):
+
+```notation
+F D R' D' B F' R B' L R' U B U' L'
+```
+
+Watch the inverse sequence uncoil the snake and restore the solved cube:
+
+<AlgorithmPlayer
+  moves="F D R' D' B F' R B' L R' U B U' L'"
+  speed={1}
+  title="Snake Restoration Algorithm"
+  description="Watch the inverse sequence cleanly uncoil the snake and return to solved"
+/>
+
+---
+
+## 4. Practice the Opening Moves
+
+Pattern algorithms are a fantastic way to develop finger independence on Back (`B`) and Down (`D`) turns:
+
+<NotationTrainer
+  moves={["L", "U", "B'", "U'", "R", "L'", "B", "R'"]}
+  title="Snake Pattern Practice Pad"
+  description="Drill the opening 8 moves of the Snake algorithm"
+/>
+
+---
+
+## 5. Key Takeaways
+
+- **Continuous Ribbon**: Wraps a single-tile contrasting path around the entire cube.
+- **Algorithm (14 moves)**: `L U B' U' R L' B R' F B' D R D' F'`.
+- **Restoration**: Execute the inverse sequence `F D R' D' B F' R B' L R' U B U' L'`.
+- **Great for Notation**: Strengthens your ability to read and execute mixed face turns smoothly.
+
+---
+
+<WhatNext
+  next="cube-in-a-cube"
+  related={["checkerboard", "sexy-move"]}
+  explore={["more-fun-algorithms", "sledgehammer"]}
+/>

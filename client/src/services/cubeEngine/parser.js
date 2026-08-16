@@ -6,22 +6,33 @@
  * numeric layer prefixes, and quarter/half-turn modifiers.
  */
 
-import { VALID_FACES } from './constants.js';
+import { VALID_FACES, VALID_ROTATIONS, VALID_SLICES } from './constants.js';
 
 /**
- * Parses a single scramble move token string.
+ * Parses a single move token string into a structured move operation.
  * 
- * Examples:
- * - "R"   => { face: "R", amount: 1,  depth: 1, isWide: false }
- * - "U2"  => { face: "U", amount: 2,  depth: 1, isWide: false }
- * - "F'"  => { face: "F", amount: -1, depth: 1, isWide: false }
- * - "Rw"  => { face: "R", amount: 1,  depth: 2, isWide: true }
- * - "Fw2" => { face: "F", amount: 2,  depth: 2, isWide: true }
- * - "3Fw'" => { face: "F", amount: -1, depth: 3, isWide: true }
- * - "r"   => { face: "R", amount: 1,  depth: 2, isWide: true } (lowercase wide move)
+ * Supported move categories:
+ * 1. Standard face turns & wide moves:
+ *    - "R"   => { raw: "R", face: "R", amount: 1,  depth: 1, isWide: false }
+ *    - "U2"  => { raw: "U2", face: "U", amount: 2,  depth: 1, isWide: false }
+ *    - "F'"  => { raw: "F'", face: "F", amount: -1, depth: 1, isWide: false }
+ *    - "Rw"  => { raw: "Rw", face: "R", amount: 1,  depth: 2, isWide: true }
+ *    - "Fw2" => { raw: "Fw2", face: "F", amount: 2,  depth: 2, isWide: true }
+ *    - "3Fw'" => { raw: "3Fw'", face: "F", amount: -1, depth: 3, isWide: true }
+ *    - "r"   => { raw: "r", face: "R", amount: 1,  depth: 2, isWide: true } (lowercase wide move)
+ * 
+ * 2. Whole-cube rotations:
+ *    - "x", "x'", "x2" => { raw: "x", type: "rotation", axis: "x", amount: 1 }
+ *    - "y", "y'", "y2" => { raw: "y", type: "rotation", axis: "y", amount: 1 }
+ *    - "z", "z'", "z2" => { raw: "z", type: "rotation", axis: "z", amount: 1 }
+ * 
+ * 3. Slice moves (3x3):
+ *    - "M", "M'", "M2" => { raw: "M", type: "slice", slice: "M", amount: 1 }
+ *    - "E", "E'", "E2" => { raw: "E", type: "slice", slice: "E", amount: 1 }
+ *    - "S", "S'", "S2" => { raw: "S", type: "slice", slice: "S", amount: 1 }
  * 
  * @param {string} token - A single move string
- * @returns {{ raw: string, face: string, amount: number, depth: number, isWide: boolean }}
+ * @returns {{ raw: string, face?: string, amount: number, depth?: number, isWide?: boolean, type?: string, axis?: string, slice?: string }}
  * @throws {Error} If token format is invalid or unsupported.
  */
 export function parseMoveToken(token) {
@@ -34,9 +45,49 @@ export function parseMoveToken(token) {
     throw new Error('Invalid move token: Received blank string.');
   }
 
-  // Regex format: optional layer prefix digit(s), face character (uppercase or lowercase), optional 'w', optional modifier (' or 2)
-  const regex = /^(\d+)?([UDRLFBudrlfb]w?)(['2']?)$/;
-  const match = cleanToken.match(regex);
+  // 1. Check for whole-cube rotation (x, y, z, X, Y, Z with optional ' or 2 modifier)
+  const rotationMatch = cleanToken.match(/^([xyzXYZ])(['2']?)$/);
+  if (rotationMatch) {
+    const [, axisChar, modifier] = rotationMatch;
+    const axis = axisChar.toLowerCase();
+    let amount = 1;
+    if (modifier === "'") {
+      amount = -1;
+    } else if (modifier === '2') {
+      amount = 2;
+    }
+
+    return {
+      raw: cleanToken,
+      type: 'rotation',
+      axis,
+      amount,
+    };
+  }
+
+  // 2. Check for 3x3 slice move (M, E, S, m, e, s with optional ' or 2 modifier)
+  const sliceMatch = cleanToken.match(/^([MESmes])(['2']?)$/);
+  if (sliceMatch) {
+    const [, sliceChar, modifier] = sliceMatch;
+    const slice = sliceChar.toUpperCase();
+    let amount = 1;
+    if (modifier === "'") {
+      amount = -1;
+    } else if (modifier === '2') {
+      amount = 2;
+    }
+
+    return {
+      raw: cleanToken,
+      type: 'slice',
+      slice,
+      amount,
+    };
+  }
+
+  // 3. Check for standard face turns and wide moves: optional layer prefix digit(s), face character, optional 'w', optional modifier (' or 2)
+  const faceRegex = /^(\d+)?([UDRLFBudrlfb]w?)(['2']?)$/;
+  const match = cleanToken.match(faceRegex);
 
   if (!match) {
     throw new Error(`Unsupported or malformed move token: "${cleanToken}"`);
@@ -87,8 +138,8 @@ export function parseMoveToken(token) {
 /**
  * Tokenizes and parses a complete scramble string into an array of structured move objects.
  * 
- * @param {string} scrambleString - Space-separated move tokens (e.g. "R U2 F' Lw2")
- * @returns {Array<{ raw: string, face: string, amount: number, depth: number, isWide: boolean }>}
+ * @param {string} scrambleString - Space-separated move tokens (e.g. "R U2 F' Lw2 x M2")
+ * @returns {Array<Object>}
  * @throws {Error} If scramble string is invalid or contains malformed tokens.
  */
 export function parseScramble(scrambleString) {
@@ -104,3 +155,4 @@ export function parseScramble(scrambleString) {
 
   return tokens.map(parseMoveToken);
 }
+

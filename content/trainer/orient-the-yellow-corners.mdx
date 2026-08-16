@@ -1,0 +1,84 @@
+---
+title: Orient the Yellow Corners
+description: Twist the final yellow corners into place using the Right Trigger to complete your first Rubik's Cube solve.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 8
+order: 8
+---
+
+This is the final physical step of the beginner method.
+
+All 4 corners are already in their correct positions. Now, you will rotate each corner in place until every yellow sticker faces upward—**solving the entire Rubik's Cube**.
+
+> [!CAUTION]
+> **The #1 Beginner Trap**: While performing this step, the bottom layers will temporarily look completely scrambled. **DO NOT PANIC.** This is mathematically expected. As long as you complete the full sequence and follow the rules below, the entire cube will restore itself cleanly.
+
+---
+
+## 1. Setup: Holding the Cube
+
+1. **Flip the cube upside down** so the **White face is on Top (`U`)** and the **Yellow face is on the Bottom (`D`)**.
+2. Find an unsolved corner on the bottom layer (where the yellow sticker is facing the side or front instead of down).
+3. **Turn the `D` layer** until that unsolved corner sits in the **bottom-right position (`DFR`)**.
+
+```
+[ White Face on TOP ]        ← Keep White on top throughout this entire step!
+[ Target Corner at DFR ]     ← Position unsolved corner in bottom-right
+```
+
+---
+
+## 2. The Orientation Sequence: R U R' U'
+
+With the unsolved corner in the bottom-right position, execute the **Right Trigger**:
+
+```notation
+R U R' U'
+```
+
+Repeat `R U R' U'` **2 times** (or **4 times**) until the yellow sticker of that bottom-right corner faces directly downwards.
+
+<AlgorithmPlayer
+  algorithm="R U R' U' R U R' U'"
+  title="Two Right Triggers (R U R' U' R U R' U')"
+  description="Twists the bottom-right corner in place. Repeat in pairs of 2 or 4 until yellow faces down"
+/>
+
+> [!IMPORTANT]
+> **Always complete all 4 moves**: Even when you see the yellow sticker drop to the bottom on move 3 (`R U R'`), **you MUST execute the final `U'` turn**! Omitting the `U'` will scramble the rest of the cube.
+
+---
+
+## 3. The Golden Rule: Turn ONLY the Bottom Layer
+
+Once your first corner has its yellow sticker facing down:
+
+> **DO NOT ROTATE THE ENTIRE CUBE.**
+
+1. Keep the same face facing you.
+2. **Turn ONLY the bottom layer (`D` or `D'`)** to bring the next unsolved corner into the bottom-right position.
+3. Repeat **`R U R' U'`** (2 or 4 times) until this new corner has yellow facing down.
+4. Repeat for any remaining twisted corners.
+5. When the final corner is oriented, the entire cube will snap into its solved state! Turn the `D` layer once to align the colors if needed.
+
+<NotationTrainer
+  moves={["R", "U", "R'", "U'", "D", "D'"]}
+  title="Final Corner Orientation Pad"
+  description="Practice the trigger with bottom-layer D/D' corner feeding"
+/>
+
+---
+
+## 4. Summary & Solved Checklist
+
+- [x] All 6 faces are solid colors.
+- [x] You have officially solved the 3x3 Rubik's Cube!
+
+---
+
+<WhatNext
+  next="bring-it-all-together"
+  related={["position-the-yellow-corners", "solve-the-first-layer-corners"]}
+  explore={["what-is-speedcubing", "fun-cube-patterns"]}
+/>

@@ -1,0 +1,95 @@
+---
+title: Solve the First-Layer Corners
+description: Place and orient the four white corner pieces using the Right Trigger to complete the entire first layer.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 8
+order: 3
+---
+
+With your White Cross completed and aligned on the bottom, the next goal is solving the **four white corners**.
+
+When this step is complete, the entire white face will be solved, and the bottom row of every side face will form a solid matching colored band.
+
+> [!IMPORTANT]
+> A corner piece has **3 colors**. A corner is only solved if its white sticker faces the bottom AND its two side stickers match their corresponding side centers.
+
+---
+
+## 1. How to Identify the Target Corner and Slot
+
+1. Hold the cube with the **White Cross on the Bottom (`D`)** and the **Yellow center on the Top (`U`)**.
+2. Look at the top layer for any corner piece containing a **White sticker**.
+3. Identify the corner's other two colors (for example, **White-Green-Red**).
+4. Find the slot on the bottom layer located between the matching centers (between Green and Red).
+5. **Turn the `U` layer** until that corner is positioned directly **above its target slot** in the **top-right position (`UFR`)**.
+
+```
+[ Target Corner in Top-Right (UFR) ]  →  White-Green-Red Corner
+                 ↓
+[ Target Slot in Bottom-Right (DFR) ] →  Between White, Green, and Red Centers
+```
+
+---
+
+## 2. The Insertion Algorithm: The Right Trigger
+
+To insert and twist the corner into its target slot, you use the fundamental 4-move sequence known as the **Right Trigger** (or *Sexy Move*):
+
+```notation
+R U R' U'
+```
+
+Watch how the Right Trigger moves the corner piece into position while preserving the solved white cross:
+
+<AlgorithmPlayer
+  algorithm="R U R' U'"
+  title="The Right Trigger (R U R' U')"
+  description="Executes 4 moves to orient and drop the top-right corner into the bottom-right slot"
+/>
+
+### How Many Times to Repeat:
+With the target corner in the top-right position directly above its destination slot, repeat `R U R' U'` until the corner drops into place with its white sticker facing down:
+
+- **White facing Right**: Execute `R U R' U'` **1 time**.
+- **White facing Top**: Execute `R U R' U'` **3 times**.
+- **White facing Front**: Execute `R U R' U'` **5 times**.
+
+> [!TIP]
+> Always execute all 4 moves of the trigger! A very common beginner mistake is stopping after the 3rd move (`R U R'`) because the corner looks solved. **You must always complete the final `U'`**, or your cross will remain broken.
+
+---
+
+## 3. Handling Trapped or Flipped Corners
+
+What if a white corner is already in the bottom layer, but it is either in the wrong slot or flipped with white facing the side?
+
+1. Hold the cube so the trapped corner is in the **bottom-right position (`DFR`)**.
+2. Execute **`R U R' U'` once**.
+3. This kicks the corner out into the top layer without disturbing any other solved pieces.
+4. Now proceed with standard insertion by matching its target slot!
+
+<NotationTrainer
+  moves={["R", "U", "R'", "U'", "L'", "U'", "L", "U"]}
+  title="Corner Insertion Practice Pad"
+  description="Practice the 4-move trigger until it becomes muscle memory"
+/>
+
+---
+
+## 4. Summary & Checklist
+
+Repeat this process for all four white corners until the first layer is 100% complete:
+- [x] The entire white face on the bottom is solid white.
+- [x] The bottom layer on the Green face is a solid row of 3 green stickers.
+- [x] The bottom layer on the Red face is a solid row of 3 red stickers.
+- [x] The bottom layer on the Blue face is a solid row of 3 blue stickers.
+- [x] The bottom layer on the Orange face is a solid row of 3 orange stickers.
+
+---
+
+<WhatNext
+  next="solve-the-middle-layer"
+  related={["make-the-white-cross", "understanding-the-beginner-method"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>

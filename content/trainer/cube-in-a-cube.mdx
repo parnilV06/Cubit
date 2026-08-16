@@ -1,0 +1,100 @@
+---
+title: Cube in a Cube
+description: Create the stunning optical illusion of a miniature 2x2 cube nested inside a 3x3 using the classic 15-move Cube in a Cube algorithm.
+difficulty: INTERMEDIATE
+category: Algorithms & Patterns
+estimatedMinutes: 6
+order: 5
+---
+
+The **Cube in a Cube** is widely considered the most visually striking pattern in all of cubing.
+
+By selectively permuting and twisting three adjacent edges and three adjacent corners around a single corner piece, the algorithm creates the optical illusion of a miniature 2x2 cube nestled inside the corner of a full-size 3x3!
+
+> [!NOTE]
+> Start with a **fully solved cube**. Hold the cube with White on Top and Green on Front so the nested 2x2 forms in the top-front-right corner.
+
+---
+
+## 1. The 15-Move Cube in a Cube Algorithm
+
+Execute the following 15-move sequence:
+
+```notation
+F L F U' R U F2 L2 U' L' B D' B' L2 U
+```
+
+Watch how the sequence twists the top, front, and right faces to construct the nested 2x2 cube:
+
+<AlgorithmPlayer
+  moves="F L F U' R U F2 L2 U' L' B D' B' L2 U"
+  speed={1}
+  title="Cube in a Cube: 15 Moves"
+  description="Watch 3 edges and 3 corners twist to frame a nested 2x2 inside the 3x3"
+/>
+
+---
+
+## 2. 3D Inspection: The Nested Illusion
+
+Rotate the 3D model below to examine how the pattern forms:
+- The **Top-Front-Right** corner displays a solid 2x2 block of matching colors.
+- The opposite corner (**Bottom-Back-Left**) displays an inverted miniature block framed by contrasting borders.
+
+<CubeViewer
+  scramble="F L F U' R U F2 L2 U' L' B D' B' L2 U"
+  title="3D Cube in a Cube Inspection"
+  description="Rotate the 3D cube to inspect the nested 2x2 block and opposite framing borders"
+/>
+
+---
+
+## 3. How to Restore the Cube
+
+To return your cube to its solved state, execute the exact **inverse sequence**:
+
+```notation
+U' L2 B D B' L U L2 F2 U' R' U F' L' F'
+```
+
+Watch the inverse algorithm dissolve the nested cube and restore all six solid faces:
+
+<AlgorithmPlayer
+  moves="U' L2 B D B' L U L2 F2 U' R' U F' L' F'"
+  speed={1}
+  title="Cube in a Cube Restoration"
+  description="The exact inverse sequence that returns the nested cube to solved"
+/>
+
+---
+
+## 4. Practice the Sequence
+
+Break the 15-move algorithm into two manageable chunks:
+- **Part 1 (Moves 1 to 8)**: `F L F U' R U F2 L2`
+- **Part 2 (Moves 9 to 15)**: `U' L' B D' B' L2 U`
+
+Practice the first half on the trainer pad:
+
+<NotationTrainer
+  moves={["F", "L", "F", "U'", "R", "U", "F2", "L2"]}
+  title="Cube in a Cube: Phase 1 Pad"
+  description="Practice the first 8 moves of the nested cube algorithm"
+/>
+
+---
+
+## 5. Key Takeaways
+
+- **Optical Illusion**: Constructs a miniature 2x2 cube inside the corner of a 3x3.
+- **Algorithm (15 moves)**: `F L F U' R U F2 L2 U' L' B D' B' L2 U`.
+- **Restoration**: Execute the inverse sequence `U' L2 B D B' L U L2 F2 U' R' U F' L' F'`.
+- **Corner & Edge Coordination**: Demonstrates how algorithms manipulate orientation and permutation simultaneously.
+
+---
+
+<WhatNext
+  next="more-fun-algorithms"
+  related={["snake", "checkerboard"]}
+  explore={["cfop-cross", "sledgehammer"]}
+/>

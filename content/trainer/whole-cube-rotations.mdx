@@ -1,0 +1,114 @@
+---
+title: Whole Cube Rotations
+description: Master x, y, and z whole-cube rotations to change your viewpoint without altering piece relationships.
+difficulty: BEGINNER
+category: Cube Notation
+estimatedMinutes: 5
+order: 3
+---
+
+When solving a Rubik's Cube, you often need to look at a different side of the puzzle.
+
+Instead of describing moves from an awkward side angle, speedcubers use **whole-cube rotations**. These moves reorient the entire cube in your hands without turning any individual layer.
+
+> [!NOTE]
+> Whole-cube rotations are written in lowercase: **`x`**, **`y`**, and **`z`**. They correspond to the three spatial axes in 3D geometry.
+
+---
+
+## 1. Face Turns vs. Whole-Cube Rotations
+
+There is a fundamental difference between face turns and rotations:
+
+- **Face Turn (`R`, `U`, `F`)**: Turns a single layer. This changes the relative positions of pieces and scrambles or solves the puzzle.
+- **Cube Rotation (`x`, `y`, `z`)**: Rotates the entire physical puzzle. No pieces move relative to each other; only your viewpoint changes.
+
+```
+FACE TURN (R):          Turns only the right 3x3 layer (permutes pieces)
+CUBE ROTATION (x):      Spins the ENTIRE cube upwards (changes perspective)
+```
+
+---
+
+## 2. The Three Rotation Axes: x, y, and z
+
+Each rotation letter corresponds to turning the entire cube in the direction of a specific standard face:
+
+| Rotation | Axis | Follows Face | Physical Movement | Result (with Green Front, White Top) |
+| :--- | :--- | :--- | :--- | :--- |
+| **`x`** | X-Axis (Horizontal) | **`R`** | Rotates the cube **upwards** (away from you) | Green Front moves to **Up**; Yellow Bottom moves to **Front** |
+| **`y`** | Y-Axis (Vertical) | **`U`** | Rotates the cube **to the left** | Red Right moves to **Front**; Green Front moves to **Left** |
+| **`z`** | Z-Axis (Depth) | **`F`** | Tilts the cube **clockwise** (rolls to the right) | White Top moves to **Right**; Orange Left moves to **Up** |
+
+### Prime and Double Rotations:
+Just like face turns, rotations can use prime (`'`) and double (`2`) modifiers:
+
+- **`x'` / `y'` / `z'`**: 90° counter-clockwise rotation along that axis (e.g., `x'` follows `R'`, rotating the cube downwards).
+- **`x2` / `y2` / `z2`**: 180° half rotation along that axis (e.g., `y2` turns the cube around to look at the back face).
+
+---
+
+## 3. Interactive Rotations Practice
+
+Use the interactive sandbox below to experiment with whole-cube rotations. Notice how the entire 2D net shifts orientation while the solved structure remains completely intact:
+
+<NotationTrainer
+  moves={["x", "x'", "x2", "y", "y'", "y2", "z", "z'"]}
+  title="Cube Rotations Practice Pad"
+  description="Click each rotation to see the entire cube reorient across the X, Y, and Z spatial axes"
+/>
+
+### The 360° Reset Rule:
+Rotating four quarter turns in the same direction brings the cube back to its exact starting orientation:
+
+```
+x + x + x + x = Starting Orientation
+y + y + y + y = Starting Orientation
+z + z + z + z = Starting Orientation
+```
+
+---
+
+## 4. Rotations in Real Algorithms
+
+In algorithm sheets, rotations tell you when to shift your grip to execute a sequence on a different face.
+
+For example, when inserting a solved corner-edge pair into the back slot, an algorithm might start with a `y` rotation:
+
+```notation
+y R U R' U'
+```
+
+Watch how the `y` rotation reorients the puzzle before the 4-move trigger executes:
+
+<AlgorithmPlayer
+  algorithm="y R U R' U'"
+  title="Reorientation in an Algorithm: y (R U R' U')"
+  description="Rotates the cube to face the adjacent side before executing the right trigger"
+/>
+
+---
+
+## 5. Common Mistakes to Avoid
+
+- **Confusing `x` and `y`**: Remember that `x` follows the `R` face (pitching up/down), while `y` follows the `U` face (yawing left/right).
+- **Confusing Face Turns with Rotations**: An uppercase `R` turns the right layer; a lowercase `x` rotates the entire cube.
+- **Over-Rotating During Solves**: In speedcubing, rotating too frequently wastes time. Modern methods prioritize minimizing rotations through lookahead and back-slot insertions.
+
+---
+
+## 6. Summary & Key Takeaways
+
+- **`x`**: Rotates the entire cube upwards around the X axis (follows `R`).
+- **`y`**: Rotates the entire cube horizontally around the Y axis (follows `U`).
+- **`z`**: Tilts the entire cube clockwise around the Z axis (follows `F`).
+- **Piece states are unchanged**: Rotations only change your perspective, not piece permutation.
+- **Modifiers apply**: `x'`, `y'`, and `z'` are 90° counter-clockwise; `x2`, `y2`, and `z2` are 180°.
+
+---
+
+<WhatNext
+  next="wide-moves"
+  related={["prime-double-turns", "basic-face-notation"]}
+  explore={["what-is-speedcubing", "fun-cube-patterns"]}
+/>

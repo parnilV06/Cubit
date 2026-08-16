@@ -1,0 +1,85 @@
+---
+title: Understanding the Beginner Method
+description: Master the 7-step Layer-by-Layer roadmap to solve a 3x3 Rubik's Cube from start to finish.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 6
+order: 1
+---
+
+Most people who try to solve a Rubik's Cube make the same fundamental mistake: they try to solve **one face at a time**.
+
+They spend minutes completing the white face, only to realize that every side sticker is scrambled—and solving the next face immediately destroys their progress.
+
+A Rubik's Cube is not made of individual colored stickers. It is made of **26 solid pieces** (centers, edges, and corners) with fixed color relationships. To solve the cube, you must solve entire **layers**.
+
+> [!NOTE]
+> The **Layer-by-Layer (LBL)** method is the universal foundation of all cubing. It breaks the puzzle into 7 manageable milestones where each step builds upon the previous without destroying it.
+
+---
+
+## 1. The 7-Step Solving Roadmap
+
+Here is the exact progression you will follow in this module:
+
+| Step | Milestone | Goal | What Gets Solved |
+| :--- | :--- | :--- | :--- |
+| **1** | **White Cross** | Form a white cross where each white edge matches its adjacent side center | 4 Bottom Edges |
+| **2** | **First-Layer Corners** | Insert 4 white corners to complete the entire white face and bottom layer | Layer 1 Complete |
+| **3** | **Middle Layer** | Place 4 non-yellow edges into the middle layer slots | Layers 1 & 2 Complete (F2L) |
+| **4** | **Yellow Cross** | Orient top yellow edges to form a yellow cross | Top Edge Orientation |
+| **5** | **Yellow Edges** | Permute yellow cross edges until side colors match their centers | Top Edge Permutation |
+| **6** | **Position Yellow Corners** | Move top 4 corners into their correct spatial positions | Top Corner Permutation |
+| **7** | **Orient Yellow Corners** | Rotate final corners so yellow faces upward to complete the solve | 100% Solved Cube |
+
+---
+
+## 2. Visual Layer Progression
+
+Notice how the solve develops from bottom to top:
+
+```
+[ Step 1: White Cross ]      →  4 white edges aligned with side centers
+        ↓
+[ Step 2: First Layer ]      →  Bottom layer 100% complete with matching side bands
+        ↓
+[ Step 3: Middle Layer ]     →  First Two Layers (F2L) completely solved
+        ↓
+[ Step 4: Yellow Cross ]     →  Yellow plus sign formed on the top face
+        ↓
+[ Step 5: Aligned Cross ]    →  Yellow cross edges matching side center colors
+        ↓
+[ Step 6: Positioned Corners]→  All 4 corners in correct slots (even if twisted)
+        ↓
+[ Step 7: Solved Cube ]      →  All corners oriented correctly — Cube Solved!
+```
+
+Here is the target solved cube in 2D net format:
+
+<CubeViewer dimension="3x3" showReset={true} />
+
+---
+
+## 3. The Golden Rules of Beginner Solving
+
+Before learning individual steps, commit these three principles to memory:
+
+1. **Centers Never Move**: The center piece on each face defines that face's color. White will always be opposite Yellow, Green opposite Blue, and Red opposite Orange.
+2. **Algorithms Are Surgical Tools**: When you execute an algorithm like `R U R' U'`, pieces will temporarily move out of place during the turn sequence. Complete the full sequence, and previously solved layers will restore themselves automatically.
+3. **Keep a Consistent Reference Orientation**: Unless a lesson specifically tells you to rotate the cube with `x`, `y`, or `z`, keep the same face facing you throughout each step.
+
+---
+
+## 4. Summary & Key Takeaways
+
+- Solve by **layers**, not by faces.
+- The 7-step method builds sequentially: **White Cross $\to$ First Layer $\to$ Middle Layer $\to$ Yellow Cross $\to$ Yellow Edges $\to$ Position Corners $\to$ Orient Corners**.
+- Each step preserves all progress made in earlier steps.
+
+---
+
+<WhatNext
+  next="make-the-white-cross"
+  related={["basic-face-notation", "prime-double-turns"]}
+  explore={["what-is-speedcubing", "fun-cube-patterns"]}
+/>

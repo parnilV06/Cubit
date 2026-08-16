@@ -1,0 +1,101 @@
+---
+title: Solve the Yellow Edges
+description: Align the side colors of the Yellow Cross with their matching side centers using the Sune algorithm.
+difficulty: BEGINNER
+category: Solve Your First Cube
+estimatedMinutes: 7
+order: 6
+---
+
+Now that you have a Yellow Cross on the top face, you must make sure that its **side colors match their respective centers**.
+
+Just like the White Cross in Step 2, a complete yellow cross requires that the Yellow-Green edge matches Green, Yellow-Red matches Red, Yellow-Blue matches Blue, and Yellow-Orange matches Orange.
+
+> [!IMPORTANT]
+> The Yellow Cross edges may currently be scrambled around the top layer. In this lesson, you will swap the mismatched edges into their correct positions while preserving the yellow face and bottom two layers.
+
+---
+
+## 1. Inspecting Top Edge Alignment
+
+1. Hold the cube with **Yellow on Top (`U`)** and **White on Bottom (`D`)**.
+2. **Turn the `U` layer** and check how many side colors of the yellow cross match their centers.
+3. You will always be able to align either **2 matched edges** or **all 4 matched edges**:
+
+- **All 4 Matched**: All edges are already in their correct places! You can skip directly to Lesson 7.
+- **2 Adjacent Matched**: Two matching edges are next to each other (e.g., Green and Red).
+- **2 Opposite Matched**: Two matching edges are across from each other (e.g., Green and Blue).
+
+---
+
+## 2. The Edge Swap Algorithm (The Sune)
+
+To swap the mismatched edges into place without breaking your solved layers, use the classic **Sune algorithm**:
+
+```notation
+R U R' U R U2 R' U
+```
+
+Watch how this sequence swaps the **Front** and **Left** edges while keeping the **Back** and **Right** edges locked in place:
+
+<AlgorithmPlayer
+  algorithm="R U R' U R U2 R' U"
+  title="The Sune Edge Swap (R U R' U R U2 R' U)"
+  description="Swaps front and left edges and aligns all four cross edges with their side centers"
+/>
+
+---
+
+## 3. How to Hold the Cube
+
+Before applying `R U R' U R U2 R' U`, position your cube according to your case:
+
+### Case 1: Two Adjacent Matched Edges
+1. Turn the `U` layer until 2 adjacent edges match their side centers.
+2. Hold the cube so one matched edge is at the **BACK** and the other is on the **RIGHT**.
+3. Execute: **`R U R' U R U2 R' U`**.
+4. All 4 yellow edges will now match their respective side centers!
+
+```
+               [ BACK: Matched Edge ]
+                         ↑
+[ LEFT: Swap Target ] ← [ U ] → [ RIGHT: Matched Edge ]
+                         ↓
+              [ FRONT: Swap Target ]
+```
+
+### Case 2: Two Opposite Matched Edges
+1. Hold the cube so one matched edge is in the **FRONT** and the other is in the **BACK**.
+2. Execute: **`R U R' U R U2 R' U`**.
+3. Now turn the `U` layer—the cube has transformed into **Case 1 (Adjacent Matched)**!
+4. Position the two matched edges at Back and Right, and execute the algorithm once more.
+
+---
+
+## 4. Practice the Sequence
+
+Use the practice pad below to practice the Sune sequence:
+
+<NotationTrainer
+  moves={["R", "U", "R'", "U2"]}
+  title="Sune Practice Pad"
+  description="Practice the rhythm: R U R' U R U2 R' U"
+/>
+
+---
+
+## 5. Summary & Checklist
+
+- [x] The Yellow Cross remains intact on the top face.
+- [x] The Yellow-Green edge aligns with the Green center.
+- [x] The Yellow-Red edge aligns with the Red center.
+- [x] The Yellow-Blue edge aligns with the Blue center.
+- [x] The Yellow-Orange edge aligns with the Orange center.
+
+---
+
+<WhatNext
+  next="position-the-yellow-corners"
+  related={["make-the-yellow-cross", "solve-the-middle-layer"]}
+  explore={["fun-cube-patterns", "what-is-speedcubing"]}
+/>
