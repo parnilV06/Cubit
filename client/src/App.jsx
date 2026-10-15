@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { useStore } from './services/store';
 import { initiateSocketConnection, disconnectSocket } from './services/socket';
 import Landing from './components/pages/landing.jsx';
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <Router>
+      <Analytics />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
